@@ -33,6 +33,8 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(manActor);
     }
 
+
+
     @Override
     public void render(float delta) {
         // 红色清屏

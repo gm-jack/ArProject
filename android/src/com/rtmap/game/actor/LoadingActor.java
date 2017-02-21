@@ -16,7 +16,7 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class LoadingActor extends Actor {
-    private AssetManager manager;
+    private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();
     private Animation<TextureRegion> animation;
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
@@ -24,9 +24,9 @@ public class LoadingActor extends Actor {
     private int width;
     private int height;
 
-    public LoadingActor(AssetManager manager) {
+    public LoadingActor(AssetManager assetManager) {
         super();
-        this.manager = manager;
+        this.assetManager = assetManager;
         initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
@@ -45,7 +45,7 @@ public class LoadingActor extends Actor {
         if (!isVisible()) {
             return;
         }
-
+//        Gdx.app.error("gdx","render");
         batch.draw(texReArray.get(0), 0, 0, width, height);
         batch.draw(texReArray.get(1), 0, height / 2 - texReArray.get(1).getRegionHeight() / 2, width, texReArray.get(1).getRegionHeight());
 
@@ -56,30 +56,41 @@ public class LoadingActor extends Actor {
          */
         stateTime += Gdx.graphics.getDeltaTime();
 
-        TextureRegion textureRegion = animation.getKeyFrame(stateTime, true);
+        TextureRegion textureRegion = animation.getKeyFrame(stateTime);
         // 这里要注意，我们添加的action只是改变actor的属性值，绘制的时候并没有
         // 自动给我们处理这些逻辑， 我们要做的就是取得这些值，然后自己处理
-        batch.draw(textureRegion, 10, texReArray.get(1).getRegionHeight() * 1.24f, width, textureRegion.getRegionHeight());
+        batch.draw(textureRegion, 10, (height / 2 - texReArray.get(1).getRegionHeight() / 2) * 1.13f, width - 10, textureRegion.getRegionHeight());
 
-        batch.draw(texReArray.get(2), width / 2 - texReArray.get(2).getRegionWidth() / 2, height / 2 - texReArray.get(2).getRegionHeight(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionWidth());
+        batch.draw(texReArray.get(2), width / 2 - texReArray.get(2).getRegionWidth() / 2, (height / 2 - texReArray.get(1).getRegionHeight() / 2) * 1.07f, texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionWidth());
     }
 
     public void initResources() {
-//        manager.load("main_bg.png", Texture.class);
-//        manager.load("bg_grow.png", Texture.class);
-//        manager.load("loading_center.png", Texture.class);
-//        manager.load("grow_1.png", Texture.class);
-//        manager.load("grow_2.png", Texture.class);
-//        manager.load("grow_3.png", Texture.class);
+        assetManager.load("main_bg.png", Texture.class);
+        assetManager.load("bg_grow.png", Texture.class);
+        assetManager.load("loading_center.png", Texture.class);
+        assetManager.load("grow_1.png", Texture.class);
+        assetManager.load("grow_2.png", Texture.class);
+        assetManager.load("grow_3.png", Texture.class);
+        assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
-        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("main_bg.png"))));
-        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("bg_grow.png"))));
-        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("loading_center.png"))));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("main_bg.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("bg_grow.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_center.png")));
 
-        mKeyFrames[0] = new TextureRegion(new Texture(Gdx.files.internal("grow_1.png")));
-        mKeyFrames[1] = new TextureRegion(new Texture(Gdx.files.internal("grow_2.png")));
-        mKeyFrames[2] = new TextureRegion(new Texture(Gdx.files.internal("grow_3.png")));
+        mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("grow_1.png"));
+        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("grow_2.png"));
+        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("grow_3.png"));
+
+//        texReArray = new ArrayList<>();
+//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("main_bg.png"))));
+//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("bg_grow.png"))));
+//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("loading_center.png"))));
+//
+//        mKeyFrames[0] = new TextureRegion(new Texture(Gdx.files.internal("grow_1.png")));
+//        mKeyFrames[1] = new TextureRegion(new Texture(Gdx.files.internal("grow_2.png")));
+//        mKeyFrames[2] = new TextureRegion(new Texture(Gdx.files.internal("grow_3.png")));
+
 
         animation = new Animation(0.2f, mKeyFrames);
         animation.setPlayMode(Animation.PlayMode.LOOP);
