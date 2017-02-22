@@ -28,9 +28,9 @@ public class BackActor extends Actor {
     public BackActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
-        initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+        initResources();
     }
 
     private void initResources() {
@@ -40,6 +40,9 @@ public class BackActor extends Actor {
 
         normal = new TextureRegion((Texture) assetManager.get("find_left_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_left_press.png"));
+
+        setPosition(0, 0);
+        setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     public void setListener() {
@@ -53,7 +56,6 @@ public class BackActor extends Actor {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
-                Gdx.app.error("gdx", "back");
                 Gdx.app.exit();
             }
         };
@@ -62,13 +64,12 @@ public class BackActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        this.batch = batch;
         super.draw(batch, parentAlpha);
         if (!isVisible()) {
             return;
         }
         if (!isDown)
-            batch.draw(normal, 0, 0, press.getRegionWidth(), press.getRegionHeight());
+            batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
         else
             batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
     }

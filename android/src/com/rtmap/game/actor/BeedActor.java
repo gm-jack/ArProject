@@ -26,9 +26,9 @@ public class BeedActor extends Actor {
     public BeedActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
-        initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+        initResources();
     }
 
     private void initResources() {
@@ -38,6 +38,9 @@ public class BeedActor extends Actor {
 
         normal = new TextureRegion((Texture) assetManager.get("find_right_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_right_press.png"));
+
+        setPosition(width - normal.getRegionWidth(), 0);
+        setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     public void setListener(final BeedOnClickListener beedOnClickListener) {
@@ -66,7 +69,7 @@ public class BeedActor extends Actor {
             return;
         }
         if (!isDown)
-            batch.draw(normal, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
+            batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
         else
             batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
     }

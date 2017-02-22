@@ -5,32 +5,53 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.screen.LoadingScreen;
 
 /**
  * Created by yxy on 2017/2/20.
  */
 public class MyGame extends Game {
+    private AndroidDeviceCameraController androidDeviceCameraController;
+    private AndroidLauncher androidLauncher;
     private LoadingScreen loadingScreen;
     private GameScreen gameScreen;
 
+    public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController) {
+        this.androidLauncher = androidLauncher;
+        this.androidDeviceCameraController = androidDeviceCameraController;
+    }
+
     @Override
     public void create() {
-        loadingScreen = new LoadingScreen(this);
+        loadingScreen = new LoadingScreen(this, androidLauncher);
         gameScreen = new GameScreen();
 
         setScreen(loadingScreen);
     }
 
     @Override
-    public void dispose() {
-        if(loadingScreen!=null){
-            loadingScreen.dispose();
-            loadingScreen=null;
+    public void render() {
+        if (androidDeviceCameraController != null) {
+            androidDeviceCameraController.prepareCameraAsync();
         }
-        if(gameScreen!=null){
+        if (androidDeviceCameraController != null) {
+            if (androidDeviceCameraController.isReady()) {
+                androidDeviceCameraController.startPreviewAsync();
+            }
+        }
+        super.render();
+    }
+
+    @Override
+    public void dispose() {
+        if (loadingScreen != null) {
+            loadingScreen.dispose();
+            loadingScreen = null;
+        }
+        if (gameScreen != null) {
             gameScreen.dispose();
-            gameScreen=null;
+            gameScreen = null;
         }
     }
 

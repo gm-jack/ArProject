@@ -19,7 +19,7 @@ public class LoadingActor extends Actor {
     private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();
     private Animation<TextureRegion> animation;
-    private TextureRegion[] mKeyFrames = new TextureRegion[3];
+    private  TextureRegion[] mKeyFrames = new TextureRegion[3];
     private float stateTime;
     private int width;
     private int height;

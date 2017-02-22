@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "com.rtmap.game"
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 25
     }
 }
