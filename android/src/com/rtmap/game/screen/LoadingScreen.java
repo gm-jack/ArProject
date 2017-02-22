@@ -33,6 +33,7 @@ import com.rtmap.game.actor.LoadingActor;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
+import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.stage.FindStage;
 import com.rtmap.game.stage.GameStage;
 import com.rtmap.game.stage.LoadingStage;
@@ -75,6 +76,7 @@ public class LoadingScreen implements Screen {
     private final AimActor aimActor;
     private Group group1;
     private Group group2;
+    private final CatchStage catchStage;
 
     public LoadingScreen(MyGame game, AndroidLauncher context) {
         this.mGame = game;
@@ -87,6 +89,8 @@ public class LoadingScreen implements Screen {
         findStage = new FindStage(new ScreenViewport());
         //瞄准怪兽舞台
         aimStage = new AimStage(new ScreenViewport());
+        //捕捉怪兽舞台
+        catchStage = new CatchStage(new ScreenViewport());
 
         loadingActor = new LoadingActor(new AssetManager());
         loadingActor.setPosition(0, 0);
@@ -135,7 +139,7 @@ public class LoadingScreen implements Screen {
                 baseStage = aimStage;
                 initListener();
             }
-        }, 3000);
+        }, 1000);
     }
 
     private void initListener() {
@@ -143,6 +147,15 @@ public class LoadingScreen implements Screen {
         if (baseStage instanceof LoadingStage) {
 
         } else if (baseStage instanceof FindStage) {
+            backActor.setListener();
+            beedActor.setListener(new BeedOnClickListener() {
+                @Override
+                public void onClick() {
+                    //打开背包Stage
+                    Gdx.app.error("gdx", "打开背包");
+                }
+            });
+        }else if (baseStage instanceof AimStage) {
             backActor.setListener();
             beedActor.setListener(new BeedOnClickListener() {
                 @Override
