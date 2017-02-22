@@ -72,6 +72,7 @@ public class AimActor extends Actor {
         int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
         int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
 
+//        Gdx.app.error("gdx", aimWidth + "   " + aimHeight);
         delta += Gdx.graphics.getDeltaTime();
         if (STATE == STATE_SUCCESS) {
             batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());

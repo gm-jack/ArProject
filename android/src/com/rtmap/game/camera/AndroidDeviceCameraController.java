@@ -23,20 +23,16 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public synchronized void prepareCamera() {
-//        Display display = activity.getWindowManager().getDefaultDisplay();
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        display.getMetrics(displayMetrics);
-//        activity.setFixedSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
-//        activity.setFixedSize(960, 640);
         if (cameraSurface == null) {
             cameraSurface = new CameraSurface(androidLauncher);
         }
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams
-                (FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        //设置顶部,左边布局
-//		params.gravity=Gravity.CENTER_HORIZONTAL|Gravity.RIGHT;
-//		params.gravity=Gravity.LEFT|Gravity.RIGHT;
-//        androidLauncher.addContentView(cameraSurface, params);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams  (680,680);
+        params.rightMargin=150;//可以通过设置rightMargin控制组件的实际位置
+        params.leftMargin=200;//可以通过设置rightMargin控制组件的实际位置
+        params.topMargin=100;
+        androidLauncher.addContentView(cameraSurface, params);
+
+
     }
 
     @Override
@@ -64,7 +60,6 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             }
             cameraSurface = null;
         }
-        androidLauncher.restoreFixedSize();
     }
 
     public void setCameraParametersForPicture(Camera camera) {

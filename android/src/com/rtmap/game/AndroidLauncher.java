@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class AndroidLauncher extends CameraActivity {
+public class AndroidLauncher extends AndroidApplication {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     protected int origWidth;
     protected int origHeight;
@@ -176,6 +176,13 @@ public class AndroidLauncher extends CameraActivity {
         config.b = 8;
         AndroidDeviceCameraController androidDeviceCameraController = new AndroidDeviceCameraController(this);
         initialize(new MyGame(this, androidDeviceCameraController), config);
+
+        if (graphics.getView() instanceof SurfaceView) {
+            SurfaceView glView = (SurfaceView) graphics.getView();
+            // force alpha channel - I'm not sure we need this as the GL surface
+            // is already using alpha channel
+            glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        }
 //        View view = initializeForView(new MyGame(this, androidDeviceCameraController), config);
 
         // keep the original screen size
@@ -184,5 +191,8 @@ public class AndroidLauncher extends CameraActivity {
 //        flMain.addView(view);
 //
 //        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
+    }
+    public void post(Runnable r) {
+        handler.post(r);
     }
 }
