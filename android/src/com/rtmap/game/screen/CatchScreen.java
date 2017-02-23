@@ -15,10 +15,12 @@ import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
+import com.rtmap.game.actor.CatActor;
 import com.rtmap.game.actor.CatchActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
 import com.rtmap.game.interfaces.BeedOnClickListener;
+import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.stage.FindStage;
@@ -34,6 +36,7 @@ import java.util.concurrent.Semaphore;
  */
 public class CatchScreen implements Screen {
 
+    private CatActor catActor;
     private float deltaSum;
     private MyGame mGame;
     //    private Texture mainBg;
@@ -45,6 +48,8 @@ public class CatchScreen implements Screen {
 
     private CatchStage catchStage;
     private CatchActor catchActor;
+
+    private boolean stop = false;
 
     public CatchScreen(MyGame game) {
         this.mGame = game;
@@ -62,6 +67,9 @@ public class CatchScreen implements Screen {
 
         beedActor = new BeedActor(new AssetManager());
         group3.addActor(beedActor);
+
+        catActor = new CatActor(new AssetManager());
+        group3.addActor(catActor);
         catchStage.addActor(group3);
     }
 
@@ -85,6 +93,13 @@ public class CatchScreen implements Screen {
             public void onClick() {
                 //打开背包Stage
                 Gdx.app.error("gdx", "打开背包");
+            }
+        });
+        catActor.setListener(new CatchOnClickListener() {
+            @Override
+            public void onClick() {
+                stop = !stop;
+                catchActor.setIsStop(stop);
             }
         });
     }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,14 @@ public class CatchActor extends Actor {
     private int width;
     private int height;
     private AssetManager assetManager;
+    private int num = 200;
+    private float changeRadiu = 0;
+    private float changeX = 0;
+    private float changeY = 0;
+    private boolean isComplete = true;
+    private int radius;
+    private boolean isBig = true;
+    private boolean isStop = false;
 
 
     public CatchActor(AssetManager assetManager) {
@@ -31,6 +40,9 @@ public class CatchActor extends Actor {
         initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+        changeX = width / 2;
+        changeY = height / 2;
+        radius = height * 2 / 5 / num;
     }
 
 
@@ -51,29 +63,73 @@ public class CatchActor extends Actor {
         int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
         int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
         batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-        Affine2 affine2 = new Affine2();
-        affine2.setToScaling(4, 4);
-        int scale = 255 / texReArray.get(2).getRegionHeight();
-        Gdx.app.error("gdx", scale + "");
-//        batch.draw(texReArray.get(2), width / 2 - 255, height / 2 - 255, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
-        batch.draw(texReArray.get(2), 0, 0, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
+        //有中心点到（-10，-10）的距离的平方/2开根号求得宽高
+
+        int regionHeight = texReArray.get(1).getRegionWidth();
+        int minRadius = regionHeight * 3 / 10;
+        int maxRadius = regionHeight * 12 / 25;
+        if (isBig) {
+            batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
+            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+            if (!isStop) {
+                changeRadiu += radius;
+            } else {
+                if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                } else {
+                    batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                }
+            }
+            if (changeRadiu >= height * 2 / 5) {
+                isBig = false;
+            }
+
+        } else {
+            batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
+            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+            if (changeRadiu <= 0) {
+                isBig = true;
+            }
+            if (!isStop) {
+                changeRadiu -= radius;
+            } else {
+                if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                } else {
+                    batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                }
+            }
+        }
+//        Affine2 affine2 = new Affine2();
+//        affine2.setToScaling(4, 4);
+//        int scale = 255 / texReArray.get(2).getRegionHeight();
+//        Gdx.app.error("gdx", scale + "");
+////        batch.draw(texReArray.get(2), width / 2 - 255, height / 2 - 255, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
+//        batch.draw(texReArray.get(2), 0, 0, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setIsStop(boolean isStop) {
+        this.isStop = isStop;
     }
 
     public void initResources() {
         assetManager.load("find_bg.png", Texture.class);
         assetManager.load("catch_center.png", Texture.class);
         assetManager.load("catch_circle.png", Texture.class);
-        assetManager.load("catch_button_normal.png", Texture.class);
-        assetManager.load("catch_button_press.png", Texture.class);
+        assetManager.load("catch_good.png", Texture.class);
+        assetManager.load("catch_miss.png", Texture.class);
         assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("find_bg.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_center.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_circle.png")));
-
-        mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("catch_button_normal.png"));
-        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("catch_button_press.png"));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_good.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_miss.png")));
     }
 
     @Override
