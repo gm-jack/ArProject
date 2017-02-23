@@ -45,6 +45,7 @@ public class FindScreen implements Screen {
     private BeedActor beedActor;
     private Group group;
     private Timer timer;
+    private boolean isFirst = true;
 
     public FindScreen(MyGame game) {
         this.mGame = game;
@@ -89,14 +90,18 @@ public class FindScreen implements Screen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(findStage);
-        backActor.setListener();
-        beedActor.setListener(new BeedOnClickListener() {
-            @Override
-            public void onClick() {
-                //打开背包Stage
-                Gdx.app.error("gdx", "打开背包");
-            }
-        });
+        if (isFirst) {
+            isFirst = false;
+            backActor.setListener();
+            beedActor.setListener(new BeedOnClickListener() {
+                @Override
+                public void onClick() {
+                    //打开背包Stage
+                    Gdx.app.error("gdx", "打开背包");
+                    mGame.showBeedScreen(FindScreen.this);
+                }
+            });
+        }
     }
 
     @Override

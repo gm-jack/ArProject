@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
+import com.rtmap.game.interfaces.CatchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,9 @@ public class CatchActor extends Actor {
     private int radius;
     private boolean isBig = true;
     private boolean isStop = false;
+    public int catchNumber = 0;
+    private CatchListener catchListener;
+    private boolean isFirst = true;
 
 
     public CatchActor(AssetManager assetManager) {
@@ -45,6 +49,13 @@ public class CatchActor extends Actor {
         radius = height * 2 / 5 / num;
     }
 
+    public void setCatchListener(CatchListener catchListener) {
+        this.catchListener = catchListener;
+    }
+
+    public void removeListener() {
+        this.catchListener = null;
+    }
 
     @Override
     public void act(float delta) {
@@ -70,33 +81,66 @@ public class CatchActor extends Actor {
         int maxRadius = regionHeight * 12 / 25;
         if (isBig) {
             batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+//            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
             if (!isStop) {
                 changeRadiu += radius;
             } else {
                 if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+
                     batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        catchListener.onSuccess();
+                        isFirst = false;
+                    }
+
+//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+
                 } else {
+
                     batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        isFirst = false;
+                        catchListener.onFail();
+                    }
+//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+
                 }
             }
             if (changeRadiu >= height * 2 / 5) {
                 isBig = false;
+                if (catchNumber == 5) {
+                    if (catchListener != null && isFirst) {
+                        isFirst = false;
+                        catchListener.onNumberFail(catchNumber);
+                    }
+                }
             }
 
         } else {
             batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+//            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
             if (changeRadiu <= 0) {
                 isBig = true;
+                catchNumber++;
             }
             if (!isStop) {
                 changeRadiu -= radius;
             } else {
                 if (changeRadiu > minRadius && changeRadiu < maxRadius) {
                     batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        isFirst = false;
+                        catchListener.onSuccess();
+                    }
                 } else {
+
                     batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        isFirst = false;
+                        catchListener.onFail();
+                    }
+//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+
                 }
             }
         }
@@ -108,16 +152,12 @@ public class CatchActor extends Actor {
 //        batch.draw(texReArray.get(2), 0, 0, getOriginX(), getOriginY(), texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), scale, scale, getRotation());
     }
 
-    public boolean isStop() {
-        return isStop;
-    }
-
     public void setIsStop(boolean isStop) {
         this.isStop = isStop;
     }
 
     public void initResources() {
-        assetManager.load("find_bg.png", Texture.class);
+        assetManager.load("catch_bg.png", Texture.class);
         assetManager.load("catch_center.png", Texture.class);
         assetManager.load("catch_circle.png", Texture.class);
         assetManager.load("catch_good.png", Texture.class);
@@ -125,11 +165,16 @@ public class CatchActor extends Actor {
         assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
-        texReArray.add(new TextureRegion((Texture) assetManager.get("find_bg.png")));
+        texReArray.add(new TextureRegion((Texture) assetManager.get("catch_bg.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_center.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_circle.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_good.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_miss.png")));
+    }
+
+    public void reset() {
+        catchNumber = 0;
+        changeRadiu = 0;
     }
 
     @Override

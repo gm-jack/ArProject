@@ -9,22 +9,23 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
-import com.rtmap.game.interfaces.CatchOnClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yxy on 2017/2/21.
  */
-public class CatActor extends Actor {
+public class BeedBackActor extends Actor {
     private int width;
     private int height;
     private AssetManager assetManager;
     private InputListener listener;
-    private TextureRegion normal;
-    private TextureRegion press;
+    private List<TextureRegion> beedList = new ArrayList<>();
     private Batch batch;
-    private boolean isDown = false;
+    private int regionHeight;
 
-    public CatActor(AssetManager assetManager) {
+    public BeedBackActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
@@ -33,38 +34,33 @@ public class CatActor extends Actor {
     }
 
     private void initResources() {
-        assetManager.load("catch_button_normal.png", Texture.class);
-        assetManager.load("catch_button_press.png", Texture.class);
+        assetManager.load("beed_back.png", Texture.class);
+        assetManager.load("beed_title.png", Texture.class);
         assetManager.finishLoading();
 
-        normal = new TextureRegion((Texture) assetManager.get("catch_button_normal.png"));
-        press = new TextureRegion((Texture) assetManager.get("catch_button_press.png"));
+        beedList.add(new TextureRegion((Texture) assetManager.get("beed_back.png")));
+        beedList.add(new TextureRegion((Texture) assetManager.get("beed_title.png")));
 
-        setPosition(width / 2, height * 0.15f);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+        regionHeight = beedList.get(1).getRegionHeight();
+        setPosition(20, height - regionHeight * 0.8f);
+        setSize(beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
     }
 
-    public void setListener(final CatchOnClickListener catchOnClickListener) {
+    public void setListener(final BeedOnClickListener beedOnClickListener) {
         listener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                isDown = true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                isDown = false;
-                if (catchOnClickListener != null) {
-                    catchOnClickListener.onClick();
+                if (beedOnClickListener != null) {
+                    beedOnClickListener.onClick();
                 }
             }
         };
         addListener(listener);
-    }
-
-    public void removeListener() {
-        removeListener(listener);
     }
 
     @Override
@@ -73,10 +69,7 @@ public class CatActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (!isDown)
-            batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
-        else
-            batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+        batch.draw(beedList.get(0), 20, height - regionHeight * 0.8f, beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
     }
 
     @Override

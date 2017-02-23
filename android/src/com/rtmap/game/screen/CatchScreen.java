@@ -17,9 +17,11 @@ import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.CatActor;
 import com.rtmap.game.actor.CatchActor;
+import com.rtmap.game.actor.CoverActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
 import com.rtmap.game.interfaces.BeedOnClickListener;
+import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.CatchStage;
@@ -49,7 +51,9 @@ public class CatchScreen implements Screen {
     private CatchStage catchStage;
     private CatchActor catchActor;
 
-    private boolean stop = false;
+    private boolean stop = true;
+    private CoverActor coverActor;
+    private boolean isFirst = true;
 
     public CatchScreen(MyGame game) {
         this.mGame = game;
@@ -68,38 +72,59 @@ public class CatchScreen implements Screen {
         beedActor = new BeedActor(new AssetManager());
         group3.addActor(beedActor);
 
+//        coverActor = new CoverActor(new AssetManager());
+//        group3.addActor(coverActor);
+
         catActor = new CatActor(new AssetManager());
         group3.addActor(catActor);
+
         catchStage.addActor(group3);
     }
 
     @Override
     public void show() {
-        initListener();
-        deltaSum = 0;
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-            }
-        }, 1000);
+
     }
 
     private void initListener() {
         Gdx.input.setInputProcessor(catchStage);
-        backActor.setListener();
-        beedActor.setListener(new BeedOnClickListener() {
+        if (isFirst) {
+            isFirst = false;
+            backActor.setListener();
+            beedActor.setListener(new BeedOnClickListener() {
+                @Override
+                public void onClick() {
+                    //打开背包Stage
+                    Gdx.app.error("gdx", "打开背包");
+                    mGame.showBeedScreen(CatchScreen.this);
+                }
+            });
+            catActor.setListener(new CatchOnClickListener() {
+                @Override
+                public void onClick() {
+                    catchActor.setIsStop(stop);
+                    stop = !stop;
+                }
+            });
+        }
+        catchActor.setCatchListener(new CatchListener() {
             @Override
-            public void onClick() {
-                //打开背包Stage
-                Gdx.app.error("gdx", "打开背包");
+            public void onSuccess() {
+                Gdx.app.error("gdx", "onSuccess");
             }
-        });
-        catActor.setListener(new CatchOnClickListener() {
+
             @Override
-            public void onClick() {
-                stop = !stop;
-                catchActor.setIsStop(stop);
+            public void onFail() {
+                Gdx.app.error("gdx", "onFail");
+                if (mGame != null)
+                    mGame.showLoadingScreen();
+            }
+
+            @Override
+            public void onNumberFail(int number) {
+                Gdx.app.error("gdx", "onNumberFail");
+                if (mGame != null)
+                    mGame.showLoadingScreen();
             }
         });
     }
@@ -110,7 +135,7 @@ public class CatchScreen implements Screen {
             return;
 
 
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(1, 1, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -122,7 +147,7 @@ public class CatchScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        initListener();
     }
 
     @Override

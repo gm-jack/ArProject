@@ -44,6 +44,7 @@ public class AimScreen implements Screen {
     private Timer timer;
     private AimStage aimStage;
     private AimActor aimActor;
+    private boolean isFirst = true;
 
 
     public AimScreen(MyGame game) {
@@ -89,14 +90,18 @@ public class AimScreen implements Screen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(aimStage);
-        backActor.setListener();
-        beedActor.setListener(new BeedOnClickListener() {
-            @Override
-            public void onClick() {
-                //打开背包Stage
-                Gdx.app.error("gdx", "打开背包");
-            }
-        });
+        if (isFirst) {
+            isFirst = false;
+            backActor.setListener();
+            beedActor.setListener(new BeedOnClickListener() {
+                @Override
+                public void onClick() {
+                    //打开背包Stage
+                    Gdx.app.error("gdx", "打开背包");
+                    mGame.showBeedScreen(AimScreen.this);
+                }
+            });
+        }
     }
 
     @Override
