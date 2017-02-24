@@ -47,7 +47,7 @@ public class FindScreen implements Screen {
     private Timer timer;
     private boolean isFirst = true;
 
-    public FindScreen(MyGame game) {
+    public FindScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
 //        mainBg = new Texture(Gdx.files.internal("main_bg.png"));
 

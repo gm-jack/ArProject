@@ -11,6 +11,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
@@ -47,7 +48,7 @@ public class AimScreen implements Screen {
     private boolean isFirst = true;
 
 
-    public AimScreen(MyGame game) {
+    public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
 //        mainBg = new Texture(Gdx.files.internal("main_bg.png"));
 

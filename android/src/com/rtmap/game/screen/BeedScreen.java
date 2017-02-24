@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
@@ -31,7 +32,7 @@ public class BeedScreen implements Screen {
     //    private Texture mainBg;
 
 
-    public BeedScreen(MyGame game) {
+    public BeedScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
 //        mainBg = new Texture(Gdx.files.internal("main_bg.png"));
         //瞄准怪兽舞台

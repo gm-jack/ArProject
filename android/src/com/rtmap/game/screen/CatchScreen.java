@@ -1,5 +1,6 @@
 package com.rtmap.game.screen;
 
+import android.content.Context;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
@@ -28,6 +30,7 @@ import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.stage.FindStage;
 import com.rtmap.game.stage.GameStage;
 import com.rtmap.game.stage.LoadingStage;
+import com.rtmap.game.util.SPUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +41,7 @@ import java.util.concurrent.Semaphore;
  */
 public class CatchScreen implements Screen {
 
+    private Context context;
     private CatActor catActor;
     private float deltaSum;
     private MyGame mGame;
@@ -54,9 +58,11 @@ public class CatchScreen implements Screen {
     private boolean stop = true;
     private CoverActor coverActor;
     private boolean isFirst = true;
+    private boolean firstCatch;
 
-    public CatchScreen(MyGame game) {
+    public CatchScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
+        this.context = androidLauncher;
         //捕捉怪兽舞台
         catchStage = new CatchStage(new ScreenViewport());
 
@@ -72,8 +78,8 @@ public class CatchScreen implements Screen {
         beedActor = new BeedActor(new AssetManager());
         group3.addActor(beedActor);
 
-//        coverActor = new CoverActor(new AssetManager());
-//        group3.addActor(coverActor);
+        coverActor = new CoverActor(new AssetManager());
+        group3.addActor(coverActor);
 
         catActor = new CatActor(new AssetManager());
         group3.addActor(catActor);
@@ -109,8 +115,17 @@ public class CatchScreen implements Screen {
         }
         catchActor.setCatchListener(new CatchListener() {
             @Override
+            public void onFirst() {
+                coverActor.setIsFirst(firstCatch);
+            }
+
+            @Override
             public void onSuccess() {
                 Gdx.app.error("gdx", "onSuccess");
+                if (firstCatch) {
+                    SPUtil.put(context, "first_catch", false);
+                    coverActor.setIsFirst(false);
+                }
             }
 
             @Override
@@ -147,6 +162,10 @@ public class CatchScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        firstCatch = (boolean) SPUtil.get(context, "first_catch", true);
+        if (firstCatch) {
+            catchActor.setIsFirst(true);
+        }
         initListener();
     }
 

@@ -19,6 +19,9 @@ public class CoverActor extends Actor {
     private AssetManager assetManager;
     private TextureRegion normal;
     private Batch batch;
+    private boolean isFirst = false;
+    private TextureRegion tip;
+    private TextureRegion catchs;
 
     public CoverActor(AssetManager assetManager) {
         super();
@@ -28,11 +31,19 @@ public class CoverActor extends Actor {
         initResources();
     }
 
+    public void setIsFirst(boolean isFirst) {
+        this.isFirst = isFirst;
+    }
+
     private void initResources() {
         assetManager.load("catch_cover.png", Texture.class);
+        assetManager.load("find_tip.png", Texture.class);
+        assetManager.load("catch_catch.png", Texture.class);
         assetManager.finishLoading();
 
         normal = new TextureRegion((Texture) assetManager.get("catch_cover.png"));
+        tip = new TextureRegion((Texture) assetManager.get("find_tip.png"));
+        catchs = new TextureRegion((Texture) assetManager.get("catch_catch.png"));
     }
 
     @Override
@@ -41,7 +52,11 @@ public class CoverActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        batch.draw(normal, 0, 0, width, height);
+        if (isFirst) {
+            batch.draw(normal, 0, 0, width, height);
+            batch.draw(tip, width / 2 - tip.getRegionWidth() / 2, height / 2 - tip.getRegionHeight() / 2, tip.getRegionWidth(), tip.getRegionHeight());
+            batch.draw(catchs, width / 2 - catchs.getRegionWidth() / 2, height / 2 - tip.getRegionHeight() / 2 + tip.getRegionHeight() / 5, catchs.getRegionWidth(), catchs.getRegionHeight());
+        }
     }
 
     @Override

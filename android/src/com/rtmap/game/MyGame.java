@@ -39,7 +39,7 @@ public class MyGame extends Game {
     @Override
     public void create() {
         loadingScreen = new LoadingScreen(this, androidDeviceCameraController);
-        findScreen = new FindScreen(this);
+        findScreen = new FindScreen(this, androidLauncher);
 
         setScreen(loadingScreen);
     }
@@ -79,12 +79,12 @@ public class MyGame extends Game {
 //    }
 
     public void showAimScreen() {
-        aimScreen = new AimScreen(this);
+        aimScreen = new AimScreen(this, androidLauncher);
         setScreen(aimScreen);
     }
 
     public void showCatchScreen() {
-        catchScreen = new CatchScreen(this);
+        catchScreen = new CatchScreen(this, androidLauncher);
         setScreen(catchScreen);
     }
 
@@ -102,7 +102,7 @@ public class MyGame extends Game {
 
     public void showBeedScreen(Screen oldScreen) {
         this.oldScreen = oldScreen;
-        setScreen(new BeedScreen(this));
+        setScreen(new BeedScreen(this, androidLauncher));
     }
 
     public void showLoadingScreen() {

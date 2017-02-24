@@ -18,24 +18,37 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class CatchActor extends Actor {
+    /**
+     * 资源文件管理
+     */
+    private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
-    private Animation<TextureRegion> animation;
-
+    /**
+     * 显示范围宽高
+     */
     private int width;
     private int height;
-    private AssetManager assetManager;
-    private int num = 200;
-    private float changeRadiu = 0;
+
     private float changeX = 0;
     private float changeY = 0;
-    private boolean isComplete = true;
     private int radius;
-    private boolean isBig = true;
-    private boolean isStop = false;
-    public int catchNumber = 0;
+    //捕捉监听
     private CatchListener catchListener;
+    //红圈半径变化值
+    private float changeRadiu = 0;
+    //控制红圈的动画速率
+    private int num = 200;
+    //控制红圈缩放次数
+    public int catchNumber = 0;
+    //控制红圈的放大和缩小
+    private boolean isBig = true;
+    //控制红圈是否暂停缩放
+    private boolean isStop = false;
+    //控制监听触发次数=1
     private boolean isFirst = true;
+    //控制用户是否第一次进入
+    private boolean first;
 
 
     public CatchActor(AssetManager assetManager) {
@@ -74,7 +87,6 @@ public class CatchActor extends Actor {
         int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
         int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
         batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-        //有中心点到（-10，-10）的距离的平方/2开根号求得宽高
 
         int regionHeight = texReArray.get(1).getRegionWidth();
         int minRadius = regionHeight * 3 / 10;
@@ -83,14 +95,20 @@ public class CatchActor extends Actor {
             batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
 //            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
             if (!isStop) {
-                changeRadiu += radius;
+                if (changeRadiu > minRadius && changeRadiu < maxRadius && first) {
+                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        catchListener.onFirst();
+                    }
+                } else
+                    changeRadiu += radius;
             } else {
                 if (changeRadiu > minRadius && changeRadiu < maxRadius) {
 
                     batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
                     if (catchListener != null && isFirst) {
-                        catchListener.onSuccess();
                         isFirst = false;
+                        catchListener.onSuccess();
                     }
 
 //                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
@@ -124,7 +142,13 @@ public class CatchActor extends Actor {
                 catchNumber++;
             }
             if (!isStop) {
-                changeRadiu -= radius;
+                if (changeRadiu > minRadius && changeRadiu < maxRadius && first) {
+                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                    if (catchListener != null && isFirst) {
+                        catchListener.onFirst();
+                    }
+                } else
+                    changeRadiu -= radius;
             } else {
                 if (changeRadiu > minRadius && changeRadiu < maxRadius) {
                     batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
@@ -154,6 +178,10 @@ public class CatchActor extends Actor {
 
     public void setIsStop(boolean isStop) {
         this.isStop = isStop;
+    }
+
+    public void setIsFirst(boolean isFirst) {
+        this.first = isFirst;
     }
 
     public void initResources() {

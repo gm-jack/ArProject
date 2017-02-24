@@ -5,6 +5,8 @@ package com.rtmap.game.interfaces;
  */
 public interface CatchListener {
 
+    void onFirst();
+
     void onSuccess();
 
     void onFail();
