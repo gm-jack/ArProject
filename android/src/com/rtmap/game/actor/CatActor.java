@@ -21,8 +21,12 @@ public class CatActor extends Actor {
     private InputListener listener;
     private TextureRegion normal;
     private TextureRegion press;
-    private Batch batch;
+    private TextureRegion openNormal;
+    private TextureRegion openPress;
+    //判断是否按下
     private boolean isDown = false;
+    //判断按钮当前状态
+    private boolean isCatch = true;
 
     public CatActor(AssetManager assetManager) {
         super();
@@ -35,13 +39,27 @@ public class CatActor extends Actor {
     private void initResources() {
         assetManager.load("catch_button_normal.png", Texture.class);
         assetManager.load("catch_button_press.png", Texture.class);
+        assetManager.load("success_open_normal.png", Texture.class);
+        assetManager.load("success_open_press.png", Texture.class);
         assetManager.finishLoading();
 
         normal = new TextureRegion((Texture) assetManager.get("catch_button_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("catch_button_press.png"));
+        openNormal = new TextureRegion((Texture) assetManager.get("success_open_normal.png"));
+        openPress = new TextureRegion((Texture) assetManager.get("success_open_press.png"));
 
         setPosition(width / 2, height * 0.15f);
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
+    }
+
+    /**
+     * true:捕捉按钮
+     * false:打开按钮
+     *
+     * @param isCatch
+     */
+    public void setIsCatch(boolean isCatch) {
+        this.isCatch = isCatch;
     }
 
     public void setListener(final CatchOnClickListener catchOnClickListener) {
@@ -56,7 +74,11 @@ public class CatActor extends Actor {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
                 if (catchOnClickListener != null) {
-                    catchOnClickListener.onClick();
+                    if (isCatch)
+                        catchOnClickListener.onCatchClick();
+                    else
+                        catchOnClickListener.onSuccessClick();
+                    removeListener();
                 }
             }
         };
@@ -73,10 +95,17 @@ public class CatActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (!isDown)
-            batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
-        else
-            batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+        if (!isDown) {
+            if (isCatch)
+                batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+            else
+                batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+        } else {
+            if (isCatch)
+                batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+            else
+                batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.rtmap.game.actor.CatchActor;
 import com.rtmap.game.actor.CoverActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
+import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
@@ -94,29 +95,17 @@ public class CatchScreen implements Screen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(catchStage);
-        if (isFirst) {
+        if (isFirst && !firstCatch) {
             isFirst = false;
-            backActor.setListener();
-            beedActor.setListener(new BeedOnClickListener() {
-                @Override
-                public void onClick() {
-                    //打开背包Stage
-                    Gdx.app.error("gdx", "打开背包");
-                    mGame.showBeedScreen(CatchScreen.this);
-                }
-            });
-            catActor.setListener(new CatchOnClickListener() {
-                @Override
-                public void onClick() {
-                    catchActor.setIsStop(stop);
-                    stop = !stop;
-                }
-            });
+            setlistener();
         }
         catchActor.setCatchListener(new CatchListener() {
             @Override
             public void onFirst() {
-                coverActor.setIsFirst(firstCatch);
+                Gdx.app.error("gdx", "onFirst");
+                SPUtil.put(context, "first_catch", false);
+                coverActor.setIsFirst(true);
+                setlistener();
             }
 
             @Override
@@ -125,21 +114,75 @@ public class CatchScreen implements Screen {
                 if (firstCatch) {
                     SPUtil.put(context, "first_catch", false);
                     coverActor.setIsFirst(false);
+                    catchActor.setIsFirst(false);
                 }
+                catActor.setIsCatch(false);
+                catchActor.setFail(true);
+                catchActor.setIsSuccess(true);
             }
 
             @Override
             public void onFail() {
                 Gdx.app.error("gdx", "onFail");
-                if (mGame != null)
-                    mGame.showLoadingScreen();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        catchActor.setFail(true);
+                        catchActor.setIsSuccess(false);
+                    }
+                }, 1000);
             }
 
             @Override
             public void onNumberFail(int number) {
                 Gdx.app.error("gdx", "onNumberFail");
-                if (mGame != null)
-                    mGame.showLoadingScreen();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        catchActor.setFail(true);
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public void onTouched(int num) {
+                if (num == 0) {
+                    if (mGame != null)
+                        mGame.showLoadingScreen();
+                } else if (num == 1) {
+                    catchActor.setIsCatchTip(false);
+                    catchActor.setIsStop(false);
+                }
+            }
+        });
+    }
+
+    private void setlistener() {
+        backActor.setListener(new BackOnClickListener() {
+            @Override
+            public void onClick() {
+
+            }
+        });
+        beedActor.setListener(new BeedOnClickListener() {
+            @Override
+            public void onClick() {
+                //打开背包Stage
+                Gdx.app.error("gdx", "打开背包");
+                mGame.showBeedScreen(CatchScreen.this);
+            }
+        });
+        catActor.setListener(new CatchOnClickListener() {
+
+            @Override
+            public void onCatchClick() {
+                catchActor.setIsStop(stop);
+                stop = !stop;
+            }
+
+            @Override
+            public void onSuccessClick() {
+
             }
         });
     }
@@ -162,11 +205,22 @@ public class CatchScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        catchActor.setIsStop(true);
         firstCatch = (boolean) SPUtil.get(context, "first_catch", true);
-        if (firstCatch) {
-            catchActor.setIsFirst(true);
-        }
-        initListener();
+        Gdx.app.error("gdx", "firstCatch   " + firstCatch);
+        catchActor.setIsFirst(firstCatch);
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                catchActor.setCatch(false);
+                catchActor.setIsCatchTip(firstCatch);
+                if (!firstCatch) {
+                    catchActor.setIsStop(false);
+                }
+                initListener();
+            }
+        }, 1000);
     }
 
     @Override

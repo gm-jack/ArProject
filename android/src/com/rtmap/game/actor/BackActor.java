@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.rtmap.game.interfaces.BackOnClickListener;
 
 /**
  * Created by yxy on 2017/2/21.
@@ -45,7 +46,7 @@ public class BackActor extends Actor {
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 
-    public void setListener() {
+    public void setListener(final BackOnClickListener backOnClickListener) {
         listener = new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -56,7 +57,10 @@ public class BackActor extends Actor {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
-                Gdx.app.exit();
+                if (backOnClickListener != null) {
+                    backOnClickListener.onClick();
+//                    Gdx.app.exit();
+                }
             }
         };
         addListener(listener);
@@ -69,9 +73,10 @@ public class BackActor extends Actor {
             return;
         }
         if (!isDown)
-            batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
-        else
             batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
+        else
+            batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
+
     }
 
     @Override

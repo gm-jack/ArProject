@@ -69,9 +69,9 @@ public class BeedActor extends Actor {
             return;
         }
         if (!isDown)
-            batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
-        else
             batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
+        else
+            batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     @Override

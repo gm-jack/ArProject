@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.rtmap.game.interfaces.CatchListener;
 
@@ -23,7 +24,8 @@ public class CatchActor extends Actor {
      */
     private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();
-    private TextureRegion[] mKeyFrames = new TextureRegion[3];
+    private List<TextureRegion> successTexRe = new ArrayList();
+    private TextureRegion[] mKeyFrames = new TextureRegion[4];
     /**
      * 显示范围宽高
      */
@@ -36,7 +38,7 @@ public class CatchActor extends Actor {
     //捕捉监听
     private CatchListener catchListener;
     //红圈半径变化值
-    private float changeRadiu = 0;
+    private float changeRadiu = 1;
     //控制红圈的动画速率
     private int num = 200;
     //控制红圈缩放次数
@@ -48,7 +50,13 @@ public class CatchActor extends Actor {
     //控制监听触发次数=1
     private boolean isFirst = true;
     //控制用户是否第一次进入
-    private boolean first;
+    private boolean first = false;
+    //控制用户捕捉失败显示按任意键返回的提示
+    private boolean fail = false;
+    //控制捕捉提示
+    private boolean isCatch = true;
+    private boolean isCatchTip = false;
+    private boolean isSuccess = false;
 
 
     public CatchActor(AssetManager assetManager) {
@@ -84,90 +92,122 @@ public class CatchActor extends Actor {
         }
 
         batch.draw(texReArray.get(0), 0, 0, width, height);
-        int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
-        int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
-        batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
+        if (!fail) {
+            int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
+            int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
+            batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
 
-        int regionHeight = texReArray.get(1).getRegionWidth();
-        int minRadius = regionHeight * 3 / 10;
-        int maxRadius = regionHeight * 12 / 25;
-        if (isBig) {
-            batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-//            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
-            if (!isStop) {
-                if (changeRadiu > minRadius && changeRadiu < maxRadius && first) {
-                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        catchListener.onFirst();
+            int regionHeight = texReArray.get(1).getRegionWidth();
+            int minRadius = regionHeight * 3 / 10;
+            int maxRadius = regionHeight * 12 / 25;
+            if (isBig) {
+                batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
+                //            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+                if (!isStop) {
+                    if (changeRadiu >= ((minRadius + maxRadius) / 2 - 3) && changeRadiu <= ((minRadius + maxRadius) / 2 + 3) && first) {
+                        batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                        if (catchListener != null && first) {
+                            catchListener.onFirst();
+                        }
+                    } else
+                        changeRadiu += radius;
+                } else if (!isCatch) {
+                    //在开始捕捉界面之后运行
+                    if (!isCatchTip) {
+                        if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+
+                            batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onSuccess();
+                            }
+                            //Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+                        } else {
+                            batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onFail();
+                            }
+                            //Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+                        }
                     }
-                } else
-                    changeRadiu += radius;
-            } else {
-                if (changeRadiu > minRadius && changeRadiu < maxRadius) {
-
-                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        isFirst = false;
-                        catchListener.onSuccess();
-                    }
-
-//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
-
-                } else {
-
-                    batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        isFirst = false;
-                        catchListener.onFail();
-                    }
-//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
-
                 }
-            }
-            if (changeRadiu >= height * 2 / 5) {
-                isBig = false;
-                if (catchNumber == 5) {
-                    if (catchListener != null && isFirst) {
-                        isFirst = false;
-                        catchListener.onNumberFail(catchNumber);
+                if (changeRadiu >= height * 2 / 5) {
+                    isBig = false;
+                    if (catchNumber == 5) {
+                        if (catchListener != null && isFirst) {
+                            isFirst = false;
+                            catchListener.onNumberFail(catchNumber);
+                        }
+                    }
+                }
+
+            } else {
+                batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
+                //Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
+                if (changeRadiu <= 0) {
+                    isBig = true;
+                    catchNumber++;
+                }
+                if (!isStop) {
+                    //                if (changeRadiu == (minRadius + maxRadius) / 2 && first) {
+                    //                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                    //                    if (catchListener != null && isFirst) {
+                    //                        catchListener.onFirst();
+                    //                    }
+                    //                } else
+                    changeRadiu -= radius;
+                } else if (!isCatch) {
+                    if (!isCatchTip) {
+                        if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+                            batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onSuccess();
+                            }
+                        } else {
+                            batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onFail();
+                            }
+                            //                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
+                        }
                     }
                 }
             }
 
         } else {
-            batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-//            Gdx.app.error("gdx", "changeX=" + (changeX) + "  changeY=" + (changeY) + "   changeRadiu=" + changeRadiu + "   regionHeight== " + regionHeight);
-            if (changeRadiu <= 0) {
-                isBig = true;
-                catchNumber++;
-            }
-            if (!isStop) {
-                if (changeRadiu > minRadius && changeRadiu < maxRadius && first) {
-                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        catchListener.onFirst();
-                    }
-                } else
-                    changeRadiu -= radius;
+            if (isSuccess) {
+                batch.draw(successTexRe.get(0), 0, height * 4/ 5, successTexRe.get(0).getRegionWidth(), successTexRe.get(0).getRegionHeight());
+
+                batch.draw(successTexRe.get(1), width / 2 - successTexRe.get(1).getRegionWidth() / 2, height / 2 - successTexRe.get(1).getRegionHeight() / 2, successTexRe.get(1).getRegionWidth(), successTexRe.get(1).getRegionHeight());
+
             } else {
-                if (changeRadiu > minRadius && changeRadiu < maxRadius) {
-                    batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        isFirst = false;
-                        catchListener.onSuccess();
+                batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
+                batch.draw(mKeyFrames[1], width / 2 - mKeyFrames[1].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight());
+                if (Gdx.input.isTouched()) {
+                    if (catchListener != null) {
+                        catchListener.onTouched(0);
                     }
-                } else {
-
-                    batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
-                    if (catchListener != null && isFirst) {
-                        isFirst = false;
-                        catchListener.onFail();
-                    }
-//                    Gdx.app.error("gdx", "changeRadiu== " + changeRadiu + " ==" + minRadius + " == " + maxRadius);
-
                 }
             }
         }
+        if (isCatch) {
+            float i = width * 1f / mKeyFrames[0].getRegionWidth();
+            float regionHeight = mKeyFrames[0].getRegionHeight() * i;
+            batch.draw(mKeyFrames[0], 0, height / 2 - regionHeight / 2, width, regionHeight);
+        }
+        if (isCatchTip) {
+            batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
+            batch.draw(mKeyFrames[3], width / 2 - mKeyFrames[3].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[3].getRegionWidth(), mKeyFrames[3].getRegionHeight());
+            if (Gdx.input.isTouched()) {
+                if (catchListener != null) {
+                    catchListener.onTouched(1);
+                }
+            }
+        }
+
 //        Affine2 affine2 = new Affine2();
 //        affine2.setToScaling(4, 4);
 //        int scale = 255 / texReArray.get(2).getRegionHeight();
@@ -184,12 +224,40 @@ public class CatchActor extends Actor {
         this.first = isFirst;
     }
 
+    public void setFail(boolean fail) {
+        this.fail = fail;
+    }
+
+    public boolean getFail() {
+        return fail;
+    }
+
+    public void setCatch(boolean isCatch) {
+        this.isCatch = isCatch;
+    }
+
+    public void setIsCatchTip(boolean isCatchTip) {
+        this.isCatchTip = isCatchTip;
+    }
+
+    public void setIsSuccess(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
     public void initResources() {
         assetManager.load("catch_bg.png", Texture.class);
         assetManager.load("catch_center.png", Texture.class);
         assetManager.load("catch_circle.png", Texture.class);
         assetManager.load("catch_good.png", Texture.class);
         assetManager.load("catch_miss.png", Texture.class);
+        assetManager.load("catch_fail.png", Texture.class);
+        assetManager.load("catch_tip.png", Texture.class);
+        assetManager.load("catch_tip_text.png", Texture.class);
+        assetManager.load("find_tip.png", Texture.class);
+        assetManager.load("find_tip.png", Texture.class);
+        assetManager.load("find_tip.png", Texture.class);
+        assetManager.load("success_title.png", Texture.class);
+        assetManager.load("success_center.png", Texture.class);
         assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
@@ -198,6 +266,15 @@ public class CatchActor extends Actor {
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_circle.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_good.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_miss.png")));
+
+        successTexRe = new ArrayList<>();
+        successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
+        successTexRe.add(new TextureRegion((Texture) assetManager.get("success_center.png")));
+
+        mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("catch_tip.png"));
+        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("catch_fail.png"));
+        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("find_tip.png"));
+        mKeyFrames[3] = new TextureRegion((Texture) assetManager.get("catch_tip_text.png"));
     }
 
     public void reset() {

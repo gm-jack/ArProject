@@ -46,11 +46,23 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
+//        Gdx.app.error("gdx", "MyGame   render");
+        Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        if (androidDeviceCameraController != null) {
+            androidDeviceCameraController.prepareCameraAsync();
+            Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            if (androidDeviceCameraController.isReady()) {
+                androidDeviceCameraController.startPreviewAsync();
+            }
+        }
+        Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         super.render();
     }
 
     @Override
     public void dispose() {
+        if (androidDeviceCameraController != null)
+            androidDeviceCameraController.stopPreviewAsync();
         for (int i = 0; i < screenList.size(); i++) {
             Screen screen = screenList.get(i);
             if (screen != null) {

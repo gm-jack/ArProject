@@ -19,6 +19,7 @@ import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.CatchActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
+import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.CatchStage;
@@ -35,7 +36,6 @@ import java.util.concurrent.Semaphore;
  */
 public class FindScreen implements Screen {
 
-    private float deltaSum;
     private MyGame mGame;
     //    private Texture mainBg;
     private FindStage findStage;
@@ -71,28 +71,19 @@ public class FindScreen implements Screen {
     @Override
     public void show() {
         initListener();
-        deltaSum = 0;
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        Gdx.app.error("gdx", "11111111111");
-                        mGame.showAimScreen();
-
-                    }
-                });
-            }
-        }, 1000);
     }
 
     private void initListener() {
         Gdx.input.setInputProcessor(findStage);
         if (isFirst) {
             isFirst = false;
-            backActor.setListener();
+            backActor.setListener(new BackOnClickListener() {
+                @Override
+                public void onClick() {
+                    Gdx.app.error("gdx", "退出");
+                    mGame.showAimScreen();
+                }
+            });
             beedActor.setListener(new BeedOnClickListener() {
                 @Override
                 public void onClick() {

@@ -5,5 +5,6 @@ package com.rtmap.game.interfaces;
  */
 public interface CatchOnClickListener {
 
-    void onClick();
+    void onCatchClick();
+    void onSuccessClick();
 }

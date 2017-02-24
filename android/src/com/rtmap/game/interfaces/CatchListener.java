@@ -12,4 +12,6 @@ public interface CatchListener {
     void onFail();
 
     void onNumberFail(int number);
+
+    void onTouched(int num);
 }

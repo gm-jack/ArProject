@@ -165,9 +165,6 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activitymain);
-//        flMain = (FrameLayout) findViewById(R.id.fl_main);
-//        mainTexture = (TextureView) findViewById(R.id.texture_main);
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.a = 8;
@@ -179,21 +176,33 @@ public class AndroidLauncher extends AndroidApplication {
 
         if (graphics.getView() instanceof SurfaceView) {
             SurfaceView glView = (SurfaceView) graphics.getView();
-            // force alpha channel - I'm not sure we need this as the GL surface
-            // is already using alpha channel
+            // force alpha channel - I'm not sure we need this as the GL surface is already using alpha channel
             glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         }
-//        View view = initializeForView(new MyGame(this, androidDeviceCameraController), config);
-
+        // we don't want the screen to turn off during the long image saving process
+        graphics.getView().setKeepScreenOn(true);
         // keep the original screen size
-//        origWidth = graphics.getWidth();
-//        origHeight = graphics.getHeight();
-//        flMain.addView(view);
-//
-//        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
+        origWidth = graphics.getWidth();
+        origHeight = graphics.getHeight();
     }
+
     public void post(Runnable r) {
         handler.post(r);
     }
 
+    public void setFixedSize(int width, int height) {
+        if (graphics.getView() instanceof SurfaceView) {
+            SurfaceView glView = (SurfaceView) graphics.getView();
+            glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            glView.getHolder().setFixedSize(width, height);
+        }
+    }
+
+    public void restoreFixedSize() {
+        if (graphics.getView() instanceof SurfaceView) {
+            SurfaceView glView = (SurfaceView) graphics.getView();
+            glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            glView.getHolder().setFixedSize(origWidth, origHeight);
+        }
+    }
 }

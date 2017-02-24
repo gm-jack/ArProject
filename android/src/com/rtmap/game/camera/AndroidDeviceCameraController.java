@@ -26,13 +26,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         if (cameraSurface == null) {
             cameraSurface = new CameraSurface(androidLauncher);
         }
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams  (680,680);
-        params.rightMargin=150;//可以通过设置rightMargin控制组件的实际位置
-        params.leftMargin=200;//可以通过设置rightMargin控制组件的实际位置
-        params.topMargin=100;
-        androidLauncher.addContentView(cameraSurface, params);
-
-
+        androidLauncher.addContentView(cameraSurface, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     @Override
@@ -133,7 +127,5 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
-
-
     }
 }
