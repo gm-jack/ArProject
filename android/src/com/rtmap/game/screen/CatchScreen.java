@@ -12,13 +12,16 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
+import com.rtmap.game.actor.AgainActor;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.CatActor;
 import com.rtmap.game.actor.CatchActor;
+import com.rtmap.game.actor.CloseActor;
 import com.rtmap.game.actor.CoverActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
@@ -40,7 +43,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by yxy on 2017/2/20.
  */
-public class CatchScreen implements Screen {
+public class CatchScreen extends MyScreen {
 
     private Context context;
     private CatActor catActor;
@@ -60,6 +63,9 @@ public class CatchScreen implements Screen {
     private CoverActor coverActor;
     private boolean isFirst = true;
     private boolean firstCatch;
+    private CloseActor closeActor;
+    private AgainActor againActor;
+    private boolean isWin = false;
 
     public CatchScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
@@ -111,14 +117,19 @@ public class CatchScreen implements Screen {
             @Override
             public void onSuccess() {
                 Gdx.app.error("gdx", "onSuccess");
-                if (firstCatch) {
-                    SPUtil.put(context, "first_catch", false);
-                    coverActor.setIsFirst(false);
-                    catchActor.setIsFirst(false);
-                }
-                catActor.setIsCatch(false);
-                catchActor.setFail(true);
-                catchActor.setIsSuccess(true);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (firstCatch) {
+                            SPUtil.put(context, "first_catch", false);
+                            coverActor.setIsFirst(false);
+                            catchActor.setIsFirst(false);
+                        }
+                        catActor.setIsCatch(false);
+                        catchActor.setFail(true);
+                        catchActor.setIsSuccess(true);
+                    }
+                }, 500);
             }
 
             @Override
@@ -130,7 +141,7 @@ public class CatchScreen implements Screen {
                         catchActor.setFail(true);
                         catchActor.setIsSuccess(false);
                     }
-                }, 1000);
+                }, 500);
             }
 
             @Override
@@ -182,9 +193,41 @@ public class CatchScreen implements Screen {
 
             @Override
             public void onSuccessClick() {
-
+                catActor.removeListener();
+                catchActor.setIsOpen(true);
+                catActor.setIsShow(false);
+                setResult();
             }
         });
+    }
+
+    private void setResult() {
+        isWin = true;
+        catchActor.setIsWin(isWin);
+        if (isWin) {
+
+        } else {
+            //添加再来一次按钮actor
+            againActor = new AgainActor(new AssetManager());
+            againActor.setListener(new AgainActor.AgainOnClickListener() {
+                @Override
+                public void againClick() {
+                    mGame.showLoadingScreen();
+                    CatchScreen.this.dispose();
+                }
+            });
+            group3.addActor(againActor);
+        }
+        //添加关闭按钮actor
+        closeActor = new CloseActor(new AssetManager());
+        closeActor.setListener(new BackOnClickListener() {
+            @Override
+            public void onClick() {
+                mGame.showLoadingScreen();
+                CatchScreen.this.dispose();
+            }
+        });
+        group3.addActor(closeActor);
     }
 
     @Override
@@ -193,7 +236,7 @@ public class CatchScreen implements Screen {
             return;
 
 
-        Gdx.gl.glClearColor(1, 1, 0, 0);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 

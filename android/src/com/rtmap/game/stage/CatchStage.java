@@ -1,5 +1,6 @@
 package com.rtmap.game.stage;
 
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -7,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class CatchStage extends GameStage {
     public CatchStage() {
+//        this(new StretchViewport());
     }
 
     public CatchStage(Viewport viewport) {

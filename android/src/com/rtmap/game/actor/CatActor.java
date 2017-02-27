@@ -27,6 +27,7 @@ public class CatActor extends Actor {
     private boolean isDown = false;
     //判断按钮当前状态
     private boolean isCatch = true;
+    private boolean isShow = true;
 
     public CatActor(AssetManager assetManager) {
         super();
@@ -62,6 +63,15 @@ public class CatActor extends Actor {
         this.isCatch = isCatch;
     }
 
+    /**
+     * true:显示按钮
+     * false:隐藏按钮
+     * @param isShow
+     */
+    public void setIsShow(boolean isShow) {
+        this.isShow = isShow;
+    }
+
     public void setListener(final CatchOnClickListener catchOnClickListener) {
         listener = new InputListener() {
             @Override
@@ -78,7 +88,6 @@ public class CatActor extends Actor {
                         catchOnClickListener.onCatchClick();
                     else
                         catchOnClickListener.onSuccessClick();
-                    removeListener();
                 }
             }
         };
@@ -95,16 +104,18 @@ public class CatActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (!isDown) {
-            if (isCatch)
-                batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
-            else
-                batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
-        } else {
-            if (isCatch)
-                batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
-            else
-                batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+        if (isShow) {
+            if (!isDown) {
+                if (isCatch)
+                    batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+                else
+                    batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+            } else {
+                if (isCatch)
+                    batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+                else
+                    batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+            }
         }
     }
 

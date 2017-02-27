@@ -4,8 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.screen.AimScreen;
 import com.rtmap.game.screen.BeedScreen;
@@ -29,6 +27,15 @@ public class MyGame extends Game {
     private CatchScreen catchScreen;
     private AimScreen aimScreen;
 
+    /**
+     * 设置相机模式
+     */
+    private int normal_Mode = 0;
+    private int prepare_Mode = 1;
+    private int preview_Mode = 2;
+
+    private int mode = normal_Mode;
+
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController) {
         this.androidLauncher = androidLauncher;
         this.androidDeviceCameraController = androidDeviceCameraController;
@@ -46,23 +53,39 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-//        Gdx.app.error("gdx", "MyGame   render");
-        Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        if (androidDeviceCameraController != null) {
-            androidDeviceCameraController.prepareCameraAsync();
-            Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            if (androidDeviceCameraController.isReady()) {
-                androidDeviceCameraController.startPreviewAsync();
+        Gdx.gl20.glHint(GL20.GL_GENERATE_MIPMAP_HINT, GL20.GL_NICEST);
+        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+//        Gdx.app.error("gdx", "render");
+        if (mode == normal_Mode) {
+            Gdx.app.error("gdx","normal_Mode");
+            if (androidDeviceCameraController != null) {
+                androidDeviceCameraController.prepareCameraAsync();
+                mode = prepare_Mode;
             }
+
+        } else if (mode == prepare_Mode) {
+            Gdx.app.error("gdx","prepare_Mode");
+            if (androidDeviceCameraController != null)
+                if (androidDeviceCameraController.isReady()) {
+                    androidDeviceCameraController.startPreviewAsync();
+                    mode = preview_Mode;
+                }
         }
-        Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         super.render();
     }
 
     @Override
-    public void dispose() {
-        if (androidDeviceCameraController != null)
+    public void pause() {
+        if (androidDeviceCameraController != null) {
+            Gdx.app.error("gdx","pause");
             androidDeviceCameraController.stopPreviewAsync();
+            mode = normal_Mode;
+        }
+        super.pause();
+    }
+
+    @Override
+    public void dispose() {
         for (int i = 0; i < screenList.size(); i++) {
             Screen screen = screenList.get(i);
             if (screen != null) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
@@ -23,7 +24,7 @@ import java.util.TimerTask;
 /**
  * Created by yxy on 2017/2/20.
  */
-public class BeedScreen implements Screen {
+public class BeedScreen extends MyScreen {
     private MyBeedActor myBeedActor;
     private BeedStage beedStage;
     private MyGame mGame;

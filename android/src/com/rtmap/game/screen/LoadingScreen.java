@@ -21,7 +21,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
@@ -48,7 +51,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by yxy on 2017/2/20.
  */
-public class LoadingScreen implements Screen {
+public class LoadingScreen extends MyScreen {
 
     private AndroidDeviceCameraController androidDeviceCameraController;
     private float deltaSum;
@@ -87,7 +90,7 @@ public class LoadingScreen implements Screen {
                     }
                 });
             }
-        }, 1000);
+        }, 3000);
     }
 
 

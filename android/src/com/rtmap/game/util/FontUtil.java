@@ -2,6 +2,7 @@ package com.rtmap.game.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -15,9 +16,9 @@ import java.util.List;
  */
 public class FontUtil {
     public static List<Font> fontlist = new ArrayList<>();
-    public static FreeTypeFontGenerator generator=new FreeTypeFontGenerator(Gdx.files.internal("font/msyh.ttf"));
+    public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/msyh.ttf"));
 
-    public static void draw(SpriteBatch sb, String str, int fontsize, Color color, int x, int y, int width, int paddinglr, int paddingtb) {
+    public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y, float width, int paddinglr, int paddingtb) {
 
         sb.end();
         sb.begin();
@@ -34,18 +35,26 @@ public class FontUtil {
         if (addStr.length() > 0)
             fontlist.add(Font.generateFont(addStr, fontsize));
 
-        int currentX = x;
-        int currentY = y;
+        float currentX = x;
+        float currentY = y;
         for (char c : str.toCharArray()) {
             if (currentX - x > width) {
                 currentX = x;
                 currentY -= fontsize + paddingtb;
             }
-            currentX += fontsize + paddinglr;
             BitmapFont f = getFont(fontsize, c);
             f.setColor(color);
             f.draw(sb, String.valueOf(c), currentX, currentY);
+            currentX += fontsize + paddinglr;
         }
+    }
+
+    public static float getLength(int fontsize, String str, float paddinglr) {
+        float currentX = 0;
+        for (char c : str.toCharArray()) {
+            currentX += fontsize + paddinglr;
+        }
+        return currentX;
     }
 
     private static BitmapFont getFont(int fontsize, char str) {
@@ -55,8 +64,8 @@ public class FontUtil {
         return null;
     }
 
-    public static void draw(SpriteBatch sb, String str, int fontsize, Color color, int x, int y,
-                            int width) {
+    public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y,
+                            float width) {
         draw(sb, str, fontsize, color, x, y, width, 2, 2);
     }
 

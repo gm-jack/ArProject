@@ -2,15 +2,21 @@ package com.rtmap.game.actor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.rtmap.game.interfaces.CatchListener;
+import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.util.FontUtil;
+import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +31,7 @@ public class CatchActor extends Actor {
     private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();
     private List<TextureRegion> successTexRe = new ArrayList();
+    private List<TextureRegion> openTexRe = new ArrayList();
     private TextureRegion[] mKeyFrames = new TextureRegion[4];
     /**
      * 显示范围宽高
@@ -55,8 +62,15 @@ public class CatchActor extends Actor {
     private boolean fail = false;
     //控制捕捉提示
     private boolean isCatch = true;
+    //是否显示捕捉提示
     private boolean isCatchTip = false;
+    //是否成功捕捉
     private boolean isSuccess = false;
+    //是否开启宝物
+    private boolean isOpen = false;
+    //是否中奖
+    private boolean isWin = false;
+    private LazyBitmapFont lazyBitmapFont;
 
 
     public CatchActor(AssetManager assetManager) {
@@ -179,9 +193,39 @@ public class CatchActor extends Actor {
 
         } else {
             if (isSuccess) {
-                batch.draw(successTexRe.get(0), 0, height * 4/ 5, successTexRe.get(0).getRegionWidth(), successTexRe.get(0).getRegionHeight());
+                if (isOpen) {
+                    batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
+                    if (isWin) {
+                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() / 2, height * 0.68f, openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight());
 
-                batch.draw(successTexRe.get(1), width / 2 - successTexRe.get(1).getRegionWidth() / 2, height / 2 - successTexRe.get(1).getRegionHeight() / 2, successTexRe.get(1).getRegionWidth(), successTexRe.get(1).getRegionHeight());
+                        float length2 = FontUtil.getLength(ScreenUtil.dp2px(20), "星巴克5元优惠券", 2);
+                        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(20), Color.WHITE, width / 2 - length2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width);
+
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(22) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+
+                        float length3 = FontUtil.getLength(ScreenUtil.dp2px(12), "请到我的-优惠券里查看", 2);
+                        FontUtil.draw(batch, "请到我的-优惠券里查看", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length3 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - 25, width);
+
+                    } else {
+                        float length1 = FontUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点", 2);
+                        FontUtil.draw(batch, "运气还差那么一点点", ScreenUtil.dp2px(18), Color.WHITE, width / 2 - length1 / 2, height * 0.65f, width);
+
+                        float length2 = FontUtil.getLength(ScreenUtil.dp2px(22), "锦囊空空如也", 2);
+                        FontUtil.draw(batch, "锦囊空空如也", ScreenUtil.dp2px(22), Color.WHITE, width / 2 - length2 / 2, height * 0.55f, width);
+
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.55f - ScreenUtil.dp2px(22) - 5, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+
+                        float length3 = FontUtil.getLength(ScreenUtil.dp2px(14), "努力就有收获，再接再厉吧！", 2);
+                        FontUtil.draw(batch, "努力就有收获，再接再厉吧！", ScreenUtil.dp2px(14), Color.WHITE, width / 2 - length3 / 2, height * 0.55f - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - 5, width);
+
+//                        lazyBitmapFont = new LazyBitmapFont(new FreeTypeFontGenerator(Gdx.files.internal("font/msyh.ttf")), 40);
+//                        lazyBitmapFont.draw(batch, "wwwwww,,,星巴克5元优惠券", 100, 200);
+                    }
+
+                } else {
+                    batch.draw(successTexRe.get(0), 0, height * 4 / 5, successTexRe.get(0).getRegionWidth(), successTexRe.get(0).getRegionHeight());
+                    batch.draw(successTexRe.get(1), width / 2 - successTexRe.get(1).getRegionWidth() / 2, height / 2 - successTexRe.get(1).getRegionHeight() / 2, successTexRe.get(1).getRegionWidth(), successTexRe.get(1).getRegionHeight());
+                }
 
             } else {
                 batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
@@ -244,6 +288,14 @@ public class CatchActor extends Actor {
         this.isSuccess = isSuccess;
     }
 
+    public void setIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public void setIsWin(boolean isWin) {
+        this.isWin = isWin;
+    }
+
     public void initResources() {
         assetManager.load("catch_bg.png", Texture.class);
         assetManager.load("catch_center.png", Texture.class);
@@ -258,6 +310,10 @@ public class CatchActor extends Actor {
         assetManager.load("find_tip.png", Texture.class);
         assetManager.load("success_title.png", Texture.class);
         assetManager.load("success_center.png", Texture.class);
+        assetManager.load("open_bg.png", Texture.class);
+        assetManager.load("open_title.png", Texture.class);
+        assetManager.load("open_line.png", Texture.class);
+        assetManager.load("open_fail.png", Texture.class);
         assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
@@ -270,6 +326,12 @@ public class CatchActor extends Actor {
         successTexRe = new ArrayList<>();
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_center.png")));
+
+        openTexRe = new ArrayList();
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_bg.png")));
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_title.png")));
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_line.png")));
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_fail.png")));
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("catch_tip.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("catch_fail.png"));

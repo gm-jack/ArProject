@@ -52,7 +52,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             if (cameraSurface.getCamera() != null) {
                 cameraSurface.getCamera().stopPreview();
             }
-            cameraSurface = null;
+            androidLauncher.restoreFixedSize();
         }
     }
 

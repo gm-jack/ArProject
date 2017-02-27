@@ -35,12 +35,13 @@ public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated( SurfaceHolder holder ) {
         // Once the surface is created, simply open a handle to the camera hardware.
         camera = Camera.open();
+        camera.setDisplayOrientation(90);
     }
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
         // This method is called when the surface changes, e.g. when it's size is set.
         // We use the opportunity to initialize the camera preview display dimensions.
         Camera.Parameters p = camera.getParameters();
-        p.setPreviewSize( width, height );
+//        p.setPreviewSize( width, height );
         camera.setParameters( p );
 // We also assign the preview display to this surface...
         try {
