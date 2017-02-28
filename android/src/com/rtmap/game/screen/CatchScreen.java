@@ -138,6 +138,7 @@ public class CatchScreen extends MyScreen {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                        catActor.setIsShow(false);
                         catchActor.setFail(true);
                         catchActor.setIsSuccess(false);
                     }
@@ -150,6 +151,7 @@ public class CatchScreen extends MyScreen {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                        catActor.setIsShow(false);
                         catchActor.setFail(true);
                     }
                 }, 1000);
@@ -159,7 +161,7 @@ public class CatchScreen extends MyScreen {
             public void onTouched(int num) {
                 if (num == 0) {
                     if (mGame != null)
-                        mGame.showLoadingScreen();
+                        mGame.showScreen();
                 } else if (num == 1) {
                     catchActor.setIsCatchTip(false);
                     catchActor.setIsStop(false);
@@ -212,7 +214,7 @@ public class CatchScreen extends MyScreen {
             againActor.setListener(new AgainActor.AgainOnClickListener() {
                 @Override
                 public void againClick() {
-                    mGame.showLoadingScreen();
+                    mGame.showScreen();
                     CatchScreen.this.dispose();
                 }
             });
@@ -223,7 +225,8 @@ public class CatchScreen extends MyScreen {
         closeActor.setListener(new BackOnClickListener() {
             @Override
             public void onClick() {
-                mGame.showLoadingScreen();
+                if (mGame != null)
+                    mGame.showScreen();
                 CatchScreen.this.dispose();
             }
         });

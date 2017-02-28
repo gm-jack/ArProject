@@ -81,7 +81,6 @@ public class CatchActor extends Actor {
         height = Gdx.graphics.getHeight();
         changeX = width / 2;
         changeY = height / 2;
-        radius = height * 2 / 5 / num;
     }
 
     public void setCatchListener(CatchListener catchListener) {
@@ -123,8 +122,15 @@ public class CatchActor extends Actor {
                         if (catchListener != null && first) {
                             catchListener.onFirst();
                         }
-                    } else
+                    } else {
+                        if (changeRadiu < maxRadius) {
+                            num = 130;
+                        } else {
+                            num = 200;
+                        }
+                        radius = height * 2 / 5 / num;
                         changeRadiu += radius;
+                    }
                 } else if (!isCatch) {
                     //在开始捕捉界面之后运行
                     if (!isCatchTip) {
@@ -170,6 +176,12 @@ public class CatchActor extends Actor {
                     //                        catchListener.onFirst();
                     //                    }
                     //                } else
+                    if (changeRadiu < maxRadius) {
+                        num = 130;
+                    } else {
+                        num = 200;
+                    }
+                    radius = height * 2 / 5 / num;
                     changeRadiu -= radius;
                 } else if (!isCatch) {
                     if (!isCatchTip) {

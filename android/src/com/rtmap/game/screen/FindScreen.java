@@ -73,6 +73,19 @@ public class FindScreen extends MyScreen {
 
     @Override
     public void show() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+              Gdx.app.postRunnable(new Runnable() {
+                  @Override
+                  public void run() {
+                      if (mGame != null)
+                          mGame.showAimScreen();
+                  }
+              });
+            }
+        }, 300);
         initListener();
     }
 

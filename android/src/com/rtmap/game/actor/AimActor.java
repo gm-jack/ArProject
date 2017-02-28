@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.rtmap.game.interfaces.AimListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class AimActor extends Actor {
     private float delta = 0;
     private float oldDegree;
     private int angle = 30;
+    private AimListener aimListener;
 
 
     public AimActor(AssetManager assetManager) {
@@ -53,6 +55,10 @@ public class AimActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    public void setAimListener(AimListener aimListener) {
+        this.aimListener = aimListener;
     }
 
     @Override
@@ -75,6 +81,11 @@ public class AimActor extends Actor {
 //        Gdx.app.error("gdx", aimWidth + "   " + aimHeight);
         delta += Gdx.graphics.getDeltaTime();
         if (STATE == STATE_SUCCESS) {
+            if (number == maxNumber) {
+                if (aimListener != null) {
+                    aimListener.aimSuccess();
+                }
+            }
             batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
             if (number > maxNumber) {
                 STATE = STATE_FAIL;
@@ -91,6 +102,11 @@ public class AimActor extends Actor {
                 delta = 0;
             }
         } else if (STATE == STATE_FAIL) {
+            if (number == 1) {
+                if (aimListener != null) {
+                    aimListener.aimFail();
+                }
+            }
             batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
             if (number <= 1) {
                 STATE = STATE_SUCCESS;

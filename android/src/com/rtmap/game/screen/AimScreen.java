@@ -21,6 +21,7 @@ import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.CatchActor;
 import com.rtmap.game.actor.FindActor;
 import com.rtmap.game.actor.LoadingActor;
+import com.rtmap.game.interfaces.AimListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
@@ -52,7 +53,6 @@ public class AimScreen extends MyScreen {
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
-//        mainBg = new Texture(Gdx.files.internal("main_bg.png"));
 
         //瞄准怪兽舞台
         aimStage = new AimStage(new ScreenViewport());
@@ -69,7 +69,6 @@ public class AimScreen extends MyScreen {
         beedActor = new BeedActor(new AssetManager());
         group2.addActor(beedActor);
         aimStage.addActor(group2);
-
     }
 
     @Override
@@ -94,6 +93,19 @@ public class AimScreen extends MyScreen {
                     //打开背包Stage
                     Gdx.app.error("gdx", "打开背包");
                     mGame.showBeedScreen(AimScreen.this);
+                }
+            });
+            aimActor.setAimListener(new AimListener() {
+                @Override
+                public void aimSuccess() {
+                    if (mGame != null)
+                        mGame.showCatchScreen();
+                }
+
+                @Override
+                public void aimFail() {
+                    if (mGame != null)
+                        mGame.showScreen();
                 }
             });
         }

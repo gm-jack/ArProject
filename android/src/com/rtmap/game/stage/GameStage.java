@@ -20,7 +20,7 @@ public class GameStage extends Stage {
 
     public GameStage(Viewport viewport) {
         super(viewport);
-        stageList.add(this);
+//        stageList.add(this);
     }
 
     public void removeStage(Stage stage) {

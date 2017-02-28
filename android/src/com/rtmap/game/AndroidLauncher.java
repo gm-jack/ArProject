@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AndroidLauncher extends AndroidApplication {
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
     protected int origWidth;
     protected int origHeight;
     private AndroidDeviceCameraController androidDeviceCameraController;
@@ -50,8 +51,14 @@ public class AndroidLauncher extends AndroidApplication {
 //        setContentView(R.layout.activitymain);
 //        flMain = (FrameLayout) findViewById(R.id.fl_main);
 //        mainTexture = (TextureView) findViewById(R.id.texture_main);
-        context=this;
-        contexts=new SoftReference<Context>(context);
+        context = this;
+        contexts = new SoftReference<Context>(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
+                return;
+            }
+        }
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.a = 8;
         config.r = 8;
@@ -102,7 +109,7 @@ public class AndroidLauncher extends AndroidApplication {
         super.onDestroy();
     }
 
-    public static Context getInstance(){
+    public static Context getInstance() {
         return contexts.get();
     }
 }
