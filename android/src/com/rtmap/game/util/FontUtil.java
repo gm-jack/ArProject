@@ -19,7 +19,6 @@ public class FontUtil {
     public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/msyh.ttf"));
 
     public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y, float width, int paddinglr, int paddingtb) {
-
         sb.end();
         sb.begin();
         char[] dstr = StringUtil.dereplication(str).toCharArray();
@@ -47,6 +46,8 @@ public class FontUtil {
             f.draw(sb, String.valueOf(c), currentX, currentY);
             currentX += fontsize + paddinglr;
         }
+        sb.end();
+        sb.begin();
     }
 
     public static float getLength(int fontsize, String str, float paddinglr) {
