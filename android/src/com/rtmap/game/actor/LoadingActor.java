@@ -42,8 +42,8 @@ public class LoadingActor extends Actor {
         initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        startX = width / 2 - texReArray.get(6).getRegionWidth() / 2;
-        startY = height / 2 - texReArray.get(6).getRegionHeight() / 2;
+        startX = width / 2;
+        startY = height / 2;
         radius = height * 2 / 5 / num;
         sqrt = (float) Math.sqrt(height / 2 * height / 2 + width / 2 * width / 2);
     }
@@ -67,17 +67,17 @@ public class LoadingActor extends Actor {
 //
 //
 //        }
-        if (startX - changeRadius >= 0) {
-            batch.draw(texReArray.get(6), startX - changeRadius, startY - changeRadius, texReArray.get(6).getRegionWidth() + changeRadius * 2, texReArray.get(6).getRegionHeight() + changeRadius * 2);
+        if (startX - changeRadius >= -startX / 4) {
+            batch.draw(texReArray.get(6), startX - changeRadius, startY - changeRadius, changeRadius * 2, changeRadius * 2);
             changeRadius += radius;
         } else {
             changeRadius = 0;
         }
         if (changeRadius >= startX / 2 || isShow) {
-            if (startX - changeRadius2 >= 0) {
+            if (startX - changeRadius2 >= -startX / 4) {
                 isShow = true;
                 Gdx.app.error("gdx", changeRadius + "   " + width / 4);
-                batch.draw(texReArray.get(6), startX - changeRadius2, startY - changeRadius2, texReArray.get(6).getRegionWidth() + changeRadius2 * 2, texReArray.get(6).getRegionHeight() + changeRadius2 * 2);
+                batch.draw(texReArray.get(6), startX - changeRadius2, startY - changeRadius2, changeRadius2 * 2, changeRadius2 * 2);
                 changeRadius2 += radius;
             } else {
                 isShow = false;
@@ -85,8 +85,8 @@ public class LoadingActor extends Actor {
             }
         }
 
-        batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth(), height / 2 - texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), sqrt, getScaleX(), getScaleY(), rotate);
-        rotate++;
+        batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth(), height / 2, texReArray.get(4).getRegionWidth(), 0, texReArray.get(4).getRegionWidth(), sqrt, getScaleX(), getScaleY(), rotate);
+        rotate--;
         batch.draw(texReArray.get(2), width / 2 - texReArray.get(2).getRegionWidth() / 2, height / 2 - texReArray.get(2).getRegionHeight() / 2, texReArray.get(2).getRegionWidth() / 2, texReArray.get(2).getRegionHeight() / 2, texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), getScaleX(), getScaleY(), angle);
         angle++;
         batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth() / 2, texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight(), getScaleX(), getScaleY(), angles);

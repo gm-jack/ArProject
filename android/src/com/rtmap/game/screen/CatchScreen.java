@@ -224,11 +224,6 @@ public class CatchScreen extends MyScreen {
         if (catchStage == null)
             return;
 
-
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
         // 更新舞台逻辑
         catchStage.act();
         // 绘制舞台
