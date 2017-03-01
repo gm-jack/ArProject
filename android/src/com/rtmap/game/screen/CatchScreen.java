@@ -1,44 +1,30 @@
 package com.rtmap.game.screen;
 
 import android.content.Context;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AgainActor;
-import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.CatActor;
 import com.rtmap.game.actor.CatchActor;
 import com.rtmap.game.actor.CloseActor;
 import com.rtmap.game.actor.CoverActor;
-import com.rtmap.game.actor.FindActor;
-import com.rtmap.game.actor.LoadingActor;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
-import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.CatchStage;
-import com.rtmap.game.stage.FindStage;
-import com.rtmap.game.stage.GameStage;
-import com.rtmap.game.stage.LoadingStage;
 import com.rtmap.game.util.SPUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
 
 /**
  * Created by yxy on 2017/2/20.
@@ -161,7 +147,7 @@ public class CatchScreen extends MyScreen {
             public void onTouched(int num) {
                 if (num == 0) {
                     if (mGame != null)
-                        mGame.showScreen();
+                        mGame.showAimScreen();
                 } else if (num == 1) {
                     catchActor.setIsCatchTip(false);
                     catchActor.setIsStop(false);
@@ -214,7 +200,7 @@ public class CatchScreen extends MyScreen {
             againActor.setListener(new AgainActor.AgainOnClickListener() {
                 @Override
                 public void againClick() {
-                    mGame.showScreen();
+                    mGame.showAimScreen();
                     CatchScreen.this.dispose();
                 }
             });
@@ -226,7 +212,7 @@ public class CatchScreen extends MyScreen {
             @Override
             public void onClick() {
                 if (mGame != null)
-                    mGame.showScreen();
+                    mGame.showAimScreen();
                 CatchScreen.this.dispose();
             }
         });

@@ -318,8 +318,6 @@ public class CatchActor extends Actor {
         assetManager.load("catch_tip.png", Texture.class);
         assetManager.load("catch_tip_text.png", Texture.class);
         assetManager.load("find_tip.png", Texture.class);
-        assetManager.load("find_tip.png", Texture.class);
-        assetManager.load("find_tip.png", Texture.class);
         assetManager.load("success_title.png", Texture.class);
         assetManager.load("success_center.png", Texture.class);
         assetManager.load("open_bg.png", Texture.class);

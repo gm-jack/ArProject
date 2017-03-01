@@ -51,8 +51,7 @@ public class SuccessScreen implements Screen {
                     @Override
                     public void run() {
                         Gdx.app.error("gdx", "11111111111");
-                        mGame.showScreen();
-
+                        mGame.showAimScreen();
                     }
                 });
             }

@@ -34,6 +34,7 @@ public class LoadingActor extends Actor {
     private float angles = 0;
     private float rotate = 0;
     private boolean isShow = false;
+    private float sqrt;
 
     public LoadingActor(AssetManager assetManager) {
         super();
@@ -44,7 +45,7 @@ public class LoadingActor extends Actor {
         startX = width / 2 - texReArray.get(6).getRegionWidth() / 2;
         startY = height / 2 - texReArray.get(6).getRegionHeight() / 2;
         radius = height * 2 / 5 / num;
-        ;
+        sqrt = (float) Math.sqrt(height / 2 * height / 2 + width / 2 * width / 2);
     }
 
 
@@ -84,7 +85,7 @@ public class LoadingActor extends Actor {
             }
         }
 
-        batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth(), height / 2 - texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight(), getScaleX(), getScaleY(), rotate);
+        batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth(), height / 2 - texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight(), texReArray.get(4).getRegionWidth(), sqrt, getScaleX(), getScaleY(), rotate);
         rotate++;
         batch.draw(texReArray.get(2), width / 2 - texReArray.get(2).getRegionWidth() / 2, height / 2 - texReArray.get(2).getRegionHeight() / 2, texReArray.get(2).getRegionWidth() / 2, texReArray.get(2).getRegionHeight() / 2, texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionHeight(), getScaleX(), getScaleY(), angle);
         angle++;

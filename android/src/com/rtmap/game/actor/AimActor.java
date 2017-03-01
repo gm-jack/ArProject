@@ -25,8 +25,8 @@ public class AimActor extends Actor {
     public static int STATE = STATE_SUCCESS;
 
     private List<TextureRegion> texReArray = new ArrayList();
+    private List<TextureRegion> findReArray = new ArrayList();
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
-    private Animation<TextureRegion> animation;
 
     //绘制次数
     private int number = 1;
@@ -41,6 +41,9 @@ public class AimActor extends Actor {
     private float oldDegree;
     private int angle = 30;
     private AimListener aimListener;
+    private boolean isFind = false;
+    private boolean isTip = false;
+    private boolean isOne = true;
 
 
     public AimActor(AssetManager assetManager) {
@@ -75,55 +78,71 @@ public class AimActor extends Actor {
 //            STATE = STATE_SUCCESS;
 //        }
         batch.draw(texReArray.get(0), 0, 0, width, height);
-        int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
-        int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
+        if (isFind) {
+            int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
+            int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
 
-//        Gdx.app.error("gdx", aimWidth + "   " + aimHeight);
-        delta += Gdx.graphics.getDeltaTime();
-        if (STATE == STATE_SUCCESS) {
-            if (number == maxNumber) {
-                if (aimListener != null) {
-                    aimListener.aimSuccess();
+            delta += Gdx.graphics.getDeltaTime();
+            if (STATE == STATE_SUCCESS) {
+                if (number == maxNumber) {
+                    if (aimListener != null) {
+                        aimListener.aimSuccess();
+                    }
+                }
+                batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
+                if (number > maxNumber) {
+                    STATE = STATE_FAIL;
+                }
+                for (int i = 0; i < number; i++) {
+                    if (delta < 0.5f && number == i) {
+                        batch.draw(mKeyFrames[2], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                    } else {
+                        batch.draw(mKeyFrames[0], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                    }
+                }
+                if (delta > 1f) {
+                    number++;
+                    delta = 0;
+                }
+            } else if (STATE == STATE_FAIL) {
+                if (number == 1) {
+                    if (aimListener != null) {
+                        aimListener.aimFail();
+                    }
+                }
+                batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
+                if (number <= 1) {
+                    STATE = STATE_SUCCESS;
+                }
+                for (int i = 0; i < number - 2; i++) {
+                    batch.draw(mKeyFrames[1], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                }
+                if (delta > 1f) {
+                    number--;
+                    delta = 0;
                 }
             }
-            batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-            if (number > maxNumber) {
-                STATE = STATE_FAIL;
-            }
-            for (int i = 0; i < number; i++) {
-                if (delta < 0.5f && number == i) {
-                    batch.draw(mKeyFrames[2], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
-                } else {
-                    batch.draw(mKeyFrames[0], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
-                }
-            }
-            if (delta > 1f) {
-                number++;
-                delta = 0;
-            }
-        } else if (STATE == STATE_FAIL) {
-            if (number == 1) {
-                if (aimListener != null) {
-                    aimListener.aimFail();
-                }
-            }
-            batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-            if (number <= 1) {
-                STATE = STATE_SUCCESS;
-            }
-            for (int i = 0; i < number - 2; i++) {
-                batch.draw(mKeyFrames[1], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
-            }
-            if (delta > 1f) {
-                number--;
-                delta = 0;
+        } else {
+            batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
+            if (isTip) {
+                batch.draw(findReArray.get(2), width / 2 - findReArray.get(2).getRegionWidth() / 2, height / 2 - findReArray.get(2).getRegionHeight() / 2, findReArray.get(2).getRegionWidth(), findReArray.get(2).getRegionHeight());
+                batch.draw(findReArray.get(3), width / 2 - findReArray.get(3).getRegionWidth() / 2, height / 2 - findReArray.get(3).getRegionHeight() / 2 + findReArray.get(3).getRegionHeight() / 5, findReArray.get(3).getRegionWidth(), findReArray.get(3).getRegionHeight());
             }
         }
-        Gdx.app.error("gdx", "degree== " + degree);
-//        batch.draw(texReArray.get(2), width / 2 - texReArray.get(2).getRegionWidth() / 2, (height / 2 - texReArray.get(1).getRegionHeight() / 2) * 1.07f, texReArray.get(2).getRegionWidth(), texReArray.get(2).getRegionWidth());
+    }
+
+    public void setIsFind(boolean isFind) {
+        this.isFind = isFind;
+    }
+
+    public void setIsTip(boolean isTip) {
+        this.isTip = isTip;
     }
 
     public void addNumber() {
+        if (isOne) {
+            setIsFind(true);
+        }
         number++;
     }
 
@@ -138,12 +157,23 @@ public class AimActor extends Actor {
         assetManager.load("aim_white.png", Texture.class);
         assetManager.load("aim_red.png", Texture.class);
         assetManager.load("aim_blue.png", Texture.class);
+
+        assetManager.load("find_center.png", Texture.class);
+        assetManager.load("find_tip.png", Texture.class);
+        assetManager.load("find_text.png", Texture.class);
+        assetManager.load("find_location.png", Texture.class);
         assetManager.finishLoading();
 
         texReArray = new ArrayList<>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("find_bg.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("aim_success.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("aim_fail.png")));
+
+        findReArray = new ArrayList<>();
+        findReArray.add(new TextureRegion((Texture) assetManager.get("find_center.png")));
+        findReArray.add(new TextureRegion((Texture) assetManager.get("find_location.png")));
+        findReArray.add(new TextureRegion((Texture) assetManager.get("find_tip.png")));
+        findReArray.add(new TextureRegion((Texture) assetManager.get("find_text.png")));
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("aim_blue.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("aim_red.png"));
