@@ -81,14 +81,14 @@ public class LoadingScreen extends MyScreen {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-//                Gdx.app.postRunnable(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Gdx.app.error("gdx", "11111111111");
-//                        mGame.showScreen();
-//
-//                    }
-//                });
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gdx.app.error("gdx", "11111111111");
+                        mGame.showScreen();
+
+                    }
+                });
             }
         }, 3000);
     }

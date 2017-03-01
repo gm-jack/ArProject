@@ -3,8 +3,17 @@ package com.rtmap.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.utils.Array;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
+import com.rtmap.game.camera.LibGDXPerspectiveCamera;
 import com.rtmap.game.screen.AimScreen;
 import com.rtmap.game.screen.BeedScreen;
 import com.rtmap.game.screen.CatchScreen;
@@ -18,6 +27,11 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class MyGame extends Game {
+    private ModelBatch modelBatch;
+    private Environment environment;
+    private boolean loading;
+    private AssetManager assets;
+    private LibGDXPerspectiveCamera camera;
     private AndroidDeviceCameraController androidDeviceCameraController;
     private AndroidLauncher androidLauncher;
     private List<Screen> screenList;
@@ -26,6 +40,7 @@ public class MyGame extends Game {
     private Screen oldScreen;
     private CatchScreen catchScreen;
     private AimScreen aimScreen;
+    public Array<ModelInstance> instances = new Array<ModelInstance>();
 
     /**
      * 设置相机模式
@@ -41,10 +56,33 @@ public class MyGame extends Game {
         this.androidDeviceCameraController = androidDeviceCameraController;
 
         screenList = new ArrayList<>();
+
+        assets = new AssetManager();
+        assets.load("data/ship.obj", Model.class);
+        loading = true;
+    }
+
+    private void doneLoading() {
+        Model ship = assets.get("data/ship.obj", Model.class);
+        ModelInstance shipInstance = new ModelInstance(ship);
+        shipInstance.transform.setToTranslation(0, 0, -10);
+        instances.add(shipInstance);
+        loading = false;
+        Gdx.app.error("gdx", "doneLoading()");
     }
 
     @Override
     public void create() {
+        modelBatch = new ModelBatch();
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
+        camera = new LibGDXPerspectiveCamera(androidLauncher, 30f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setPosition(0, 0, 0);
+        camera.far = 1000.0f;
+        camera.near = 1f;
+
         loadingScreen = new LoadingScreen(this, androidDeviceCameraController);
         findScreen = new FindScreen(this, androidLauncher);
 
@@ -53,31 +91,38 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        Gdx.gl20.glHint(GL20.GL_GENERATE_MIPMAP_HINT, GL20.GL_NICEST);
-        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-//        Gdx.app.error("gdx", "render");
+        if (loading && assets.update())
+            doneLoading();
+
         if (mode == normal_Mode) {
-            Gdx.app.error("gdx","normal_Mode");
+            Gdx.app.error("gdx", "normal_Mode");
             if (androidDeviceCameraController != null) {
                 androidDeviceCameraController.prepareCameraAsync();
                 mode = prepare_Mode;
             }
 
         } else if (mode == prepare_Mode) {
-            Gdx.app.error("gdx","prepare_Mode");
+            Gdx.app.error("gdx", "prepare_Mode");
             if (androidDeviceCameraController != null)
                 if (androidDeviceCameraController.isReady()) {
                     androidDeviceCameraController.startPreviewAsync();
                     mode = preview_Mode;
                 }
         }
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        camera.render();
+        modelBatch.begin(camera);
+        modelBatch.render(instances, environment);
+        modelBatch.end();
         super.render();
     }
 
     @Override
     public void pause() {
         if (androidDeviceCameraController != null) {
-            Gdx.app.error("gdx","pause");
+            Gdx.app.error("gdx", "pause");
             androidDeviceCameraController.stopPreviewAsync();
             mode = normal_Mode;
         }
