@@ -134,7 +134,7 @@ public class AimScreen extends MyScreen {
             updateCamera();
 
             Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-            final GameObject instance = (GameObject) instances.get(0);
+            final GameObject instance = instances.get(0);
             instance.transform.getTranslation(position);
             position.add(instance.center);
             final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
@@ -146,6 +146,8 @@ public class AimScreen extends MyScreen {
             if (dist2 <= instance.radius * instance.radius) {
                 Gdx.app.error("gdx", "击中目标111111111111");
                 aimActor.addNumber();
+            } else {
+                aimActor.subNumber();
             }
         }
 

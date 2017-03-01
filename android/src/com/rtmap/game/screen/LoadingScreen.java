@@ -49,8 +49,8 @@ public class LoadingScreen extends MyScreen {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-//                        if (mGame != null)
-//                            mGame.showAimScreen();
+                        if (mGame != null)
+                            mGame.showAimScreen();
                     }
                 });
             }
