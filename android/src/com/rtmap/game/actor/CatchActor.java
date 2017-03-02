@@ -1,6 +1,7 @@
 package com.rtmap.game.actor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
@@ -47,7 +49,7 @@ public class CatchActor extends Actor {
     //红圈半径变化值
     private float changeRadiu = 1;
     //控制红圈的动画速率
-    private int num = 200;
+    private int num = 150;
     //控制红圈缩放次数
     public int catchNumber = 0;
     //控制红圈的放大和缩小
@@ -124,9 +126,9 @@ public class CatchActor extends Actor {
                         }
                     } else {
                         if (changeRadiu < maxRadius) {
-                            num = 130;
+                            num = 100;
                         } else {
-                            num = 200;
+                            num = 150;
                         }
                         radius = height * 2 / 5 / num;
                         changeRadiu += radius;
@@ -177,9 +179,9 @@ public class CatchActor extends Actor {
                     //                    }
                     //                } else
                     if (changeRadiu < maxRadius) {
-                        num = 130;
+                        num = 100;
                     } else {
-                        num = 200;
+                        num = 150;
                     }
                     radius = height * 2 / 5 / num;
                     changeRadiu -= radius;
@@ -208,15 +210,19 @@ public class CatchActor extends Actor {
                 if (isOpen) {
                     batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
                     if (isWin) {
-                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() / 2, height * 0.68f, openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight());
+                        //从顶部向下绘制
+                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() / 2, height * 0.68f, getOriginX(), getOriginY(), openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight(), 1.5f, 1.5f, getRotation());
 
-                        float length2 = FontUtil.getLength(ScreenUtil.dp2px(20), "星巴克5元优惠券", 2);
-                        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(20), Color.WHITE, width / 2 - length2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width);
+                        float length2 = FontUtil.getLength(ScreenUtil.dp2px(18), "星巴克5元优惠券", 2);
+                        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(18), Color.WHITE, width / 2 - length2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width);
 
                         batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(22) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
 
                         float length3 = FontUtil.getLength(ScreenUtil.dp2px(12), "请到我的-优惠券里查看", 2);
                         FontUtil.draw(batch, "请到我的-优惠券里查看", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length3 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - 25, width);
+
+                        //从底部向上绘制
+                        FontUtil.draw(batch, "地址:北京海淀区致真大厦10层", ScreenUtil.dp2px(10), Color.WHITE, width * 0.293f, height * 0.286f, width);
 
                     } else {
                         float length1 = FontUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点", 2);

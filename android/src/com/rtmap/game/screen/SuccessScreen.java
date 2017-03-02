@@ -21,7 +21,6 @@ import java.util.TimerTask;
 public class SuccessScreen implements Screen {
 
     private SuccessStage successStage;
-    private float deltaSum;
     private MyGame mGame;
     //    private Texture mainBg;
     private GameStage loadingStage;
@@ -42,7 +41,6 @@ public class SuccessScreen implements Screen {
 
     @Override
     public void show() {
-        deltaSum = 0;
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

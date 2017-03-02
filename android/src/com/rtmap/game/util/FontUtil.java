@@ -18,7 +18,8 @@ import java.util.List;
 public class FontUtil {
     public static List<Font> fontlist = new ArrayList<>();
     public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
-    public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y, float width, int paddinglr, int paddingtb) {
+
+    public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y, float width, int paddinglr, int paddingtb, int boderWidth, Color boderColor) {
         sb.end();
         sb.begin();
         char[] dstr = StringUtil.dereplication(str).toCharArray();
@@ -32,7 +33,7 @@ public class FontUtil {
                 addStr += c;
         }
         if (addStr.length() > 0)
-            fontlist.add(Font.generateFont(addStr, fontsize));
+            fontlist.add(Font.generateFont(addStr, fontsize, boderWidth, boderColor));
 
         float currentX = x;
         float currentY = y;
@@ -67,7 +68,12 @@ public class FontUtil {
 
     public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y,
                             float width) {
-        draw(sb, str, fontsize, color, x, y, width, 2, 2);
+        draw(sb, str, fontsize, color, x, y, width, 2, 2, 0, Color.BLACK);
+    }
+
+    public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y,
+                            float width, int boderWidth, Color boderColor) {
+        draw(sb, str, fontsize, color, x, y, width, 2, 2, boderWidth, boderColor);
     }
 
 }

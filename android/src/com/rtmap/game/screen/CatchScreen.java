@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
@@ -76,6 +77,10 @@ public class CatchScreen extends MyScreen {
 
         catActor = new CatActor(new AssetManager());
         group3.addActor(catActor);
+
+//        Label.LabelStyle style=new Label.LabelStyle();
+//        style.
+//        Label label = new Label("哈哈", style);
 
         catchStage.addActor(group3);
     }

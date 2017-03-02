@@ -95,9 +95,9 @@ public class AimActor extends Actor {
                 for (int i = 0; i < number; i++) {
                     if (delta < 0.5f && (number - 1) == i) {
                         Gdx.app.error("gdx", "白块111111111111111111");
-                        batch.draw(mKeyFrames[2], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[2], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.128f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     } else {
-                        batch.draw(mKeyFrames[0], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[0], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.128f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     }
                 }
                 if (delta > 1f) {
@@ -106,7 +106,7 @@ public class AimActor extends Actor {
             } else if (STATE == STATE_FAIL) {
                 batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
                 for (int i = 0; i < number; i++) {
-                    batch.draw(mKeyFrames[1], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                    batch.draw(mKeyFrames[1], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.128f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                 }
                 if (delta > 1f) {
                     delta = 0;
