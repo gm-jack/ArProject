@@ -1,6 +1,7 @@
 package com.rtmap.game.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,8 +17,7 @@ import java.util.List;
  */
 public class FontUtil {
     public static List<Font> fontlist = new ArrayList<>();
-    public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/msyh.ttf"));
-
+    public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
     public static void draw(Batch sb, String str, int fontsize, Color color, float x, float y, float width, int paddinglr, int paddingtb) {
         sb.end();
         sb.begin();

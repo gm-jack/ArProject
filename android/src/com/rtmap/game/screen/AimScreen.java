@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.AndroidLauncher;
+import com.rtmap.game.MagicCamera;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
@@ -53,7 +54,7 @@ public class AimScreen extends MyScreen {
     private ModelBatch modelBatch;
     private Environment environment;
     private AssetManager assets;
-    private PerspectiveCamera camera;
+    private MagicCamera camera;
     public Array<GameObject> instances = new Array<GameObject>();
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher, boolean fail) {
@@ -126,14 +127,13 @@ public class AimScreen extends MyScreen {
     public void render(float delta) {
         if (aimStage == null)
             return;
-
+        camera.update();
         if (instances.size > 0) {
             modelBatch.begin(camera);
             if (isVisible(camera, instances.get(0)))
                 modelBatch.render(instances, environment);
             modelBatch.end();
-            updateCamera();
-            //由屏幕中心点发射射线
+
             Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             final GameObject instance = instances.get(0);
             instance.transform.getTranslation(position);
@@ -160,35 +160,14 @@ public class AimScreen extends MyScreen {
         return cam.frustum.sphereInFrustum(position, instance.radius);
     }
 
-    /**
-     * 平滑转动camera
-     */
-    Vector3 oldVector3 = new Vector3();
-    Vector3 directionVector3 = new Vector3();
-
-    private void updateCamera() {
-        Matrix4 mat4 = new Matrix4();
-        Gdx.input.getRotationMatrix(mat4.val);
-        Vector3 newVector3 = new Vector3(mat4.val[Matrix4.M11], mat4.val[Matrix4.M12], mat4.val[Matrix4.M10]);
-        oldVector3.lerp(newVector3, 5 * Math.min(0.05f, Gdx.graphics.getDeltaTime()));
-        camera.up.set(oldVector3);
-        Vector3 dVector3 = new Vector3(-mat4.val[Matrix4.M21], -mat4.val[Matrix4.M22], -mat4.val[Matrix4.M20]);
-        directionVector3.lerp(dVector3, 5 * Math.min(0.05f, Gdx.graphics.getDeltaTime()));
-        camera.direction.set(directionVector3);
-        camera.update();
-    }
-
     @Override
     public void resize(int width, int height) {
-        Gdx.app.error("fail","00000000000000000000000000000      "+ fail);
-        aimActor.setIsFail(fail);
-
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        camera = new PerspectiveCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.translate(0, 0, 0);
         camera.lookAt(0, 0, 1);
         camera.far = 1000.0f;

@@ -18,7 +18,7 @@ import java.util.List;
 public class LoadingActor extends Actor {
     private final int num = 100;
     private final int radius;
-    private AssetManager assetManager;
+    private AssetManager asset;
     private List<TextureRegion> texReArray = new ArrayList();
     private Animation<TextureRegion> animation;
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
@@ -38,7 +38,7 @@ public class LoadingActor extends Actor {
 
     public LoadingActor(AssetManager assetManager) {
         super();
-        this.assetManager = assetManager;
+        this.asset = assetManager;
         initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
@@ -61,6 +61,7 @@ public class LoadingActor extends Actor {
         if (!isVisible()) {
             return;
         }
+        if (texReArray.size() <= 0) return;
 //        Gdx.app.error("gdx","render");
         batch.draw(texReArray.get(0), 0, 0, width, height);
 //        for (int i = 0; i < 2; i++) {
@@ -126,45 +127,14 @@ public class LoadingActor extends Actor {
     }
 
     public void initResources() {
-        assetManager.load("main_bg.png", Texture.class);
-//        assetManager.load("bg_grow.png", Texture.class);
-        assetManager.load("loading_center.png", Texture.class);
-//        assetManager.load("grow_1.png", Texture.class);
-//        assetManager.load("grow_2.png", Texture.class);
-//        assetManager.load("grow_3.png", Texture.class);
-        assetManager.load("loading_in.png", Texture.class);
-        assetManager.load("loading_out.png", Texture.class);
-        assetManager.load("loading_rotate.png", Texture.class);
-        assetManager.load("loading_tip.png", Texture.class);
-        assetManager.load("loading_wait.png", Texture.class);
-        assetManager.finishLoading();
-
         texReArray = new ArrayList<>();
-        texReArray.add(new TextureRegion((Texture) assetManager.get("main_bg.png")));
-//        texReArray.add(new TextureRegion((Texture) assetManager.get("bg_grow.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_center.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_in.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_out.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_rotate.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_tip.png")));
-        texReArray.add(new TextureRegion((Texture) assetManager.get("loading_wait.png")));
-
-//        mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("grow_1.png"));
-//        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("grow_2.png"));
-//        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("grow_3.png"));
-
-//        texReArray = new ArrayList<>();
-//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("main_bg.png"))));
-//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("bg_grow.png"))));
-//        texReArray.add(new TextureRegion(new Texture(Gdx.files.internal("loading_center.png"))));
-//
-//        mKeyFrames[0] = new TextureRegion(new Texture(Gdx.files.internal("grow_1.png")));
-//        mKeyFrames[1] = new TextureRegion(new Texture(Gdx.files.internal("grow_2.png")));
-//        mKeyFrames[2] = new TextureRegion(new Texture(Gdx.files.internal("grow_3.png")));
-
-
-//        animation = new Animation(0.2f, mKeyFrames);
-//        animation.setPlayMode(Animation.PlayMode.LOOP);
+        texReArray.add(new TextureRegion((Texture) asset.get("main_bg.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_center.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_in.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_out.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_rotate.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_tip.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("loading_wait.png")));
     }
 
     @Override

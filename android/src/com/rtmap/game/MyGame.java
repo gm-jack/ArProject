@@ -36,7 +36,6 @@ public class MyGame extends Game {
     private CatchScreen catchScreen;
     private AimScreen aimScreen;
 
-
     /**
      * 设置相机模式
      */
@@ -45,6 +44,7 @@ public class MyGame extends Game {
     private int preview_Mode = 2;
 
     private int mode = normal_Mode;
+    private AssetManager asset;
 
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController) {
         this.androidLauncher = androidLauncher;
@@ -55,23 +55,20 @@ public class MyGame extends Game {
 
     @Override
     public void create() {
-
-        loadingScreen = new LoadingScreen(this, androidDeviceCameraController);
-//        findScreen = new FindScreen(this, androidLauncher);
+        asset = new AssetManager();
+        loadingScreen = new LoadingScreen(this,asset);
 
         setScreen(loadingScreen);
     }
 
     @Override
     public void render() {
-
         if (mode == normal_Mode) {
             Gdx.app.error("gdx", "normal_Mode");
             if (androidDeviceCameraController != null) {
                 androidDeviceCameraController.prepareCameraAsync();
                 mode = prepare_Mode;
             }
-
         } else if (mode == prepare_Mode) {
             Gdx.app.error("gdx", "prepare_Mode");
             if (androidDeviceCameraController != null)
@@ -82,7 +79,6 @@ public class MyGame extends Game {
         }
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
 
         super.render();
     }

@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId "com.rtmap.game"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 25
     }
 }
 // called every time gradle gets executed, takes the native dependencies of
@@ -123,5 +123,5 @@ idea {
     }
 }
 dependencies {
-//    compile project(':core')
+    compile project(':core')
 }
