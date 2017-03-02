@@ -29,21 +29,24 @@ public class AimActor extends Actor {
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
 
     //绘制次数
-    private int number = 1;
+    private static int number = 1;
     private int maxNumber = 12;
-    private float stateTime;
     private int width;
     private int height;
     private AssetManager assetManager;
     private int startAngle = 390;
     private float degree = startAngle;
     private float delta = 0;
-    private float oldDegree;
     private int angle = 30;
     private AimListener aimListener;
+    //是否发现模型，更改状态
     private boolean isFind = false;
+    //模型进入视角内提示
     private boolean isTip = false;
+    //初始控制
     private boolean isOne = true;
+    //判断是否为失败返回场景
+    private boolean isFail = false;
 
 
     public AimActor(AssetManager assetManager) {
@@ -82,7 +85,6 @@ public class AimActor extends Actor {
             int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
             int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
 
-
             if (STATE == STATE_SUCCESS) {
                 if (number == maxNumber) {
                     if (aimListener != null) {
@@ -90,33 +92,23 @@ public class AimActor extends Actor {
                     }
                 }
                 batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-                if (number > maxNumber) {
-                    STATE = STATE_FAIL;
-                }
                 for (int i = 0; i < number; i++) {
-                    if (delta < 1f && number == i) {
+                    if (delta < 0.5f && (number - 1) == i) {
+                        Gdx.app.error("gdx", "白块111111111111111111");
                         batch.draw(mKeyFrames[2], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     } else {
                         batch.draw(mKeyFrames[0], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     }
                 }
-                if (delta > 2f) {
+                if (delta > 1f) {
                     delta = 0;
                 }
             } else if (STATE == STATE_FAIL) {
-                if (number == 1) {
-                    if (aimListener != null) {
-                        aimListener.aimFail();
-                    }
-                }
                 batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-                if (number <= 1) {
-                    STATE = STATE_SUCCESS;
-                }
-                for (int i = 0; i < number - 2; i++) {
+                for (int i = 0; i < number; i++) {
                     batch.draw(mKeyFrames[1], width / 2 + aimWidth * 0.258f, height / 2 + aimHeight * 0.138f, aimHeight * 0.11f * -1f, aimWidth * 0.248f * -1f, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                 }
-                if (delta > 2f) {
+                if (delta > 1f) {
                     delta = 0;
                 }
             }
@@ -137,18 +129,37 @@ public class AimActor extends Actor {
         this.isTip = isTip;
     }
 
-    public void addNumber() {
-        if (isOne) {
+    public void setIsFail(boolean isFail) {
+        this.isFail = isFail;
+        if (isFail) {
+            number = maxNumber;
+            STATE = STATE_FAIL;
             setIsFind(true);
         }
+    }
+
+    public void addNumber() {
+        STATE = STATE_SUCCESS;
+        setIsFind(true);
+        if (isOne) {
+            delta = 0;
+            isOne = false;
+        }
         delta += Gdx.graphics.getDeltaTime();
-        if (delta > 2f)
+        if (delta > 1f)
             number++;
     }
 
     public void subNumber() {
+        if (number == 0) {
+            if (aimListener != null) {
+                aimListener.aimFail();
+            }
+            return;
+        }
+        STATE = STATE_FAIL;
         delta += Gdx.graphics.getDeltaTime();
-        if (number >= 1 && delta > 2f)
+        if (number > 0 && delta > 1f)
             number--;
     }
 

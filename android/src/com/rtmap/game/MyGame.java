@@ -126,10 +126,15 @@ public class MyGame extends Game {
 //        return oldScreen;
 //    }
 
-    public void showAimScreen() {
-        aimScreen = new AimScreen(this, androidLauncher);
+    public void showAimScreen(boolean fail) {
+        aimScreen = new AimScreen(this, androidLauncher,fail);
         setScreen(aimScreen);
     }
+
+//    public void showAimScreen() {
+//        aimScreen = new AimScreen(this, androidLauncher);
+//        setScreen(aimScreen);
+//    }
 
     public void showCatchScreen() {
         catchScreen = new CatchScreen(this, androidLauncher);

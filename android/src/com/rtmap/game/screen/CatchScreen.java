@@ -147,7 +147,7 @@ public class CatchScreen extends MyScreen {
             public void onTouched(int num) {
                 if (num == 0) {
                     if (mGame != null)
-                        mGame.showAimScreen();
+                        mGame.showAimScreen(true);
                 } else if (num == 1) {
                     catchActor.setIsCatchTip(false);
                     catchActor.setIsStop(false);
@@ -200,7 +200,7 @@ public class CatchScreen extends MyScreen {
             againActor.setListener(new AgainActor.AgainOnClickListener() {
                 @Override
                 public void againClick() {
-                    mGame.showAimScreen();
+                    mGame.showAimScreen(false);
                     CatchScreen.this.dispose();
                 }
             });
@@ -212,7 +212,7 @@ public class CatchScreen extends MyScreen {
             @Override
             public void onClick() {
                 if (mGame != null)
-                    mGame.showAimScreen();
+                    mGame.showAimScreen(false);
                 CatchScreen.this.dispose();
             }
         });

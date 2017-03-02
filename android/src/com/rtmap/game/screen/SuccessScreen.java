@@ -20,7 +20,7 @@ import java.util.TimerTask;
  */
 public class SuccessScreen implements Screen {
 
-    private  SuccessStage successStage;
+    private SuccessStage successStage;
     private float deltaSum;
     private MyGame mGame;
     //    private Texture mainBg;
@@ -51,7 +51,7 @@ public class SuccessScreen implements Screen {
                     @Override
                     public void run() {
                         Gdx.app.error("gdx", "11111111111");
-                        mGame.showAimScreen();
+                        mGame.showAimScreen(false);
                     }
                 });
             }

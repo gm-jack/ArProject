@@ -16,7 +16,7 @@ import java.util.List;
  * Created by yxy on 2017/2/20.
  */
 public class LoadingActor extends Actor {
-    private final int num = 300;
+    private final int num = 100;
     private final int radius;
     private AssetManager assetManager;
     private List<TextureRegion> texReArray = new ArrayList();

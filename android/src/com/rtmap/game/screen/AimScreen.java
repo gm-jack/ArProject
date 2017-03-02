@@ -36,6 +36,7 @@ import java.util.Timer;
  */
 public class AimScreen extends MyScreen {
 
+    private boolean fail;
     private AndroidLauncher androidLauncher;
     private MyGame mGame;
     //    private Texture mainBg;
@@ -55,10 +56,10 @@ public class AimScreen extends MyScreen {
     private PerspectiveCamera camera;
     public Array<GameObject> instances = new Array<GameObject>();
 
-    public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
+    public AimScreen(MyGame game, AndroidLauncher androidLauncher, boolean fail) {
         this.mGame = game;
         this.androidLauncher = androidLauncher;
-
+        this.fail = fail;
         assets = new AssetManager();
         assets.load("data/ship.obj", Model.class);
         assets.finishLoading();
@@ -128,20 +129,16 @@ public class AimScreen extends MyScreen {
 
         if (instances.size > 0) {
             modelBatch.begin(camera);
-            if (isVisible(camera, (GameObject) instances.get(0)))
+            if (isVisible(camera, instances.get(0)))
                 modelBatch.render(instances, environment);
             modelBatch.end();
             updateCamera();
-
+            //由屏幕中心点发射射线
             Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             final GameObject instance = instances.get(0);
             instance.transform.getTranslation(position);
             position.add(instance.center);
             final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
-//            if (len < 0f) {
-//                resetMaterial();
-//                return;
-//            }
             float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
             if (dist2 <= instance.radius * instance.radius) {
                 Gdx.app.error("gdx", "击中目标111111111111");
@@ -183,6 +180,9 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.error("fail","00000000000000000000000000000      "+ fail);
+        aimActor.setIsFail(fail);
+
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));

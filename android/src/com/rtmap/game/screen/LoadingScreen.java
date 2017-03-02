@@ -50,7 +50,7 @@ public class LoadingScreen extends MyScreen {
                     @Override
                     public void run() {
                         if (mGame != null)
-                            mGame.showAimScreen();
+                            mGame.showAimScreen(false);
                     }
                 });
             }
