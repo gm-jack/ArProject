@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
+import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.FontUtil;
 import com.rtmap.game.util.ScreenUtil;
 
@@ -49,8 +53,11 @@ public class MainActor extends Actor {
         if (texReArray.size() <= 0) return;
         batch.draw(texReArray.get(0), 0, 0, width, height);
         batch.draw(texReArray.get(1), width * 0.103f, height * 0.09f, width * 0.802f, height * 0.587f);
-        float length2 = FontUtil.getLength(ScreenUtil.dp2px(12), "星巴克5元优惠券", 1);
-        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f);
+        float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "星巴克5元优惠券");
+        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(18), Color.WHITE).draw(batch, "星巴克5元优惠券", width / 2 - fontWidth1 / 2, height * 0.552f, width * 0.7f, Align.left, true);
+
+//        float length2 = FontUtil.getLength(ScreenUtil.dp2px(12), "星巴克5元优惠券", 1);
+//        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f);
 
     }
 

@@ -47,6 +47,7 @@ public class MyGame extends Game {
     private int mode = normal_Mode;
     private AssetManager asset;
     private MainScreen mainScreen;
+    private AimScreen aimScreen;
 
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController) {
         this.androidLauncher = androidLauncher;
@@ -110,16 +111,18 @@ public class MyGame extends Game {
         }
     }
 
-    public void showCatchScreen(boolean isStage, boolean fail) {
-        catchScreen = new CatchScreen(this, androidLauncher, isStage, fail);
+    public void showCatchScreen() {
+        catchScreen = new CatchScreen(this, androidLauncher);
         setScreen(catchScreen);
     }
 
     public void showOldScreen() {
         if (oldScreen == null)
             return;
-        if(oldScreen instanceof CatchScreen)
-        setScreen(oldScreen);
+        if (oldScreen instanceof AimScreen)
+            setScreen(aimScreen);
+        if (oldScreen instanceof CatchScreen)
+            setScreen(catchScreen);
     }
 
     public void showBeedScreen(Screen oldScreen) {
@@ -129,5 +132,11 @@ public class MyGame extends Game {
 
     public void showLoadingScreen() {
         setScreen(loadingScreen);
+    }
+
+    public void showAimScreen(boolean fail) {
+        aimScreen = new AimScreen(this, androidLauncher);
+        aimScreen.setIsFail(fail);
+        setScreen(aimScreen);
     }
 }

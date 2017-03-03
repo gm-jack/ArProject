@@ -30,12 +30,10 @@ public class BeedScreen extends MyScreen {
     private MyGame mGame;
     private final BeedBackActor beedBackActor;
     private final Group group;
-    //    private Texture mainBg;
 
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
-//        mainBg = new Texture(Gdx.files.internal("main_bg.png"));
         //瞄准怪兽舞台
         beedStage = new BeedStage(new ScreenViewport());
 
@@ -49,7 +47,6 @@ public class BeedScreen extends MyScreen {
         group.addActor(beedBackActor);
 
         beedStage.addActor(group);
-
     }
 
     @Override
@@ -73,11 +70,6 @@ public class BeedScreen extends MyScreen {
     public void render(float delta) {
         if (beedStage == null)
             return;
-
-
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         // 更新舞台逻辑
         beedStage.act();

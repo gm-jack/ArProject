@@ -79,7 +79,7 @@ public class LoadingScreen extends MyScreen {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (asset.update() && isTimerOk) {
-            mGame.showCatchScreen(true, false);
+            mGame.showAimScreen(false);
             return;
         }
         percent = Interpolation.linear.apply(percent, asset.getProgress(), 0.1f);

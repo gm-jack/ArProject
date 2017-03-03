@@ -75,11 +75,6 @@ public class AimActor extends Actor {
             return;
         }
 
-//        if (number == 11) {
-//            STATE = STATE_FAIL;
-//        } else if (number == 0) {
-//            STATE = STATE_SUCCESS;
-//        }
         batch.draw(texReArray.get(0), 0, 0, width, height);
         if (isFind) {
             int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;

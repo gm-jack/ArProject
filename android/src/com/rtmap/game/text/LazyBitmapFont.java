@@ -1,5 +1,6 @@
 package com.rtmap.game.text;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.lang.reflect.Field;
@@ -16,9 +18,10 @@ import java.lang.reflect.Field;
  */
 public class LazyBitmapFont extends BitmapFont {
 
-    private FreeTypeFontGenerator generator;
-    private FreeTypeFontGenerator.FreeTypeBitmapFontData data;
-    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
+    private static FreeTypeFontGenerator.FreeTypeBitmapFontData data;
+    private static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private static Array<LazyBitmapFont> fontArray = new Array<>();
 
     private static FreeTypeFontGenerator GLOBAL_GEN = null;
 
@@ -26,30 +29,36 @@ public class LazyBitmapFont extends BitmapFont {
         GLOBAL_GEN = generator;
     }
 
-    public LazyBitmapFont(int fontSize) {
-        this(GLOBAL_GEN, fontSize);
-    }
-
-    public LazyBitmapFont(FreeTypeFontGenerator generator, int fontSize) {
+    public static LazyBitmapFont setFontSize(int fontSize, Color color) {
         if (generator == null)
             throw new GdxRuntimeException("lazyBitmapFont global generator must be not null to use this constructor.");
-        this.generator = generator;
+        LazyBitmapFont lazyBitmapFont = new LazyBitmapFont();
+        fontArray.add(lazyBitmapFont);
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.size = fontSize;
-        this.parameter = param;
-        this.data = new LazyBitmapFontData(generator, fontSize, this);
+        parameter = param;
+        data = new LazyBitmapFontData(generator, fontSize, lazyBitmapFont, color);
         try {
-            Field f = getClass().getSuperclass().getDeclaredField("data");
+            Field f = lazyBitmapFont.getClass().getSuperclass().getDeclaredField("data");
             f.setAccessible(true);
-            f.set(this, data);
+            f.set(lazyBitmapFont, data);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         genrateData();
+        return lazyBitmapFont;
     }
 
-    private void genrateData() {
+    public static void clear() {
+        for (int i = 0; i < fontArray.size; i++) {
+            LazyBitmapFont lazyBitmapFont = fontArray.get(i);
+            if (lazyBitmapFont != null) {
+                lazyBitmapFont.dispose();
+            }
+        }
+    }
+
+    private static void genrateData() {
         FreeType.Face face = null;
         try {
             Field field = generator.getClass().getDeclaredField("face");
@@ -122,11 +131,13 @@ public class LazyBitmapFont extends BitmapFont {
         private int fontSize;
         private LazyBitmapFont font;
         private int page = 1;
+        private Color color;
 
-        public LazyBitmapFontData(FreeTypeFontGenerator generator, int fontSize, LazyBitmapFont lbf) {
+        public LazyBitmapFontData(FreeTypeFontGenerator generator, int fontSize, LazyBitmapFont lbf, Color color) {
             this.generator = generator;
             this.fontSize = fontSize;
             this.font = lbf;
+            this.color = color;
         }
 
         public Glyph getGlyph(char ch) {
@@ -141,7 +152,7 @@ public class LazyBitmapFont extends BitmapFont {
             if (gab == null || gab.bitmap == null)
                 return null;
 
-            Pixmap map = gab.bitmap.getPixmap(Pixmap.Format.RGBA8888, Color.BLUE, 1);
+            Pixmap map = gab.bitmap.getPixmap(Pixmap.Format.RGBA8888, color, 1);
             TextureRegion rg = new TextureRegion(new Texture(map));
             map.dispose();
 
