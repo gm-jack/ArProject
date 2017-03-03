@@ -35,7 +35,7 @@ public class MyGame extends Game {
     //    private FindScreen findScreen;
     private Screen oldScreen;
     private CatchScreen catchScreen;
-    private AimScreen aimScreen;
+//    private AimScreen aimScreen;
 
     /**
      * 设置相机模式
@@ -66,6 +66,10 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
         if (!(getScreen() instanceof MainScreen)) {
             if (mode == normal_Mode) {
                 Gdx.app.error("gdx", "normal_Mode");
@@ -82,9 +86,6 @@ public class MyGame extends Game {
                     }
             }
         }
-        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
         super.render();
     }
 
@@ -109,47 +110,16 @@ public class MyGame extends Game {
         }
     }
 
-//    public void showScreen() {
-//        setScreen(findScreen);
-//
-//        if (loadingScreen != null) {
-//            Gdx.app.error("gdx", "2222222222222222");
-//            // 由于 StartScreen 只有在游戏启动时展示一下, 之后都不需要展示,
-//            // 所以启动完 GameScreen 后手动调用 StartScreen 的 dispose() 方法销毁开始场景。
-//            loadingScreen.dispose();
-//
-//            // 场景销毁后, 场景变量值空, 防止二次调用 dispose() 方法
-//            loadingScreen = null;
-//        }
-//    }
-
-//    public Screen getOldScreen() {
-//        return oldScreen;
-//    }
-
-    public void showAimScreen(boolean fail) {
-        aimScreen = new AimScreen(this, androidLauncher, fail);
-        setScreen(aimScreen);
-    }
-
-//    public void showAimScreen() {
-//        aimScreen = new AimScreen(this, androidLauncher);
-//        setScreen(aimScreen);
-//    }
-
-    public void showCatchScreen() {
-        catchScreen = new CatchScreen(this, androidLauncher);
+    public void showCatchScreen(boolean isStage, boolean fail) {
+        catchScreen = new CatchScreen(this, androidLauncher, isStage, fail);
         setScreen(catchScreen);
     }
 
     public void showOldScreen() {
         if (oldScreen == null)
             return;
-        if (oldScreen instanceof AimScreen) {
-            setScreen(aimScreen);
-        } else if (oldScreen instanceof CatchScreen) {
-            setScreen(catchScreen);
-        }
+        if(oldScreen instanceof CatchScreen)
+        setScreen(oldScreen);
     }
 
     public void showBeedScreen(Screen oldScreen) {

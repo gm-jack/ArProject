@@ -222,8 +222,21 @@ public class CatchActor extends Actor {
                         FontUtil.draw(batch, "请到我的-优惠券里查看", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length3 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - 25, width);
 
                         //从底部向上绘制
+                        float length4 = FontUtil.getLength(ScreenUtil.dp2px(12), "地址:北京海淀区致真大厦10层", 2);
                         FontUtil.draw(batch, "地址:北京海淀区致真大厦10层", ScreenUtil.dp2px(10), Color.WHITE, width * 0.293f, height * 0.286f, width);
 
+                        float length5 = FontUtil.getLength(ScreenUtil.dp2px(12), "广发卡消费9折", 2);
+                        FontUtil.draw(batch, "广发卡消费9折", ScreenUtil.dp2px(10), Color.WHITE, width * 0.293f + 50, height * 0.286f + length4 + 10, width);
+
+                        float length6 = FontUtil.getLength(ScreenUtil.dp2px(12), "离你0.2KM", 2);
+                        FontUtil.draw(batch, "离你0.2KM", ScreenUtil.dp2px(10), Color.WHITE, width * 0.293f + 50, height * 0.286f + length5 + 15, width);
+
+                        float length7 = FontUtil.getLength(ScreenUtil.dp2px(12), "星巴克", 2);
+                        FontUtil.draw(batch, "星巴克", ScreenUtil.dp2px(12), Color.WHITE, width * 0.293f + 50, height * 0.286f + length6 + 20, width);
+
+                        FontUtil.draw(batch, "门店信息", ScreenUtil.dp2px(11), Color.WHITE, width * 0.293f, height * 0.286f + length7 + 30, width);
+
+                        FontUtil.draw(batch, "门店信息", ScreenUtil.dp2px(11), Color.WHITE, width * 0.86f - length4, height * 0.286f + length7 + 30, width, 1, Color.BLACK);
                     } else {
                         float length1 = FontUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点", 2);
                         FontUtil.draw(batch, "运气还差那么一点点", ScreenUtil.dp2px(18), Color.WHITE, width / 2 - length1 / 2, height * 0.65f, width);

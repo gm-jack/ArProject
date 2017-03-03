@@ -50,7 +50,7 @@ public class MainActor extends Actor {
         batch.draw(texReArray.get(0), 0, 0, width, height);
         batch.draw(texReArray.get(1), width * 0.103f, height * 0.09f, width * 0.802f, height * 0.587f);
         float length2 = FontUtil.getLength(ScreenUtil.dp2px(12), "星巴克5元优惠券", 1);
-        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f, 1, 1);
+        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f);
 
     }
 

@@ -29,12 +29,14 @@ public class LoadingScreen extends MyScreen {
     private Timer timer;
     private AssetManager asset;
     private boolean isTimerOk = false;
-    public LoadingScreen(MyGame game,AssetManager assetManager) {
+
+    public LoadingScreen(MyGame game, AssetManager assetManager) {
         this.mGame = game;
         this.asset = assetManager;
         initAssets();
     }
-    public void initAssets(){
+
+    public void initAssets() {
         asset.load("main_bg.png", Texture.class);
         asset.load("loading_center.png", Texture.class);
         asset.load("loading_in.png", Texture.class);
@@ -45,6 +47,7 @@ public class LoadingScreen extends MyScreen {
         asset.load("data/ship.g3db", Model.class);
         asset.finishLoading();
     }
+
     @Override
     public void show() {
         isTimerOk = false;
@@ -70,16 +73,17 @@ public class LoadingScreen extends MyScreen {
     }
 
     private float percent;
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(asset.update() && isTimerOk){
-            mGame.showAimScreen(false);
+        if (asset.update() && isTimerOk) {
+            mGame.showCatchScreen(true, false);
             return;
         }
         percent = Interpolation.linear.apply(percent, asset.getProgress(), 0.1f);
-        Gdx.app.log("percent","percent---->"+percent);
+        Gdx.app.log("percent", "percent---->" + percent);
         // 更新舞台逻辑
         loadingStage.act();
         loadingStage.draw();

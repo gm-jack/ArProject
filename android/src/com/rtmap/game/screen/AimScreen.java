@@ -30,20 +30,23 @@ import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.util.SPUtil;
 
+import java.sql.Time;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by yxy on 2017/2/20.
  */
 public class AimScreen extends MyScreen {
 
-    private boolean fail;
+
     private AndroidLauncher androidLauncher;
     private MyGame mGame;
     //    private Texture mainBg;
 
     private BackActor backActor;
     private BeedActor beedActor;
+    private boolean fail;
     private Group group2;
     private Timer timer;
     private AimStage aimStage;
@@ -83,7 +86,6 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void show() {
-        isAim = (boolean) SPUtil.get(androidLauncher, "first_find", true);
         initListener();
     }
 
@@ -95,7 +97,7 @@ public class AimScreen extends MyScreen {
                 @Override
                 public void onClick() {
                     Gdx.app.error("gdx", "退出");
-                    mGame.showCatchScreen();
+//                    mGame.showCatchScreen();
                 }
             });
             beedActor.setListener(new BeedOnClickListener() {
@@ -109,8 +111,8 @@ public class AimScreen extends MyScreen {
             aimActor.setAimListener(new AimListener() {
                 @Override
                 public void aimSuccess() {
-                    if (mGame != null)
-                        mGame.showCatchScreen();
+//                    if (mGame != null)
+//                        mGame.showCatchScreen();
                 }
 
                 @Override
@@ -162,6 +164,19 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
+        isAim = (boolean) SPUtil.get(androidLauncher, "first_find", true);
+        if (isAim) {
+            aimActor.setIsTip(true);
+            SPUtil.put(androidLauncher, "first_find", false);
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    aimActor.setIsTip(false);
+                }
+            }, 500);
+        }
+        aimActor.setIsFail(fail);
         modelBatch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
