@@ -71,7 +71,7 @@ public class MyGame extends Game {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (!(getScreen() instanceof MainScreen)) {
+        if (!(getScreen() instanceof MainScreen || getScreen() instanceof BeedScreen)) {
             if (mode == normal_Mode) {
                 Gdx.app.error("gdx", "normal_Mode");
                 if (androidDeviceCameraController != null) {
@@ -92,12 +92,16 @@ public class MyGame extends Game {
 
     @Override
     public void pause() {
+        stopCamera();
+        super.pause();
+    }
+
+    public void stopCamera() {
         if (androidDeviceCameraController != null) {
             Gdx.app.error("gdx", "pause");
             androidDeviceCameraController.stopPreviewAsync();
             mode = normal_Mode;
         }
-        super.pause();
     }
 
     @Override

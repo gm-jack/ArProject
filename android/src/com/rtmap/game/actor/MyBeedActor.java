@@ -39,6 +39,13 @@ public class MyBeedActor extends Actor {
         beedList.add(new TextureRegion((Texture) assetManager.get("beed_title.png")));
     }
 
+    public float getTitleHeight() {
+        float height = 0;
+        if (null != beedList.get(1))
+            height = beedList.get(1).getRegionHeight();
+        return height;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

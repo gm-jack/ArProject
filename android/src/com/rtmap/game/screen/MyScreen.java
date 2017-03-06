@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -33,6 +36,10 @@ public abstract class MyScreen implements Screen {
     private boolean isLoading = true;
     //是否停止绘制模型
     private boolean stopRerder = false;
+    private float degree = 180;
+    private AnimationController animationController;
+    private float num = 0;
+    private boolean isAnimation = false;
 
     public MyScreen() {
         modelBatch = new ModelBatch();
@@ -47,7 +54,7 @@ public abstract class MyScreen implements Screen {
         camera.near = 1f;
 
         assets = new AssetManager();
-        assets.load("data/ship.obj", Model.class);
+        assets.load("wolf/Wolf_fbx.g3dj", Model.class);
         assets.finishLoading();
     }
 
@@ -63,9 +70,29 @@ public abstract class MyScreen implements Screen {
     }
 
     private void doneLoading() {
-        Model ship = assets.get("data/ship.obj", Model.class);
+        Model ship = assets.get("wolf/Wolf_fbx.g3dj", Model.class);
         GameObject shipInstance = new GameObject(ship);
-        shipInstance.transform.setToTranslation(0, 0, 7);
+        /**
+         * 0:run2|Wolf_creep_cycle
+         * 1:run2|Wolf_Idle_
+         * 2:run2|Wolf_Run_Cycle_
+         * 3:run2|Wolf_seat_
+         * 4:run2|Wolf_Walk_cycle_
+         */
+        Array<Animation> animations = shipInstance.animations;
+//        for (int i = 0; i < animations.size; i++) {
+//            for (int j = 0; j < animations.get(i).nodeAnimations.size; j++) {
+//                NodeAnimation nodeAnimation = animations.get(i).nodeAnimations.get(j);
+//                Gdx.app.error("gdx", j + "   j==  " + nodeAnimation.node.getChildCount());
+//            }
+//            Gdx.app.error("gdx", i + "   i==  " + animations.get(i).id);
+//        }
+        animationController = new AnimationController(shipInstance);
+//        animationController.an
+        animationController.setAnimation("run2|Wolf_Run_Cycle_", -1);
+        shipInstance.transform.setToTranslation(0, 0, 6);
+        shipInstance.transform.rotate(0, 1, 0, degree);
+//        shipInstance.animations.
         instances.add(shipInstance);
         Gdx.app.error("gdx", "doneLoading()");
         isLoading = false;
@@ -91,10 +118,50 @@ public abstract class MyScreen implements Screen {
 
     }
 
+    /**
+     * 平移渐变动画
+     *
+     * @param positions   新的世界坐标
+     * @param time        平移持续时间
+     */
+    public void translateAnimation(Vector3 positions, float time) {
+        if (instances.size > 0 && !isAnimation) {
+            isAnimation = true;
+            instances.get(0).transform.setToTranslation(positions);
+        }
+
+//        if (instances.size > 0 && !isAnimation) {
+//            isAnimation = true;
+//            float scollX = positions.x - position.x;
+//            float scollY = positions.y - position.y;
+//            float scollZ = positions.z - position.z;
+//            float oldL = oldPosition.x * oldPosition.x + oldPosition.y * oldPosition.y + oldPosition.z * oldPosition.z;
+//            float newL = positions.x * positions.x + 0 + positions.z * positions.z;
+//            double sqrt = Math.sqrt(Math.abs(scollX) * Math.abs(scollX) + Math.abs(scollY) * Math.abs(scollY) + Math.abs(scollZ) * Math.abs(scollZ));
+//            double cos = (sqrt * sqrt + oldL * oldL - newL * newL) / 2 / oldL / sqrt;
+////            num = (int) (sqrt / time * 1000);
+//            Gdx.app.error("animation", " num   ==  " + num);
+//            Gdx.app.error("animation", " oldPosition ==  " + position.x + "  " + position.y + "    " + position.z);
+//            float number = time / Gdx.graphics.getDeltaTime();
+//            Gdx.app.error("animation", " getDeltaTime   ==  " + Gdx.graphics.getDeltaTime());
+////            for (int i = 1; i <= num; i++) {
+////                instances.get(0).transform.translate(oldPosition.x + scollX * i / num, oldPosition.y + scollY * i / num, oldPosition.z + scollZ * i / num);
+////            }
+//            if (num <= number) {
+//                instances.get(0).transform.translate(position.x + scollX * Gdx.graphics.getDeltaTime() * num, position.y + scollY * Gdx.graphics.getDeltaTime() * num, position.z + scollZ * Gdx.graphics.getDeltaTime() * num);
+//                Gdx.app.error("animation", " position ==  " + (position.x + scollX * Gdx.graphics.getDeltaTime() * num) + "  " + (position.y + scollY * Gdx.graphics.getDeltaTime() * num) + "    " + (position.z + scollZ * Gdx.graphics.getDeltaTime() * num));
+//                num++;
+//            }
+
+//            degree -= cos * 180 / 3.14;
+//            instances.get(0).transform.rotate(0, 1, 0, degree);
+//            isAnimation = false;
+//    }
+    }
+
     @Override
     public void render(float delta) {
         if (!stopCamera) {
-            Gdx.app.error("gdx", "camera.update()");
             camera.update();
         }
         if (instances.size > 0 && !stopRerder) {
@@ -102,7 +169,7 @@ public abstract class MyScreen implements Screen {
             if (isVisible(camera, instances.get(0)))
                 modelBatch.render(instances, environment);
             modelBatch.end();
-
+            animationController.update(Gdx.graphics.getDeltaTime());
             Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             final GameObject instance = instances.get(0);
             instance.transform.getTranslation(position);
@@ -112,6 +179,7 @@ public abstract class MyScreen implements Screen {
             if (dist2 <= instance.radius * instance.radius) {
                 Gdx.app.error("gdx", "击中目标111111111111");
                 addNumber();
+                translateAnimation(new Vector3(0, 0, 5), 5000);
             } else {
                 subNumber();
             }

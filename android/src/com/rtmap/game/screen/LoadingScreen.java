@@ -44,7 +44,6 @@ public class LoadingScreen extends MyScreen {
         asset.load("loading_rotate.png", Texture.class);
         asset.load("loading_tip.png", Texture.class);
         asset.load("loading_wait.png", Texture.class);
-        asset.load("data/ship.g3db", Model.class);
         asset.finishLoading();
     }
 

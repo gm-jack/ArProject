@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 
 /**
@@ -20,7 +21,6 @@ public class BeedActor extends Actor {
     private InputListener listener;
     private TextureRegion normal;
     private TextureRegion press;
-    private Batch batch;
     private boolean isDown = false;
 
     public BeedActor(AssetManager assetManager) {
