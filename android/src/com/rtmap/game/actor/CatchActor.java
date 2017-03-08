@@ -4,21 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.utils.Align;
 import com.rtmap.game.interfaces.CatchListener;
+import com.rtmap.game.model.Result;
 import com.rtmap.game.text.LazyBitmapFont;
-import com.rtmap.game.util.FontUtil;
 import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -74,6 +70,11 @@ public class CatchActor extends Actor {
     //是否中奖
     private boolean isWin = false;
 
+    private Result result;
+    private Texture texture;
+    private Net.HttpRequest httpRequest;
+    private HttpRequestBuilder requestBuilder;
+
     public CatchActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
@@ -82,6 +83,7 @@ public class CatchActor extends Actor {
         height = Gdx.graphics.getHeight();
         changeX = width / 2;
         changeY = height / 2;
+        requestBuilder = new HttpRequestBuilder();
     }
 
     public void setCatchListener(CatchListener catchListener) {
@@ -98,7 +100,7 @@ public class CatchActor extends Actor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(final Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         // 如果 region 为 null 或者 演员不可见, 则直接不绘制
         if (!isVisible()) {
@@ -206,11 +208,13 @@ public class CatchActor extends Actor {
                 if (isOpen) {
                     batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
                     if (isWin) {
+                        if (result == null)
+                            return;
                         //从顶部向下绘制
                         batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() * 1.5f / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() / 2, getOriginX(), getOriginY(), openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight(), 1.5f, 1.5f, getRotation());
 
-                        float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "星巴克5元优惠券");
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(18), Color.WHITE).draw(batch, "星巴克5元优惠券", width / 2 - fontWidth1 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width * 0.707f, Align.left, true);
+                        float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), result.getMain());
+                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(18), Color.WHITE).draw(batch, result.getMain(), width / 2 - fontWidth1 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width * 0.707f, Align.left, true);
 //                         float length2 = FontUtil.getLength(ScreenUtil.dp2px(18), "星巴克5元优惠券", 2);
 //                        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(18), Color.WHITE, width / 2 - length2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width);
 
@@ -223,18 +227,85 @@ public class CatchActor extends Actor {
 
 
                         //从底部向上绘制
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, "地址:北京海淀区致真大厦10层", width * 0.293f, height * 0.287f, width * 0.707f, Align.left, true);
+                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, "地址:" + result.getPosition(), width * 0.293f, height * 0.287f, width * 0.707f, Align.left, true);
 
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, "广发卡消费9折", width * 0.293f + 100, height * 0.287f + ScreenUtil.dp2px(10) * 2, width * 0.707f, Align.left, true);
+                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, result.getDesc(), width * 0.293f + 300, height * 0.287f + ScreenUtil.dp2px(10) * 2, width * 0.707f, Align.left, true);
 
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, "离你0.2KM", width * 0.293f + 100, height * 0.287f + ScreenUtil.dp2px(10) * 4, width * 0.707f, Align.left, true);
+                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(10), Color.WHITE).draw(batch, "离你0.2KM", width * 0.293f + 300, height * 0.287f + ScreenUtil.dp2px(10) * 4, width * 0.707f, Align.left, true);
 
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(12), Color.WHITE).draw(batch, "星巴克", width * 0.293f + 100, height * 0.287f + ScreenUtil.dp2px(10) * 6, width * 0.707f, Align.left, true);
+                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(12), Color.WHITE).draw(batch, result.getShopName(), width * 0.293f + 300, height * 0.287f + ScreenUtil.dp2px(10) * 6, width * 0.707f, Align.left, true);
+
+                        if (null != result && null != result.getImgUrl()) {
+                            if (httpRequest == null) {
+                                httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url(result.getImgUrl()).build();
+                            }
+                            if (texture == null) {
+                                Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+                                    @Override
+                                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                                        // 获取响应状态
+                                        HttpStatus httpStatus = httpResponse.getStatus();
+
+                                        if (httpStatus.getStatusCode() == 200) {
+                                            // 请求成功
+                                            Gdx.app.error("http", "请求成功");
+
+                                            // 以字节数组的方式获取响应内容
+                                            final byte[] result = httpResponse.getResult();
+
+                                            // 还可以以流或字符串的方式获取
+                                            // httpResponse.getResultAsStream();
+                                            // httpResponse.getResultAsString();
+
+                                            /*
+                                             * 在响应回调中属于其他线程, 获取到响应结果后需要
+                                             * 提交到 渲染线程（create 和 render 方法执行所在线程） 处理。
+                                             */
+                                            Gdx.app.postRunnable(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    // 把字节数组加载为 Pixmap
+                                                    Pixmap pixmap = new Pixmap(result, 0, result.length);
+                                                    // 把 pixmap 加载为纹理
+                                                    texture = new Texture(pixmap);
+                                                    // pixmap 不再需要使用到, 释放内存占用
+                                                    pixmap.dispose();
+                                                }
+                                            });
+                                        } else {
+                                            Gdx.app.error("http", "请求失败, 状态码: " + httpStatus.getStatusCode());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void failed(Throwable t) {
+
+                                    }
+
+                                    @Override
+                                    public void cancelled() {
+
+                                    }
+                                });
+                            } else {
+                                batch.draw(texture, width * 0.293f, height * 0.287f + ScreenUtil.dp2px(10) * 2, 300, 300);
+                            }
+                        }
+//                        try {
+//                            File file = new File(HttpUtil.getExternalSdCardPath() + "/rtmapAR/" + MD5Encoder.encode("http://res.rtmap.com/image/prize_pic/2017-03/1488787034247.png"));
+//                            if (file.exists()) {
+//                                Gdx.app.error("file", file.getAbsolutePath());
+//                                batch.draw(texture, width * 0.293f, height * 0.287f + ScreenUtil.dp2px(10) * 2, 300, 300);
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            Gdx.app.error("file", e.getMessage());
+//                        }
 
                         LazyBitmapFont.setFontSize(ScreenUtil.dp2px(11), Color.WHITE).draw(batch, "门店信息", width * 0.293f, height * 0.287f + ScreenUtil.dp2px(10) * 8, width * 0.707f, Align.left, true);
 
-                        float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(11), "查看详情");
-                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(11), Color.WHITE).draw(batch, "查看详情", width * 0.707f - fontWidth3, height * 0.287f + ScreenUtil.dp2px(10) * 8, width * 0.707f, Align.left, true);
+//                        float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(11), "查看详情");
+//                        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(11), Color.WHITE).draw(batch, "查看详情", width * 0.707f - fontWidth3, height * 0.287f + ScreenUtil.dp2px(10) * 8, width * 0.707f, Align.left, true);
 
 //                        float length4 = FontUtil.getLength(ScreenUtil.dp2px(10), "地址:北京海淀区致真大厦10层", 2);
 //                        FontUtil.draw(batch, "地址:北京海淀区致真大厦10层", ScreenUtil.dp2px(10), Color.WHITE, width * 0.293f, height * 0.287f, width);
@@ -393,6 +464,9 @@ public class CatchActor extends Actor {
 
     @Override
     public void clear() {
+        if (texture != null) {
+            texture.dispose();
+        }
         for (int i = 0; i < texReArray.size(); i++) {
             texReArray.get(i).getTexture().dispose();
         }
@@ -405,5 +479,9 @@ public class CatchActor extends Actor {
         for (int i = 0; i < mKeyFrames.length; i++) {
             mKeyFrames[i].getTexture().dispose();
         }
+    }
+
+    public void setData(Result result) {
+        this.result = result;
     }
 }

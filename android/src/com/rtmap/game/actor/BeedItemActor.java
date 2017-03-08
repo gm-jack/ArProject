@@ -10,10 +10,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.rtmap.game.interfaces.BackOnClickListener;
+import com.rtmap.game.interfaces.BeedItemOnClickListener;
 import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.ScreenUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yxy on 2017/2/21.
@@ -23,7 +28,11 @@ public class BeedItemActor extends Actor {
     private int height;
     private AssetManager assetManager;
     private InputListener listener;
-    private TextureRegion normal;
+    private List<TextureRegion> normal = new ArrayList<>();
+    private float scale;
+    private float realHeight;
+    private boolean isUse = false;
+    private int position;
 
     public BeedItemActor(AssetManager assetManager) {
         super();
@@ -34,31 +43,37 @@ public class BeedItemActor extends Actor {
     }
 
     private void initResources() {
-        assetManager.load("open_close.png", Texture.class);
+        assetManager.load("beed_item_bg.png", Texture.class);
+        assetManager.load("beed_item_nouse.png", Texture.class);
+        assetManager.load("beed_item_use.png", Texture.class);
+        assetManager.load("beed_item_line.png", Texture.class);
         assetManager.finishLoading();
 
-        normal = new TextureRegion((Texture) assetManager.get("open_close.png"));
+        normal.add(new TextureRegion((Texture) assetManager.get("beed_item_bg.png")));
+        normal.add(new TextureRegion((Texture) assetManager.get("beed_item_nouse.png")));
+        normal.add(new TextureRegion((Texture) assetManager.get("beed_item_use.png")));
+        normal.add(new TextureRegion((Texture) assetManager.get("beed_item_line.png")));
 
-//        setPosition(width * 0.93f - normal.getRegionWidth(), height * 0.9f - normal.getRegionHeight());
-        setSize(width, 500);
+        scale = (float) width / (float) normal.get(0).getRegionWidth();
+        realHeight = normal.get(0).getRegionHeight() * scale;
     }
 
-    public void setListener(final BackOnClickListener backOnClickListener) {
-        listener = new InputListener() {
+    public void setListener(final BeedItemOnClickListener beedItemOnClickListener, int item) {
+        this.position = item;
+        listener = new ClickListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (backOnClickListener != null) {
-                    backOnClickListener.onClick();
-//                    Gdx.app.exit();
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (beedItemOnClickListener != null) {
+                    beedItemOnClickListener.onClick(BeedItemActor.this, position);
                 }
             }
         };
         addListener(listener);
+    }
+
+    public void setIsUse(boolean isUse) {
+        this.isUse = isUse;
     }
 
     @Override
@@ -67,12 +82,22 @@ public class BeedItemActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(40), com.badlogic.gdx.graphics.Color.WHITE).draw(batch, "1111111111111", 10, 10, width, Align.left, false);
-//        batch.draw(normal, width * 0.93f - normal.getRegionWidth(), height * 0.9f - normal.getRegionHeight(), normal.getRegionWidth(), normal.getRegionHeight());
+        batch.draw(normal.get(0), 0, getY(), getOriginX(), getOriginY(), width, realHeight, getScaleX(), getScaleY(), getRotation());
+        if (isUse)
+            batch.draw(normal.get(2), width - normal.get(2).getRegionWidth() - 100, getY() + realHeight * 0.3f / 2 - normal.get(2).getRegionHeight() / 2, getOriginX(), getOriginY(), normal.get(2).getRegionWidth(), normal.get(2).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
+        else
+            batch.draw(normal.get(1), width - normal.get(1).getRegionWidth() - 100, getY() + realHeight * 0.3f / 2 - normal.get(1).getRegionHeight() / 2, getOriginX(), getOriginY(), normal.get(1).getRegionWidth(), normal.get(1).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
+        batch.draw(normal.get(3), 0, getY() + realHeight * 0.3f, getOriginX(), getOriginY(), width, normal.get(3).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
+
+        LazyBitmapFont.setFontSize(ScreenUtil.dp2px(13), com.badlogic.gdx.graphics.Color.WHITE).draw(batch, "有效期限: 2016.09.30-2017.06.30", width * 0.13f, getY() + realHeight * 0.3f / 2 + ScreenUtil.dp2px(13 ) / 2, width, Align.left, false);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    public float getRealHeight() {
+        return realHeight;
     }
 }

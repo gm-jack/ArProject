@@ -49,13 +49,15 @@ public abstract class MyScreen implements Screen {
 
         camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.translate(0, 0, 0);
-        camera.lookAt(0, 0, 10);
+        camera.lookAt(0, 0, 15);
         camera.far = 1000.0f;
         camera.near = 1f;
 
-        assets = new AssetManager();
-        assets.load("wolf/Wolf_fbx.g3dj", Model.class);
-        assets.finishLoading();
+        if (assets == null) {
+            assets = new AssetManager();
+            assets.load("wolf/Wolf_fbx.g3dj", Model.class);
+            assets.finishLoading();
+        }
     }
 
     @Override
@@ -79,20 +81,12 @@ public abstract class MyScreen implements Screen {
          * 3:run2|Wolf_seat_
          * 4:run2|Wolf_Walk_cycle_
          */
-        Array<Animation> animations = shipInstance.animations;
-//        for (int i = 0; i < animations.size; i++) {
-//            for (int j = 0; j < animations.get(i).nodeAnimations.size; j++) {
-//                NodeAnimation nodeAnimation = animations.get(i).nodeAnimations.get(j);
-//                Gdx.app.error("gdx", j + "   j==  " + nodeAnimation.node.getChildCount());
-//            }
-//            Gdx.app.error("gdx", i + "   i==  " + animations.get(i).id);
-//        }
-        animationController = new AnimationController(shipInstance);
-//        animationController.an
-        animationController.setAnimation("run2|Wolf_Run_Cycle_", -1);
-        shipInstance.transform.setToTranslation(0, 0, 6);
+        shipInstance.transform.setToTranslation(0, 0, 5);
+//        shipInstance.transform.setToScaling(1, 1, 1);
         shipInstance.transform.rotate(0, 1, 0, degree);
-//        shipInstance.animations.
+        animationController = new AnimationController(shipInstance);
+        animationController.setAnimation("run2|Wolf_Run_Cycle_", -1);
+
         instances.add(shipInstance);
         Gdx.app.error("gdx", "doneLoading()");
         isLoading = false;
@@ -121,42 +115,42 @@ public abstract class MyScreen implements Screen {
     /**
      * 平移渐变动画
      *
-     * @param positions   新的世界坐标
-     * @param time        平移持续时间
+     * @param positions 新的世界坐标
+     * @param time      平移持续时间
      */
     public void translateAnimation(Vector3 positions, float time) {
-        if (instances.size > 0 && !isAnimation) {
-            isAnimation = true;
-            instances.get(0).transform.setToTranslation(positions);
-        }
-
 //        if (instances.size > 0 && !isAnimation) {
 //            isAnimation = true;
-//            float scollX = positions.x - position.x;
-//            float scollY = positions.y - position.y;
-//            float scollZ = positions.z - position.z;
+//            instances.get(0).transform.setToTranslation(positions);
+//        }
+
+        if (instances.size > 0 && !isAnimation) {
+            isAnimation = true;
+            float scollX = positions.x - position.x;
+            float scollY = positions.y - position.y;
+            float scollZ = positions.z - position.z;
 //            float oldL = oldPosition.x * oldPosition.x + oldPosition.y * oldPosition.y + oldPosition.z * oldPosition.z;
-//            float newL = positions.x * positions.x + 0 + positions.z * positions.z;
-//            double sqrt = Math.sqrt(Math.abs(scollX) * Math.abs(scollX) + Math.abs(scollY) * Math.abs(scollY) + Math.abs(scollZ) * Math.abs(scollZ));
+            float newL = positions.x * positions.x + 0 + positions.z * positions.z;
+            double sqrt = Math.sqrt(Math.abs(scollX) * Math.abs(scollX) + Math.abs(scollY) * Math.abs(scollY) + Math.abs(scollZ) * Math.abs(scollZ));
 //            double cos = (sqrt * sqrt + oldL * oldL - newL * newL) / 2 / oldL / sqrt;
-////            num = (int) (sqrt / time * 1000);
+//            num = (int) (sqrt / time * 1000);
 //            Gdx.app.error("animation", " num   ==  " + num);
-//            Gdx.app.error("animation", " oldPosition ==  " + position.x + "  " + position.y + "    " + position.z);
-//            float number = time / Gdx.graphics.getDeltaTime();
-//            Gdx.app.error("animation", " getDeltaTime   ==  " + Gdx.graphics.getDeltaTime());
-////            for (int i = 1; i <= num; i++) {
-////                instances.get(0).transform.translate(oldPosition.x + scollX * i / num, oldPosition.y + scollY * i / num, oldPosition.z + scollZ * i / num);
-////            }
-//            if (num <= number) {
-//                instances.get(0).transform.translate(position.x + scollX * Gdx.graphics.getDeltaTime() * num, position.y + scollY * Gdx.graphics.getDeltaTime() * num, position.z + scollZ * Gdx.graphics.getDeltaTime() * num);
-//                Gdx.app.error("animation", " position ==  " + (position.x + scollX * Gdx.graphics.getDeltaTime() * num) + "  " + (position.y + scollY * Gdx.graphics.getDeltaTime() * num) + "    " + (position.z + scollZ * Gdx.graphics.getDeltaTime() * num));
-//                num++;
+            Gdx.app.error("animation", " oldPosition ==  " + position.x + "  " + position.y + "    " + position.z);
+            float number = time / Gdx.graphics.getDeltaTime();
+            Gdx.app.error("animation", " getDeltaTime   ==  " + Gdx.graphics.getDeltaTime());
+//            for (int i = 1; i <= num; i++) {
+//               instances.get(0).transform.setToTranslation(oldPosition.x + scollX * i / num, oldPosition.y + scollY * i / num, oldPosition.z + scollZ * i / num);
 //            }
+            if (num <= number) {
+                instances.get(0).transform.setToTranslation(position.x + scollX * Gdx.graphics.getDeltaTime() * num, position.y + scollY * Gdx.graphics.getDeltaTime() * num, position.z + scollZ * Gdx.graphics.getDeltaTime() * num);
+                Gdx.app.error("animation", " position ==  " + (position.x + scollX * Gdx.graphics.getDeltaTime() * num) + "  " + (position.y + scollY * Gdx.graphics.getDeltaTime() * num) + "    " + (position.z + scollZ * Gdx.graphics.getDeltaTime() * num));
+                num++;
+            }
 
 //            degree -= cos * 180 / 3.14;
 //            instances.get(0).transform.rotate(0, 1, 0, degree);
 //            isAnimation = false;
-//    }
+        }
     }
 
     @Override
@@ -166,8 +160,10 @@ public abstract class MyScreen implements Screen {
         }
         if (instances.size > 0 && !stopRerder) {
             modelBatch.begin(camera);
-            if (isVisible(camera, instances.get(0)))
+            if (isVisible(camera, instances.get(0))) {
+//                Gdx.app.error("gdx", "isVisible()");
                 modelBatch.render(instances, environment);
+            }
             modelBatch.end();
             animationController.update(Gdx.graphics.getDeltaTime());
             Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -179,7 +175,8 @@ public abstract class MyScreen implements Screen {
             if (dist2 <= instance.radius * instance.radius) {
                 Gdx.app.error("gdx", "击中目标111111111111");
                 addNumber();
-                translateAnimation(new Vector3(0, 0, 5), 5000);
+//                translateAnimation(new Vector3(0, 0, 5), 5000);
+//                instance.transform.setToTranslation(0, 0, 2);
             } else {
                 subNumber();
             }

@@ -3,11 +3,12 @@ package com.rtmap.game.screen;
 import android.content.Context;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.google.gson.Gson;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AgainActor;
@@ -21,8 +22,11 @@ import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
+import com.rtmap.game.model.Result;
 import com.rtmap.game.stage.CatchStage;
+import com.rtmap.game.util.MD5Encoder;
 import com.rtmap.game.util.SPUtil;
+import com.rtmap.game.util.StringUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -191,42 +195,84 @@ public class CatchScreen extends MyScreen {
 
                 @Override
                 public void onSuccessClick() {
-                    catActor.removeListener();
-                    catchActor.setIsOpen(true);
-                    catActor.setIsShow(false);
                     setResult();
                 }
             });
     }
 
     private void setResult() {
-        isWin = true;
-        catchActor.setIsWin(isWin);
-        if (isWin) {
-
-        } else {
-            //添加再来一次按钮actor
-            againActor = new AgainActor(new AssetManager());
-            againActor.setListener(new AgainActor.AgainOnClickListener() {
-                @Override
-                public void againClick() {
-                    mGame.showAimScreen(false);
-                    CatchScreen.this.dispose();
-                }
-            });
-            group3.addActor(againActor);
-        }
-        //添加关闭按钮actor
-        closeActor = new CloseActor(new AssetManager());
-        closeActor.setListener(new BackOnClickListener() {
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+        Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/17888/18833720712").build();
+        Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
             @Override
-            public void onClick() {
-                if (mGame != null)
-                    mGame.showAimScreen(false);
-                CatchScreen.this.dispose();
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                catActor.removeListener();
+                catActor.setIsShow(false);
+//                try {
+////                        HttpUtil.downloadFileByHttpConnection(result.getImgUrl(), MD5Encoder.encode(result.getImgUrl()));
+//                    HttpUtil.downloadFileByHttpConnection("http://res.rtmap.com/image/prize_pic/2017-03/1488787034247.png", MD5Encoder.encode("http://res.rtmap.com/image/prize_pic/2017-03/1488787034247.png"));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+                Gdx.app.error("http", httpResponse.getResultAsString());
+                Result result = new Gson().fromJson(httpResponse.getResultAsString(), Result.class);
+                if (null != result.getCode() && "0".equals(result.getCode())) {
+                    isWin = true;
+                    catchActor.setIsWin(isWin);
+                    catchActor.setData(result);
+                } else {
+                    isWin = false;
+                    catchActor.setIsWin(isWin);
+                }
+                catchActor.setIsOpen(true);
+                if (!isWin) {
+                    //添加再来一次按钮actor
+                    againActor = new AgainActor(new AssetManager());
+                    againActor.setListener(new AgainActor.AgainOnClickListener() {
+                        @Override
+                        public void againClick() {
+                            mGame.showAimScreen(false);
+                            CatchScreen.this.dispose();
+                        }
+                    });
+                    group3.addActor(againActor);
+                }
+                //添加关闭按钮actor
+                closeActor = new CloseActor(new AssetManager());
+                closeActor.setListener(new BackOnClickListener() {
+                    @Override
+                    public void onClick() {
+                        if (mGame != null)
+                            mGame.showAimScreen(false);
+                        CatchScreen.this.dispose();
+                    }
+                });
+                group3.addActor(closeActor);
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.error("http", t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+                Gdx.app.error("http", "请求取消");
             }
         });
-        group3.addActor(closeActor);
+//                String http = HttpUtil.connInfo(HttpUtil.GET, "http://182.92.31.114/rest/act/17888/18833720712", new HttpUtil.HttpResultListener() {
+//            @Override
+//            public void success(String results) {
+//                Gdx.app.error("http", results);
+//
+//            }
+//
+//            @Override
+//            public void fail(int code, String result) {
+//                Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        Gdx.app.error("http", http);
     }
 
     @Override
