@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.StartOnClickListener;
 
+import java.util.ArrayList;
+
 /**
  * Created by yxy on 2017/2/21.
  */
@@ -20,23 +22,14 @@ public class StartActor extends Actor {
     private AssetManager assetManager;
     private InputListener listener;
     private TextureRegion normal;
+    private int regionWidth;
+    private int regionHeight;
 
     public StartActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
-    }
-
-    private void initResources() {
-        assetManager.load("m_start.png", Texture.class);
-        assetManager.finishLoading();
-
-        normal = new TextureRegion((Texture) assetManager.get("m_start.png"));
-
-        setPosition(width / 2 - normal.getRegionWidth() / 2, height * 0.08f);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     public void setListener(final StartOnClickListener startOnClickListener) {
@@ -62,11 +55,30 @@ public class StartActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.08f, normal.getRegionWidth(), normal.getRegionHeight());
+        if (assetManager.update()) {
+            initResouces();
+        }
+        if (assetManager.isLoaded("m_start.png"))
+            batch.draw(normal, width / 2 - regionWidth / 2, height * 0.08f, regionWidth, regionHeight);
+    }
+
+    private void initResouces() {
+        normal = new TextureRegion((Texture) assetManager.get("m_start.png"));
+        regionWidth = normal.getRegionWidth();
+        regionHeight = normal.getRegionHeight();
+        setPosition(width / 2 - regionWidth / 2, height * 0.08f);
+        setSize(regionWidth, regionHeight);
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
     }
 }

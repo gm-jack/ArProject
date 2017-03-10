@@ -7,6 +7,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.gson.Gson;
 import com.rtmap.game.AndroidLauncher;
@@ -25,6 +26,7 @@ import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.util.MD5Encoder;
+import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
 import com.rtmap.game.util.StringUtil;
 
@@ -60,29 +62,35 @@ public class CatchScreen extends MyScreen {
     private boolean isInit = true;
 
     public CatchScreen(MyGame game, AndroidLauncher androidLauncher) {
-        super();
+        super(game);
         this.mGame = game;
         this.context = androidLauncher;
         //捕捉怪兽舞台
         catchStage = new CatchStage(new ScreenViewport());
 
         group3 = new Group();
-        catchActor = new CatchActor(new AssetManager());
+        catchActor = new CatchActor(mGame.asset);
         catchActor.setPosition(0, 0);
         catchActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group3.addActor(catchActor);
 
-        backActor = new BackActor(new AssetManager());
+        backActor = new BackActor(mGame.asset);
         group3.addActor(backActor);
 
-        beedActor = new BeedActor(new AssetManager());
+        beedActor = new BeedActor(mGame.asset);
         group3.addActor(beedActor);
 
-        coverActor = new CoverActor(new AssetManager());
+        coverActor = new CoverActor(mGame.asset);
         group3.addActor(coverActor);
 
-        catActor = new CatActor(new AssetManager());
+        catActor = new CatActor(mGame.asset);
         group3.addActor(catActor);
+        //添加关闭按钮actor
+        closeActor = new CloseActor(mGame.asset);
+        group3.addActor(closeActor);
+        //添加再来一次按钮actor
+        againActor = new AgainActor(mGame.asset);
+        group3.addActor(againActor);
 
         catchStage.addActor(group3);
     }
@@ -195,28 +203,41 @@ public class CatchScreen extends MyScreen {
 
                 @Override
                 public void onSuccessClick() {
+                    Gdx.app.error("gdx", "onSuccessClick()");
                     setResult();
+                }
+            });
+        if (closeActor != null)
+            closeActor.setListener(new BackOnClickListener() {
+                @Override
+                public void onClick() {
+                    if (mGame != null)
+                        mGame.showAimScreen(false);
+                    CatchScreen.this.dispose();
+                }
+            });
+        if (againActor != null)
+            againActor.setListener(new AgainActor.AgainOnClickListener() {
+                @Override
+                public void againClick() {
+                    mGame.showAimScreen(false);
+                    CatchScreen.this.dispose();
                 }
             });
     }
 
     private void setResult() {
-        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
-        Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/17888/18833720712").build();
-        Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+        NetUtil.getInstance().get("http://182.92.31.114/rest/act/17888/15210420307", new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String resultAsString = httpResponse.getResultAsString();
+                Gdx.app.error("http", "handleHttpResponse  ==  " + resultAsString);
                 catActor.removeListener();
                 catActor.setIsShow(false);
-//                try {
-////                        HttpUtil.downloadFileByHttpConnection(result.getImgUrl(), MD5Encoder.encode(result.getImgUrl()));
-//                    HttpUtil.downloadFileByHttpConnection("http://res.rtmap.com/image/prize_pic/2017-03/1488787034247.png", MD5Encoder.encode("http://res.rtmap.com/image/prize_pic/2017-03/1488787034247.png"));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-                Gdx.app.error("http", httpResponse.getResultAsString());
-                Result result = new Gson().fromJson(httpResponse.getResultAsString(), Result.class);
-                if (null != result.getCode() && "0".equals(result.getCode())) {
+                Result result = new Gson().fromJson(resultAsString, Result.class);
+//                Result result = new Json().fromJson(Result.class, httpResponse.getResultAsStream());
+                Gdx.app.error("http", "result  ==  " + result.toString());
+                if ("0".equals(result.getCode())) {
                     isWin = true;
                     catchActor.setIsWin(isWin);
                     catchActor.setData(result);
@@ -225,29 +246,8 @@ public class CatchScreen extends MyScreen {
                     catchActor.setIsWin(isWin);
                 }
                 catchActor.setIsOpen(true);
-                if (!isWin) {
-                    //添加再来一次按钮actor
-                    againActor = new AgainActor(new AssetManager());
-                    againActor.setListener(new AgainActor.AgainOnClickListener() {
-                        @Override
-                        public void againClick() {
-                            mGame.showAimScreen(false);
-                            CatchScreen.this.dispose();
-                        }
-                    });
-                    group3.addActor(againActor);
-                }
-                //添加关闭按钮actor
-                closeActor = new CloseActor(new AssetManager());
-                closeActor.setListener(new BackOnClickListener() {
-                    @Override
-                    public void onClick() {
-                        if (mGame != null)
-                            mGame.showAimScreen(false);
-                        CatchScreen.this.dispose();
-                    }
-                });
-                group3.addActor(closeActor);
+                againActor.setIsShow(!isWin);
+                closeActor.setIsShow(true);
             }
 
             @Override
@@ -260,19 +260,10 @@ public class CatchScreen extends MyScreen {
                 Gdx.app.error("http", "请求取消");
             }
         });
-//                String http = HttpUtil.connInfo(HttpUtil.GET, "http://182.92.31.114/rest/act/17888/18833720712", new HttpUtil.HttpResultListener() {
-//            @Override
-//            public void success(String results) {
-//                Gdx.app.error("http", results);
-//
-//            }
-//
-//            @Override
-//            public void fail(int code, String result) {
-//                Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        Gdx.app.error("http", http);
+//        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+//        Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
+//                "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/17888/15210420307").build();
+//        Gdx.net.sendHttpRequest(httpRequest, );
     }
 
     @Override

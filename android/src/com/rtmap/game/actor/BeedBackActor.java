@@ -34,9 +34,6 @@ public class BeedBackActor extends Actor {
     }
 
     private void initResources() {
-        assetManager.load("beed_back.png", Texture.class);
-        assetManager.finishLoading();
-
         beedList.add(new TextureRegion((Texture) assetManager.get("beed_back.png")));
 
         setPosition(30, height - regionHeight / 2 - beedList.get(0).getRegionHeight() / 2);
@@ -51,7 +48,9 @@ public class BeedBackActor extends Actor {
         }
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        batch.draw(beedList.get(0), 30, height - regionHeight / 2 - beedList.get(0).getRegionHeight() / 2, beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
+        if (beedList.size() > 0) {
+            batch.draw(beedList.get(0), 30, height - regionHeight / 2 - beedList.get(0).getRegionHeight() / 2, beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
+        }
     }
 
     @Override

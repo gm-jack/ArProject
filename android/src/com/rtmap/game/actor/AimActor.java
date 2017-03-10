@@ -52,7 +52,6 @@ public class AimActor extends Actor {
     public AimActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
-        initResources();
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
     }
@@ -74,7 +73,12 @@ public class AimActor extends Actor {
         if (!isVisible()) {
             return;
         }
-
+        if (assetManager.update()) {
+            initResources();
+        }
+        if (texReArray.size() <= 0 || findReArray.size() <= 0 || mKeyFrames.length <= 0) {
+            return;
+        }
         batch.draw(texReArray.get(0), 0, 0, width, height);
         if (isFind) {
             int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
@@ -90,9 +94,9 @@ public class AimActor extends Actor {
                 for (int i = 0; i < number; i++) {
                     if (delta < 0.5f && (number - 1) == i) {
                         Gdx.app.error("gdx", "白块111111111111111111");
-                        batch.draw(mKeyFrames[2],aimWidth, aimHeight, mKeyFrames[2].getRegionWidth()/2, mKeyFrames[2].getRegionHeight()/2,mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[2], aimWidth, aimHeight, mKeyFrames[2].getRegionWidth() / 2, mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     } else {
-                        batch.draw(mKeyFrames[0],aimWidth, aimHeight,  mKeyFrames[0].getRegionWidth()/2, mKeyFrames[0].getRegionHeight()/2,mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[0], aimWidth, aimHeight, mKeyFrames[0].getRegionWidth() / 2, mKeyFrames[0].getRegionHeight() / 2, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     }
                 }
                 if (delta > 1f) {
@@ -101,7 +105,7 @@ public class AimActor extends Actor {
             } else if (STATE == STATE_FAIL) {
                 batch.draw(texReArray.get(2), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
                 for (int i = 0; i < number; i++) {
-                    batch.draw(mKeyFrames[1],aimWidth, aimHeight,  mKeyFrames[1].getRegionWidth()/2, mKeyFrames[1].getRegionHeight()/2,mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                    batch.draw(mKeyFrames[1], aimWidth, aimHeight, mKeyFrames[1].getRegionWidth() / 2, mKeyFrames[1].getRegionHeight() / 2, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                 }
                 if (delta > 1f) {
                     delta = 0;
@@ -159,19 +163,6 @@ public class AimActor extends Actor {
     }
 
     public void initResources() {
-        assetManager.load("find_bg.png", Texture.class);
-        assetManager.load("aim_fail.png", Texture.class);
-        assetManager.load("aim_success.png", Texture.class);
-        assetManager.load("aim_white.png", Texture.class);
-        assetManager.load("aim_red.png", Texture.class);
-        assetManager.load("aim_blue.png", Texture.class);
-
-        assetManager.load("find_center.png", Texture.class);
-        assetManager.load("find_tip.png", Texture.class);
-        assetManager.load("find_text.png", Texture.class);
-        assetManager.load("find_location.png", Texture.class);
-        assetManager.finishLoading();
-
         texReArray = new ArrayList<>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("find_bg.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("aim_success.png")));

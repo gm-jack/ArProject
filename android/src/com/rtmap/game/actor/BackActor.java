@@ -31,14 +31,9 @@ public class BackActor extends Actor {
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
     }
 
     private void initResources() {
-        assetManager.load("find_left_normal.png", Texture.class);
-        assetManager.load("find_left_press.png", Texture.class);
-        assetManager.finishLoading();
-
         normal = new TextureRegion((Texture) assetManager.get("find_left_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_left_press.png"));
 
@@ -72,9 +67,12 @@ public class BackActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (!isDown)
+        if (assetManager.update()) {
+            initResources();
+        }
+        if (!isDown && press != null)
             batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
-        else
+        else if( normal != null)
             batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
 
     }
@@ -82,5 +80,14 @@ public class BackActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
+        if (press != null)
+            press.getTexture().dispose();
     }
 }

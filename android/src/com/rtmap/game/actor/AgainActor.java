@@ -19,23 +19,24 @@ public class AgainActor extends Actor {
     private AssetManager assetManager;
     private InputListener listener;
     private TextureRegion normal;
+    private boolean isShow = false;
 
     public AgainActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
     }
 
     private void initResources() {
-        assetManager.load("open_again.png", Texture.class);
-        assetManager.finishLoading();
-
         normal = new TextureRegion((Texture) assetManager.get("open_again.png"));
 
         setPosition(width / 2 - normal.getRegionWidth() / 2, height * 0.33f);
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
+    }
+
+    public void setIsShow(boolean isShow) {
+        this.isShow = isShow;
     }
 
     public void setListener(final AgainOnClickListener againOnClickListener) {
@@ -62,7 +63,11 @@ public class AgainActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.33f, normal.getRegionWidth(), normal.getRegionHeight());
+        if (assetManager.update()) {
+            initResources();
+        }
+        if (isShow && normal != null)
+            batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.33f, normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     @Override
@@ -70,7 +75,14 @@ public class AgainActor extends Actor {
         super.act(delta);
     }
 
-    public interface AgainOnClickListener{
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
+    }
+
+    public interface AgainOnClickListener {
         void againClick();
     }
 }

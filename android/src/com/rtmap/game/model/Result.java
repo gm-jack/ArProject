@@ -59,22 +59,22 @@ public class Result implements Serializable {
     private String qr;
     private String status;
     private String template;
-    private int tt;
-    private int pid;
-    private int num;
-    private int issue;
-    private int coupon;
+    private String tt;
+    private String pid;
+    private String num;
+    private String issue;
+    private String coupon;
     private String openId;
     private String nickname;
     private String head;
     private String desc;
-    private int refund;
+    private String refund;
     private String wxsync;
     private String cardId;
-    private int share;
-    private int follow;
-    private int price;
-    private int notifyType;
+    private String share;
+    private String follow;
+    private String price;
+    private String notifyType;
     private String notifyMessage;
 
     public String getCode() {
@@ -205,43 +205,43 @@ public class Result implements Serializable {
         this.template = template;
     }
 
-    public int getTt() {
+    public String getTt() {
         return tt;
     }
 
-    public void setTt(int tt) {
+    public void setTt(String tt) {
         this.tt = tt;
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
-    public int getNum() {
+    public String getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(String num) {
         this.num = num;
     }
 
-    public int getIssue() {
+    public String getIssue() {
         return issue;
     }
 
-    public void setIssue(int issue) {
+    public void setIssue(String issue) {
         this.issue = issue;
     }
 
-    public int getCoupon() {
+    public String getCoupon() {
         return coupon;
     }
 
-    public void setCoupon(int coupon) {
+    public void setCoupon(String coupon) {
         this.coupon = coupon;
     }
 
@@ -277,11 +277,11 @@ public class Result implements Serializable {
         this.desc = desc;
     }
 
-    public int getRefund() {
+    public String getRefund() {
         return refund;
     }
 
-    public void setRefund(int refund) {
+    public void setRefund(String refund) {
         this.refund = refund;
     }
 
@@ -301,35 +301,35 @@ public class Result implements Serializable {
         this.cardId = cardId;
     }
 
-    public int getShare() {
+    public String getShare() {
         return share;
     }
 
-    public void setShare(int share) {
+    public void setShare(String share) {
         this.share = share;
     }
 
-    public int getFollow() {
+    public String getFollow() {
         return follow;
     }
 
-    public void setFollow(int follow) {
+    public void setFollow(String follow) {
         this.follow = follow;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public int getNotifyType() {
+    public String getNotifyType() {
         return notifyType;
     }
 
-    public void setNotifyType(int notifyType) {
+    public void setNotifyType(String notifyType) {
         this.notifyType = notifyType;
     }
 
@@ -339,5 +339,44 @@ public class Result implements Serializable {
 
     public void setNotifyMessage(String notifyMessage) {
         this.notifyMessage = notifyMessage;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", marketName='" + marketName + '\'' +
+                ", buildId='" + buildId + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", logoUrl='" + logoUrl + '\'' +
+                ", level='" + level + '\'' +
+                ", main='" + main + '\'' +
+                ", extend='" + extend + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", position='" + position + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", qr='" + qr + '\'' +
+                ", status='" + status + '\'' +
+                ", template='" + template + '\'' +
+                ", tt='" + tt + '\'' +
+                ", pid='" + pid + '\'' +
+                ", num='" + num + '\'' +
+                ", issue='" + issue + '\'' +
+                ", coupon='" + coupon + '\'' +
+                ", openId='" + openId + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", head='" + head + '\'' +
+                ", desc='" + desc + '\'' +
+                ", refund='" + refund + '\'' +
+                ", wxsync='" + wxsync + '\'' +
+                ", cardId='" + cardId + '\'' +
+                ", share='" + share + '\'' +
+                ", follow='" + follow + '\'' +
+                ", price='" + price + '\'' +
+                ", notifyType='" + notifyType + '\'' +
+                ", notifyMessage='" + notifyMessage + '\'' +
+                '}';
     }
 }

@@ -1,24 +1,17 @@
 package com.rtmap.game.screen;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -29,9 +22,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisScrollPane;
-import com.kotcrab.vis.ui.widget.VisTable;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
@@ -39,14 +31,25 @@ import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.BeedBackActor;
 import com.rtmap.game.actor.BeedItemActor;
+import com.rtmap.game.actor.CloseActor;
+import com.rtmap.game.actor.DetailActor;
 import com.rtmap.game.actor.MyBeedActor;
+import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedItemOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
+import com.rtmap.game.model.Result;
 import com.rtmap.game.scrollpane.BeedScrollPane;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.util.NetUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,34 +65,32 @@ public class BeedScreen extends MyScreen {
     private ScreenViewport screenViewport;
     private Array<BeedItemActor> itemActors = new Array<>();
     private BeedScrollPane beedScrollPane;
-    private final Table table;
+    private Table table;
+    public List<Result> list = new ArrayList<>();
+    private AssetManager assetManager;
+    private CloseActor closeActor;
+    private DetailActor detailActor;
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
         //瞄准怪兽舞台
         screenViewport = new ScreenViewport();
         beedStage = new BeedStage(screenViewport);
+        assetManager = new AssetManager();
+        initResouce();
 
         group = new Group();
-        myBeedActor = new MyBeedActor(new AssetManager());
+        myBeedActor = new MyBeedActor(assetManager);
         myBeedActor.setPosition(0, 0);
         myBeedActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group.addActor(myBeedActor);
 
-        beedBackActor = new BeedBackActor(new AssetManager(), myBeedActor);
+        beedBackActor = new BeedBackActor(assetManager, myBeedActor);
         group.addActor(beedBackActor);
 
-        initData();
         table = new Table();
         table.align(Align.top);
-        if (itemActors.size > 0) {
-            for (int i = 0; i < itemActors.size; i++) {
-                BeedItemActor beedItemActor = itemActors.get(i);
-                table.add(beedItemActor).width(Gdx.graphics.getWidth()).height(beedItemActor.getRealHeight());
-//                table.add(new Image(new Texture(Gdx.files.internal("beed_item_bg.png")))).width(Gdx.graphics.getWidth()).height(itemActors.get(i).getRealHeight());
-                table.row();
-            }
-        }
+
 
         beedScrollPane = new BeedScrollPane(table);
         beedScrollPane.setScrollingDisabled(true, false);//设置是否可上下、左右移动..这里设置了横向可移动、纵向不可移动
@@ -103,12 +104,78 @@ public class BeedScreen extends MyScreen {
         beedStage.addActor(group);
     }
 
-    private void initData() {
-        itemActors.clear();
+    private void initResouce() {
+        assetManager.load("beed_bg.png", Texture.class);
+        assetManager.load("beed_title.png", Texture.class);
+        assetManager.load("beed_back.png", Texture.class);
+        assetManager.load("beed_item_bg.png", Texture.class);
+        assetManager.load("beed_item_nouse.png", Texture.class);
+        assetManager.load("beed_item_use.png", Texture.class);
+        assetManager.load("beed_item_line.png", Texture.class);
+        assetManager.load("open_bg.png", Texture.class);
+        assetManager.load("open_line.png", Texture.class);
+        assetManager.load("open_close.png", Texture.class);
+        assetManager.finishLoading();
+    }
 
-        itemActors.add(new BeedItemActor(new AssetManager()));
-        itemActors.add(new BeedItemActor(new AssetManager()));
-        itemActors.add(new BeedItemActor(new AssetManager()));
+    private void initData(List<Result> lists) {
+        if (lists != null && lists.size() > 0) {
+            itemActors.clear();
+
+            for (int i = 0; i < lists.size(); i++) {
+                itemActors.add(new BeedItemActor(assetManager, lists.get(i)));
+            }
+            addListeners();
+            for (int i = 0; i < itemActors.size; i++) {
+                BeedItemActor beedItemActor = itemActors.get(i);
+                table.add(beedItemActor).width(Gdx.graphics.getWidth()).height(beedItemActor.getRealHeight());
+                table.row();
+            }
+        }
+    }
+
+    private void addListeners() {
+        for (int i = 0; i < itemActors.size; i++) {
+            BeedItemActor beedItemActor = itemActors.get(i);
+            beedItemActor.setListener(new BeedItemOnClickListener() {
+                @Override
+                public void onClick(BeedItemActor actor, Result item) {
+                    removeListeners();
+
+                    //绘制优惠券详情
+                    detailActor = new DetailActor(assetManager);
+                    group.addActor(detailActor);
+
+                    //绘制关闭按钮
+                    closeActor = new CloseActor(assetManager);
+
+                    closeActor.setListener(new BackOnClickListener() {
+                        @Override
+                        public void onClick() {
+                            if (detailActor != null)
+                                detailActor.setIsOpen(false);
+                            closeActor.setIsShow(false);
+                            addListeners();
+                        }
+                    });
+                    group.addActor(closeActor);
+
+                    detailActor.setResult(item);
+                    detailActor.setIsOpen(true);
+                    closeActor.setIsShow(true);
+                    beedScrollPane.setForceScroll(false, false);
+                    Gdx.app.error("list", "onClick   item ==" + item);
+                }
+            }, i);
+        }
+    }
+
+    private void removeListeners() {
+        if (itemActors.size > 0)
+            for (int i = 0; i < itemActors.size; i++) {
+                BeedItemActor beedItemActor = itemActors.get(i);
+                beedItemActor.removeThisListener();
+            }
     }
 
     @Override
@@ -138,15 +205,6 @@ public class BeedScreen extends MyScreen {
                 }
             });
         }
-        for (int i = 0; i < itemActors.size; i++) {
-            BeedItemActor beedItemActor = itemActors.get(i);
-            beedItemActor.setListener(new BeedItemOnClickListener() {
-                @Override
-                public void onClick(BeedItemActor actor, int item) {
-                    Gdx.app.error("list", "onClick   item ==" + item);
-                }
-            }, i);
-        }
     }
 
     @Override
@@ -167,7 +225,36 @@ public class BeedScreen extends MyScreen {
     public void resize(int width, int height) {
 //        screenViewport.update(width, height);
         Gdx.app.error("list", "resize");
+        getData();
         initListener();
+    }
+
+    private void getData() {
+        NetUtil.getInstance().get("http://182.92.31.114/rest/act/card/17888/15210420307", new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                String resultAsString = httpResponse.getResultAsString();
+                Gdx.app.error("http", resultAsString);
+                java.util.List<Result> lists = new Gson()
+                        .fromJson(resultAsString, new TypeToken<java.util.List<Result>>() {
+                        }.getType());
+                initData(lists);
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.error("http", t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+
+            }
+        });
+//        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+//        Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
+//                "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/card/17888/15210420307").build();
+//        Gdx.net.sendHttpRequest(httpRequest, );
     }
 
     @Override

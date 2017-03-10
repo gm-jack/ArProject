@@ -34,15 +34,9 @@ public class CatActor extends Actor {
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
     }
 
     private void initResources() {
-        assetManager.load("catch_button_normal.png", Texture.class);
-        assetManager.load("catch_button_press.png", Texture.class);
-        assetManager.load("success_open_normal.png", Texture.class);
-        assetManager.load("success_open_press.png", Texture.class);
-        assetManager.finishLoading();
 
         normal = new TextureRegion((Texture) assetManager.get("catch_button_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("catch_button_press.png"));
@@ -66,6 +60,7 @@ public class CatActor extends Actor {
     /**
      * true:显示按钮
      * false:隐藏按钮
+     *
      * @param isShow
      */
     public void setIsShow(boolean isShow) {
@@ -104,16 +99,19 @@ public class CatActor extends Actor {
         if (!isVisible()) {
             return;
         }
+        if (assetManager.update()) {
+            initResources();
+        }
         if (isShow) {
             if (!isDown) {
-                if (isCatch)
+                if (isCatch && press != null)
                     batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
-                else
+                else if (openNormal != null)
                     batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
             } else {
-                if (isCatch)
+                if (isCatch && normal != null)
                     batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
-                else
+                else if (openPress != null)
                     batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
             }
         }
@@ -122,5 +120,18 @@ public class CatActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
+        if (press != null)
+            press.getTexture().dispose();
+        if (openNormal != null)
+            openNormal.getTexture().dispose();
+        if (openPress != null)
+            openPress.getTexture().dispose();
     }
 }

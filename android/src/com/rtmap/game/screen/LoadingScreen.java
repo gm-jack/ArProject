@@ -1,5 +1,6 @@
 package com.rtmap.game.screen;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,53 +23,77 @@ import java.util.TimerTask;
  */
 public class LoadingScreen extends MyScreen {
 
-    private float deltaSum;
     private MyGame mGame;
     private GameStage loadingStage;
     private LoadingActor loadingActor;
-    private Timer timer;
-    private AssetManager asset;
-    private boolean isTimerOk = false;
+    private AssetManager assetManager;
 
-    public LoadingScreen(MyGame game, AssetManager assetManager) {
+    public LoadingScreen(MyGame game) {
+        super(game);
         this.mGame = game;
-        this.asset = assetManager;
+        assetManager = new AssetManager();
+        initLoadingAsset();
         initAssets();
     }
 
+    private void initLoadingAsset() {
+        assetManager.load("main_bg.png", Texture.class);
+        assetManager.load("loading_center.png", Texture.class);
+        assetManager.load("loading_in.png", Texture.class);
+        assetManager.load("loading_out.png", Texture.class);
+        assetManager.load("loading_rotate.png", Texture.class);
+        assetManager.load("loading_tip.png", Texture.class);
+        assetManager.load("loading_wait.png", Texture.class);
+    }
+
     public void initAssets() {
-        asset.load("main_bg.png", Texture.class);
-        asset.load("loading_center.png", Texture.class);
-        asset.load("loading_in.png", Texture.class);
-        asset.load("loading_out.png", Texture.class);
-        asset.load("loading_rotate.png", Texture.class);
-        asset.load("loading_tip.png", Texture.class);
-        asset.load("loading_wait.png", Texture.class);
-        asset.finishLoading();
+        mGame.asset.load("find_bg.png", Texture.class);
+        mGame.asset.load("aim_fail.png", Texture.class);
+        mGame.asset.load("aim_success.png", Texture.class);
+        mGame.asset.load("aim_white.png", Texture.class);
+        mGame.asset.load("aim_red.png", Texture.class);
+        mGame.asset.load("aim_blue.png", Texture.class);
+        mGame.asset.load("find_center.png", Texture.class);
+        mGame.asset.load("find_tip.png", Texture.class);
+        mGame.asset.load("find_text.png", Texture.class);
+        mGame.asset.load("find_location.png", Texture.class);
+        mGame.asset.load("find_left_normal.png", Texture.class);
+        mGame.asset.load("find_left_press.png", Texture.class);
+        mGame.asset.load("find_right_normal.png", Texture.class);
+        mGame.asset.load("find_right_press.png", Texture.class);
+        mGame.asset.load("catch_bg.png", Texture.class);
+        mGame.asset.load("catch_center.png", Texture.class);
+        mGame.asset.load("catch_circle.png", Texture.class);
+        mGame.asset.load("catch_good.png", Texture.class);
+        mGame.asset.load("catch_miss.png", Texture.class);
+        mGame.asset.load("catch_fail.png", Texture.class);
+        mGame.asset.load("catch_tip.png", Texture.class);
+        mGame.asset.load("catch_tip_text.png", Texture.class);
+        mGame.asset.load("success_title.png", Texture.class);
+        mGame.asset.load("success_center.png", Texture.class);
+        mGame.asset.load("open_bg.png", Texture.class);
+        mGame.asset.load("open_title.png", Texture.class);
+        mGame.asset.load("open_line.png", Texture.class);
+        mGame.asset.load("open_fail.png", Texture.class);
+        mGame.asset.load("catch_cover.png", Texture.class);
+        mGame.asset.load("catch_catch.png", Texture.class);
+        mGame.asset.load("catch_button_normal.png", Texture.class);
+        mGame.asset.load("catch_button_press.png", Texture.class);
+        mGame.asset.load("success_open_normal.png", Texture.class);
+        mGame.asset.load("success_open_press.png", Texture.class);
+        mGame.asset.load("open_close.png", Texture.class);
+        mGame.asset.load("open_again.png", Texture.class);
     }
 
     @Override
     public void show() {
-        isTimerOk = false;
         loadingStage = new LoadingStage(new ScreenViewport());
-//
-        loadingActor = new LoadingActor(asset);
+
+        loadingActor = new LoadingActor(assetManager);
         loadingActor.setPosition(0, 0);
         loadingActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        loadingStage.addActor(loadingActor);
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        isTimerOk = true;
-                    }
 
-                });
-            }
-        }, 3000);
+        loadingStage.addActor(loadingActor);
     }
 
     private float percent;
@@ -77,11 +102,11 @@ public class LoadingScreen extends MyScreen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (asset.update() && isTimerOk) {
+        if (mGame.asset.update()) {
             mGame.showAimScreen(false);
             return;
         }
-        percent = Interpolation.linear.apply(percent, asset.getProgress(), 0.1f);
+        percent = Interpolation.linear.apply(percent, mGame.asset.getProgress(), 0.1f);
         Gdx.app.log("percent", "percent---->" + percent);
         // 更新舞台逻辑
         loadingStage.act();
@@ -90,7 +115,7 @@ public class LoadingScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
-
+        setStopRerder(true);
     }
 
     @Override
@@ -114,15 +139,52 @@ public class LoadingScreen extends MyScreen {
         if (loadingStage != null) {
             loadingStage.dispose();
         }
-        asset.unload("main_bg.png");
-        asset.unload("loading_center.png");
-        asset.unload("loading_in.png");
-        asset.unload("loading_out.png");
-        asset.unload("loading_rotate.png");
-        asset.unload("loading_tip.png");
-        asset.unload("loading_wait.png");
-        if (timer != null) {
-            timer.cancel();
-        }
+        unLoadAsset();
+    }
+
+    private void unLoadAsset() {
+        assetManager.unload("main_bg.png");
+        assetManager.unload("loading_center.png");
+        assetManager.unload("loading_in.png");
+        assetManager.unload("loading_out.png");
+        assetManager.unload("loading_rotate.png");
+        assetManager.unload("loading_tip.png");
+        assetManager.unload("loading_wait.png");
+        mGame.asset.unload("find_bg.png");
+        mGame.asset.unload("aim_fail.png");
+        mGame.asset.unload("aim_success.png");
+        mGame.asset.unload("aim_white.png");
+        mGame.asset.unload("aim_red.png");
+        mGame.asset.unload("aim_blue.png");
+        mGame.asset.unload("find_center.png");
+        mGame.asset.unload("find_tip.png");
+        mGame.asset.unload("find_text.png");
+        mGame.asset.unload("find_location.png");
+        mGame.asset.unload("find_left_normal.png");
+        mGame.asset.unload("find_left_press.png");
+        mGame.asset.unload("find_right_normal.png");
+        mGame.asset.unload("find_right_press.png");
+        mGame.asset.unload("catch_bg.png");
+        mGame.asset.unload("catch_center.png");
+        mGame.asset.unload("catch_circle.png");
+        mGame.asset.unload("catch_good.png");
+        mGame.asset.unload("catch_miss.png");
+        mGame.asset.unload("catch_fail.png");
+        mGame.asset.unload("catch_tip.png");
+        mGame.asset.unload("catch_tip_text.png");
+        mGame.asset.unload("success_title.png");
+        mGame.asset.unload("success_center.png");
+        mGame.asset.unload("open_bg.png");
+        mGame.asset.unload("open_title.png");
+        mGame.asset.unload("open_line.png");
+        mGame.asset.unload("open_fail.png");
+        mGame.asset.unload("catch_cover.png");
+        mGame.asset.unload("catch_catch.png");
+        mGame.asset.unload("catch_button_normal.png");
+        mGame.asset.unload("catch_button_press.png");
+        mGame.asset.unload("success_open_normal.png");
+        mGame.asset.unload("success_open_press.png");
+        mGame.asset.unload("open_close.png");
+        mGame.asset.unload("open_again.png");
     }
 }

@@ -19,12 +19,13 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.rtmap.game.MagicCamera;
+import com.rtmap.game.MyGame;
 
 /**
  * Created by yxy on 2017/2/24.
  */
 public abstract class MyScreen implements Screen {
-    private AssetManager assets;
+    private MyGame game;
     public Array<GameObject> instances = new Array<GameObject>();
     private ModelBatch modelBatch;
     private Environment environment;
@@ -42,22 +43,26 @@ public abstract class MyScreen implements Screen {
     private boolean isAnimation = false;
 
     public MyScreen() {
-        modelBatch = new ModelBatch();
-        environment = new Environment();
+
+    }
+
+    public MyScreen(MyGame game) {
+        this.game = game;
+        if (modelBatch == null)
+            modelBatch = new ModelBatch();
+        if (environment == null)
+            environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.translate(0, 0, 0);
-        camera.lookAt(0, 0, 15);
-        camera.far = 1000.0f;
-        camera.near = 1f;
-
-        if (assets == null) {
-            assets = new AssetManager();
-            assets.load("wolf/Wolf_fbx.g3dj", Model.class);
-            assets.finishLoading();
+        if (camera == null) {
+            camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            camera.translate(0, 0, 0);
+            camera.lookAt(0, 0, 15);
+            camera.far = 1000.0f;
+            camera.near = 1f;
         }
+        game.asset.load("wolf/Wolf_fbx.g3dj", Model.class);
     }
 
     @Override
@@ -67,12 +72,10 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        if (isLoading)
-            doneLoading();
     }
 
     private void doneLoading() {
-        Model ship = assets.get("wolf/Wolf_fbx.g3dj", Model.class);
+        Model ship = game.asset.get("wolf/Wolf_fbx.g3dj", Model.class);
         GameObject shipInstance = new GameObject(ship);
         /**
          * 0:run2|Wolf_creep_cycle
@@ -109,7 +112,7 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        game.asset.unload("wolf/Wolf_fbx.g3dj");
     }
 
     /**
@@ -155,13 +158,15 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (!stopCamera) {
+        if (game.asset.update() && isLoading) {
+            doneLoading();
+        }
+        if (!stopCamera && camera != null) {
             camera.update();
         }
         if (instances.size > 0 && !stopRerder) {
             modelBatch.begin(camera);
             if (isVisible(camera, instances.get(0))) {
-//                Gdx.app.error("gdx", "isVisible()");
                 modelBatch.render(instances, environment);
             }
             modelBatch.end();
@@ -180,6 +185,7 @@ public abstract class MyScreen implements Screen {
             } else {
                 subNumber();
             }
+
         }
     }
 

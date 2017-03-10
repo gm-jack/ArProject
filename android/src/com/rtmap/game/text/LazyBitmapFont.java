@@ -18,10 +18,10 @@ import java.lang.reflect.Field;
  */
 public class LazyBitmapFont extends BitmapFont {
 
-    private static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
-    private static FreeTypeFontGenerator.FreeTypeBitmapFontData data;
-    private static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-    private static Array<LazyBitmapFont> fontArray = new Array<>();
+    private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
+    private FreeTypeFontGenerator.FreeTypeBitmapFontData data;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private Array<LazyBitmapFont> fontArray = new Array<>();
 
     private static FreeTypeFontGenerator GLOBAL_GEN = null;
 
@@ -29,36 +29,25 @@ public class LazyBitmapFont extends BitmapFont {
         GLOBAL_GEN = generator;
     }
 
-    public static LazyBitmapFont setFontSize(int fontSize, Color color) {
+    public LazyBitmapFont(int fontSize, Color color) {
         if (generator == null)
             throw new GdxRuntimeException("lazyBitmapFont global generator must be not null to use this constructor.");
-        LazyBitmapFont lazyBitmapFont = new LazyBitmapFont();
-        fontArray.add(lazyBitmapFont);
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.size = fontSize;
-        parameter = param;
-        data = new LazyBitmapFontData(generator, fontSize, lazyBitmapFont, color);
+        this.parameter = param;
+        this.data = new LazyBitmapFontData(generator, fontSize, this, color);
         try {
-            Field f = lazyBitmapFont.getClass().getSuperclass().getDeclaredField("data");
+            Field f = getClass().getSuperclass().getDeclaredField("data");
             f.setAccessible(true);
-            f.set(lazyBitmapFont, data);
+            f.set(this, data);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         genrateData();
-        return lazyBitmapFont;
     }
 
-    public static void clear() {
-        for (int i = 0; i < fontArray.size; i++) {
-            LazyBitmapFont lazyBitmapFont = fontArray.get(i);
-            if (lazyBitmapFont != null) {
-                lazyBitmapFont.dispose();
-            }
-        }
-    }
-
-    private static void genrateData() {
+    private void genrateData() {
         FreeType.Face face = null;
         try {
             Field field = generator.getClass().getDeclaredField("face");
@@ -116,6 +105,85 @@ public class LazyBitmapFont extends BitmapFont {
         }
 
     }
+//    public static LazyBitmapFont setFontSize(int fontSize, Color color) {
+//        if (generator == null)
+//            throw new GdxRuntimeException("lazyBitmapFont global generator must be not null to use this constructor.");
+//        LazyBitmapFont lazyBitmapFont = new LazyBitmapFont();
+//        fontArray.add(lazyBitmapFont);
+//        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+//        param.size = fontSize;
+//        parameter = param;
+//        data = new LazyBitmapFontData(generator, fontSize, lazyBitmapFont, color);
+//        try {
+//            Field f = lazyBitmapFont.getClass().getSuperclass().getDeclaredField("data");
+//            f.setAccessible(true);
+//            f.set(lazyBitmapFont, data);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        genrateData();
+//        return lazyBitmapFont;
+//    }
+
+
+//    private static void genrateData() {
+//        FreeType.Face face = null;
+//        try {
+//            Field field = generator.getClass().getDeclaredField("face");
+//            field.setAccessible(true);
+//            face = (FreeType.Face) field.get(generator);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//
+//        // set general font data
+//        FreeType.SizeMetrics fontMetrics = face.getSize().getMetrics();
+//
+//        // Set space glyph.
+//        Glyph spaceGlyph = data.getGlyph(' ');
+//        if (spaceGlyph == null) {
+//            spaceGlyph = new Glyph();
+//            spaceGlyph.xadvance = (int) data.spaceWidth;
+//            spaceGlyph.id = (int) ' ';
+//            data.setGlyph(' ', spaceGlyph);
+//        }
+//        if (spaceGlyph.width == 0)
+//            spaceGlyph.width = (int) (spaceGlyph.xadvance + data.padRight);
+//
+//        // set general font data
+//        data.flipped = parameter.flip;
+//        data.ascent = FreeType.toInt(fontMetrics.getAscender());
+//        data.descent = FreeType.toInt(fontMetrics.getDescender());
+//        data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
+//
+//        // determine x-height
+//        for (char xChar : data.xChars) {
+//            if (!face.loadChar(xChar, FreeType.FT_LOAD_DEFAULT))
+//                continue;
+//            data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
+//            break;
+//        }
+//        if (data.xHeight == 0)
+//            throw new GdxRuntimeException("No x-height character found in font");
+//        for (char capChar : data.capChars) {
+//            if (!face.loadChar(capChar, FreeType.FT_LOAD_DEFAULT))
+//                continue;
+//            data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
+//            break;
+//        }
+//
+//        // determine cap height
+//        if (data.capHeight == 1)
+//            throw new GdxRuntimeException("No cap character found in font");
+//        data.ascent = data.ascent - data.capHeight;
+//        data.down = -data.lineHeight;
+//        if (parameter.flip) {
+//            data.ascent = -data.ascent;
+//            data.down = -data.down;
+//        }
+//
+//    }
 
     @Override
     public void dispose() {

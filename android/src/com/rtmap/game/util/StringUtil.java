@@ -185,8 +185,6 @@ public class StringUtil {
 	/**
 	 * 将InputStream转换成某种字符编码的String
 	 *
-	 * @param in
-	 * @param encoding
 	 * @return
 	 * @throws Exception
 	 */

@@ -28,13 +28,9 @@ public class BeedActor extends Actor {
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
     }
 
     private void initResources() {
-        assetManager.load("find_right_normal.png", Texture.class);
-        assetManager.load("find_right_press.png", Texture.class);
-        assetManager.finishLoading();
 
         normal = new TextureRegion((Texture) assetManager.get("find_right_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_right_press.png"));
@@ -68,14 +64,26 @@ public class BeedActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (!isDown)
+        if (assetManager.update()) {
+            initResources();
+        }
+        if (!isDown && press != null)
             batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
-        else
+        else if (normal != null)
             batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
+        if (press != null)
+            press.getTexture().dispose();
     }
 }

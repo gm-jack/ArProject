@@ -52,23 +52,22 @@ public class AimScreen extends MyScreen {
     private boolean isAim = false;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
-        super();
+        super(game);
         this.mGame = game;
         this.androidLauncher = androidLauncher;
-
         //瞄准怪兽舞台
         aimStage = new AimStage(new ScreenViewport());
 
         group2 = new Group();
-        aimActor = new AimActor(new AssetManager());
+        aimActor = new AimActor(mGame.asset);
         aimActor.setPosition(0, 0);
         aimActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group2.addActor(aimActor);
 
-        backActor = new BackActor(new AssetManager());
+        backActor = new BackActor(mGame.asset);
         group2.addActor(backActor);
 
-        beedActor = new BeedActor(new AssetManager());
+        beedActor = new BeedActor(mGame.asset);
         group2.addActor(beedActor);
         aimStage.addActor(group2);
     }

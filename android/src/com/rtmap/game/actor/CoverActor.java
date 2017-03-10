@@ -28,7 +28,6 @@ public class CoverActor extends Actor {
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        initResources();
     }
 
     public void setIsFirst(boolean isFirst) {
@@ -36,10 +35,6 @@ public class CoverActor extends Actor {
     }
 
     private void initResources() {
-        assetManager.load("catch_cover.png", Texture.class);
-        assetManager.load("find_tip.png", Texture.class);
-        assetManager.load("catch_catch.png", Texture.class);
-        assetManager.finishLoading();
 
         normal = new TextureRegion((Texture) assetManager.get("catch_cover.png"));
         tip = new TextureRegion((Texture) assetManager.get("find_tip.png"));
@@ -52,7 +47,10 @@ public class CoverActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (isFirst) {
+        if (assetManager.update()) {
+            initResources();
+        }
+        if (isFirst&&normal!=null&&tip!=null&&catchs!=null) {
             batch.draw(normal, 0, 0, width, height);
             batch.draw(tip, width / 2 - tip.getRegionWidth() / 2, height / 2 - tip.getRegionHeight() / 2, tip.getRegionWidth(), tip.getRegionHeight());
             batch.draw(catchs, width / 2 - catchs.getRegionWidth() / 2, height / 2 - tip.getRegionHeight() / 2 + tip.getRegionHeight() / 5, catchs.getRegionWidth(), catchs.getRegionHeight());
@@ -62,5 +60,16 @@ public class CoverActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        if (normal != null)
+            normal.getTexture().dispose();
+        if (tip != null)
+            tip.getTexture().dispose();
+        if (catchs != null)
+            catchs.getTexture().dispose();
     }
 }

@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
@@ -43,7 +44,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     private static AndroidLauncher context;
     private static SoftReference<Context> contexts;
-
+    private AssetManager asset;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,8 @@ public class AndroidLauncher extends AndroidApplication {
         config.g = 8;
         config.b = 8;
         androidDeviceCameraController = new AndroidDeviceCameraController(this);
-        initialize(new MyGame(this, androidDeviceCameraController), config);
+        asset = new AssetManager();
+        initialize(new MyGame(this, androidDeviceCameraController,asset), config);
 //        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
 //        flMain.addView(view);
         if (graphics.getView() instanceof SurfaceView) {
