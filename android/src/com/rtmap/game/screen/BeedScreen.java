@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -70,6 +71,15 @@ public class BeedScreen extends MyScreen {
     private AssetManager assetManager;
     private CloseActor closeActor;
     private DetailActor detailActor;
+    private EventListener beedBackClickListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            Gdx.app.error("gdx", "back");
+            mGame.showOldScreen();
+            BeedScreen.this.dispose();
+            super.clicked(event, x, y);
+        }
+    };
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher) {
         this.mGame = game;
@@ -112,7 +122,7 @@ public class BeedScreen extends MyScreen {
         assetManager.load("beed_item_nouse.png", Texture.class);
         assetManager.load("beed_item_use.png", Texture.class);
         assetManager.load("beed_item_line.png", Texture.class);
-        assetManager.load("open_bg.png", Texture.class);
+        assetManager.load("beed_open_bg.png", Texture.class);
         assetManager.load("open_line.png", Texture.class);
         assetManager.load("open_close.png", Texture.class);
         assetManager.finishLoading();
@@ -140,6 +150,7 @@ public class BeedScreen extends MyScreen {
             beedItemActor.setListener(new BeedItemOnClickListener() {
                 @Override
                 public void onClick(BeedItemActor actor, Result item) {
+                    beedScrollPane.setFlickScroll(true);
                     removeListeners();
 
                     //绘制优惠券详情
@@ -155,7 +166,10 @@ public class BeedScreen extends MyScreen {
                             if (detailActor != null)
                                 detailActor.setIsOpen(false);
                             closeActor.setIsShow(false);
+                            beedScrollPane.setFlickScroll(true);
                             addListeners();
+                            if (beedBackActor != null && beedBackClickListener != null)
+                                beedBackActor.addListener(beedBackClickListener);
                         }
                     });
                     group.addActor(closeActor);
@@ -163,7 +177,8 @@ public class BeedScreen extends MyScreen {
                     detailActor.setResult(item);
                     detailActor.setIsOpen(true);
                     closeActor.setIsShow(true);
-                    beedScrollPane.setForceScroll(false, false);
+                    if (beedBackActor != null && beedBackClickListener != null)
+                        beedBackActor.removeListener(beedBackClickListener);
                     Gdx.app.error("list", "onClick   item ==" + item);
                 }
             }, i);
@@ -187,15 +202,7 @@ public class BeedScreen extends MyScreen {
     private void initListener() {
         Gdx.input.setInputProcessor(beedStage);
         if (beedBackActor != null)
-            beedBackActor.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.error("gdx", "back");
-                    mGame.showOldScreen();
-                    BeedScreen.this.dispose();
-                    super.clicked(event, x, y);
-                }
-            });
+            beedBackActor.addListener(beedBackClickListener);
         if (beedScrollPane != null) {
             beedScrollPane.addListener(new InputListener() {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

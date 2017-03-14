@@ -32,7 +32,7 @@ public class BeedBackActor extends Actor {
         regionHeight = myBeedActor.getTitleHeight();
         initResources();
     }
-
+    
     private void initResources() {
         beedList.add(new TextureRegion((Texture) assetManager.get("beed_back.png")));
 

@@ -157,7 +157,7 @@ public class BeedItemActor extends Actor {
 
         if (lazyBitmapFont2 == null)
             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(15), com.badlogic.gdx.graphics.Color.WHITE);
-        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + 250, getY() + realHeight * 0.636f, width, Align.left, false);
+        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + 250, getY() + realHeight * 0.48f + 100, width, Align.left, false);
     }
 
     @Override

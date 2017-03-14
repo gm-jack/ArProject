@@ -66,26 +66,26 @@ public class MyGame extends Game {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (!(getScreen() instanceof MainScreen || getScreen() instanceof BeedScreen)) {
-            if (mode == normal_Mode) {
-                Gdx.app.error("gdx", "normal_Mode");
-                if (androidDeviceCameraController != null) {
-                    androidDeviceCameraController.prepareCameraAsync();
-                    mode = prepare_Mode;
-                }
-            } else if (mode == prepare_Mode) {
-                Gdx.app.error("gdx", "prepare_Mode");
-                if (androidDeviceCameraController != null)
-                    if (androidDeviceCameraController.isReady()) {
-                        androidDeviceCameraController.startPreviewAsync();
-                        mode = preview_Mode;
-                    }
-            }
-        }
+//        if (!(getScreen() instanceof MainScreen || getScreen() instanceof BeedScreen)) {
+//            if (mode == normal_Mode) {
+//                Gdx.app.error("gdx", "normal_Mode");
+//                if (androidDeviceCameraController != null) {
+//                    androidDeviceCameraController.prepareCameraAsync();
+//                    mode = prepare_Mode;
+//                }
+//            } else if (mode == prepare_Mode) {
+//                Gdx.app.error("gdx", "prepare_Mode");
+//                if (androidDeviceCameraController != null)
+//                    if (androidDeviceCameraController.isReady()) {
+//                        androidDeviceCameraController.startPreviewAsync();
+//                        mode = preview_Mode;
+//                    }
+//            }
+//        }
         super.render();
     }
 

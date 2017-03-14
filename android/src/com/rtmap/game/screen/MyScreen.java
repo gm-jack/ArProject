@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -25,6 +28,8 @@ import com.rtmap.game.MyGame;
  * Created by yxy on 2017/2/24.
  */
 public abstract class MyScreen implements Screen {
+
+    private int lineCircle;
     private MyGame game;
     public Array<GameObject> instances = new Array<GameObject>();
     private ModelBatch modelBatch;
@@ -42,12 +47,27 @@ public abstract class MyScreen implements Screen {
     private float num = 0;
     private boolean isAnimation = false;
 
+    private ShapeRenderer mShapeRenderer;
+    private Color lineColor = Color.BLACK;
+    private boolean isLineShow = true;
+    private int width;
+    private int height;
+
     public MyScreen() {
 
     }
 
     public MyScreen(MyGame game) {
         this.game = game;
+
+        mShapeRenderer = new ShapeRenderer();
+        mShapeRenderer.setAutoShapeType(true);
+        mShapeRenderer.setColor(lineColor);
+
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+        lineCircle = width / 2 + 100;
+
         if (modelBatch == null)
             modelBatch = new ModelBatch();
         if (environment == null)
@@ -58,7 +78,7 @@ public abstract class MyScreen implements Screen {
         if (camera == null) {
             camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             camera.translate(0, 0, 0);
-            camera.lookAt(0, 0, 15);
+            camera.lookAt(0, 0, 10);
             camera.far = 1000.0f;
             camera.near = 1f;
         }
@@ -163,6 +183,35 @@ public abstract class MyScreen implements Screen {
         }
         if (!stopCamera && camera != null) {
             camera.update();
+            if (isLineShow) {
+                float x = 0;
+                float y = 0;
+
+                Vector3 project = camera.project(position);
+                Gdx.app.error("camera", "Vector3 x == " + project.x + "  y==  " + project.y + "  z==  " + project.z);
+//                Gdx.app.error("camera", "graphics width == " + width + "  height==  " + height);
+                float maxLeftPointY = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - (-width / 2) * (-width / 2))));
+                float maxRightPointY = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - width / 2 * width / 2)));
+                float minLeftPointY = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - (-width / 2) * (-width / 2))));
+                float minRightPointY = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - width / 2 * width / 2)));
+                if (project.x <= 0 && project.y <= maxLeftPointY && project.y >= minLeftPointY) {
+                    x = 0;
+                    y = (-width / 2) / (project.x - width / 2) * (project.y - height / 2) + height / 2;
+                } else if (project.x >= width && project.y <= maxRightPointY && project.y >= minRightPointY) {
+                    x = width;
+                    y = (width / 2) / (project.x - width / 2) * (project.y - height / 2) + height / 2;
+                } else {
+                    x = project.x;
+                    if (project.y >= height / 2)
+                        y = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - (x - width / 2) * (x - width / 2))));
+                    else if (project.y < height / 2)
+                        y = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - (x - width / 2) * (x - width / 2))));
+                }
+
+                mShapeRenderer.begin();
+                mShapeRenderer.line(width / 2, height / 2, x, y);
+                mShapeRenderer.end();
+            }
         }
         if (instances.size > 0 && !stopRerder) {
             modelBatch.begin(camera);
@@ -171,7 +220,7 @@ public abstract class MyScreen implements Screen {
             }
             modelBatch.end();
             animationController.update(Gdx.graphics.getDeltaTime());
-            Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            Ray ray = camera.getPickRay(width / 2, height / 2);
             final GameObject instance = instances.get(0);
             instance.transform.getTranslation(position);
             position.add(instance.center);
