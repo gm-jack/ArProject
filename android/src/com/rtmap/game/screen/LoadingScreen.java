@@ -8,6 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncResult;
+import com.badlogic.gdx.utils.async.AsyncTask;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.LoadingActor;
@@ -27,6 +32,7 @@ public class LoadingScreen extends MyScreen {
     private GameStage loadingStage;
     private LoadingActor loadingActor;
     private AssetManager assetManager;
+    private boolean isFirst = true;
 
     public LoadingScreen(MyGame game) {
         super(game);
@@ -34,6 +40,7 @@ public class LoadingScreen extends MyScreen {
         assetManager = new AssetManager();
         initLoadingAsset();
         initAssets();
+
     }
 
     private void initLoadingAsset() {
@@ -83,11 +90,13 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("success_open_press.png", Texture.class);
         mGame.asset.load("open_close.png", Texture.class);
         mGame.asset.load("open_again.png", Texture.class);
+        mGame.asset.load("cover.png", Texture.class);
     }
 
     @Override
     public void show() {
         loadingStage = new LoadingStage(new ScreenViewport());
+//        loadingStage = new LoadingStage(new ScalingViewport(Scaling.stretch, 750, 1334));
 
         loadingActor = new LoadingActor(assetManager);
         loadingActor.setPosition(0, 0);
@@ -102,12 +111,34 @@ public class LoadingScreen extends MyScreen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (mGame.asset.update()) {
-            mGame.showAimScreen(false);
-            return;
-        }
+//        if (isFirst)
+//            new Thread() {
+//                public boolean isRun = true;
+//                @Override
+//                public void run() {
+//                    isFirst = false;
+//                    while (isRun) {
+//                        if (mGame.asset.update()) {
+//                            isRun = false;
+//                            Gdx.app.postRunnable(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if (mGame != null)
+//                                        mGame.showAimScreen(false);
+//                                }
+//                            });
+//                        }
+//                    }
+//                }
+//            }.start();
         percent = Interpolation.linear.apply(percent, mGame.asset.getProgress(), 0.1f);
         Gdx.app.log("percent", "percent---->" + percent);
+        if (mGame.asset.update()) {
+            if (mGame != null)
+                mGame.showAimScreen(false);
+            return;
+        }
+
         // 更新舞台逻辑
         loadingStage.act();
         loadingStage.draw();
@@ -186,5 +217,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("success_open_press.png");
         mGame.asset.unload("open_close.png");
         mGame.asset.unload("open_again.png");
+        mGame.asset.unload("cover.png");
     }
 }

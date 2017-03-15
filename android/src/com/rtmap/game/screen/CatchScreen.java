@@ -25,6 +25,7 @@ import com.rtmap.game.interfaces.CatchListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.stage.CatchStage;
+import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.MD5Encoder;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
@@ -227,7 +228,7 @@ public class CatchScreen extends MyScreen {
     }
 
     private void setResult() {
-        NetUtil.getInstance().get("http://182.92.31.114/rest/act/17888/15210420307", new Net.HttpResponseListener() {
+        NetUtil.getInstance().get(Contacts.WIN_NET, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String resultAsString = httpResponse.getResultAsString();

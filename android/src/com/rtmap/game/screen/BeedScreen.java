@@ -43,6 +43,7 @@ import com.rtmap.game.scrollpane.BeedScrollPane;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
 
 import org.json.JSONArray;
@@ -125,6 +126,7 @@ public class BeedScreen extends MyScreen {
         assetManager.load("beed_open_bg.png", Texture.class);
         assetManager.load("open_line.png", Texture.class);
         assetManager.load("open_close.png", Texture.class);
+        assetManager.load("cover.png", Texture.class);
         assetManager.finishLoading();
     }
 
@@ -150,7 +152,9 @@ public class BeedScreen extends MyScreen {
             beedItemActor.setListener(new BeedItemOnClickListener() {
                 @Override
                 public void onClick(BeedItemActor actor, Result item) {
-                    beedScrollPane.setFlickScroll(true);
+                    beedScrollPane.setScrollingDisabled(true, true);
+                    beedScrollPane.setForceScroll(false, false);
+                    beedScrollPane.setFlickScroll(false);
                     removeListeners();
 
                     //绘制优惠券详情
@@ -166,6 +170,8 @@ public class BeedScreen extends MyScreen {
                             if (detailActor != null)
                                 detailActor.setIsOpen(false);
                             closeActor.setIsShow(false);
+                            beedScrollPane.setScrollingDisabled(true, false);
+                            beedScrollPane.setForceScroll(false, true);
                             beedScrollPane.setFlickScroll(true);
                             addListeners();
                             if (beedBackActor != null && beedBackClickListener != null)
@@ -237,7 +243,7 @@ public class BeedScreen extends MyScreen {
     }
 
     private void getData() {
-        NetUtil.getInstance().get("http://182.92.31.114/rest/act/card/17888/15210420307", new Net.HttpResponseListener() {
+        NetUtil.getInstance().get(Contacts.LIST_NET, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String resultAsString = httpResponse.getResultAsString();
@@ -280,6 +286,16 @@ public class BeedScreen extends MyScreen {
 
     @Override
     public void dispose() {
+//        assetManager.unload("beed_bg.png");
+//        assetManager.unload("beed_title.png");
+//        assetManager.unload("beed_back.png");
+//        assetManager.unload("beed_item_bg.png");
+//        assetManager.unload("beed_item_nouse.png");
+//        assetManager.unload("beed_item_use.png");
+//        assetManager.unload("beed_item_line.png");
+//        assetManager.unload("beed_open_bg.png");
+//        assetManager.unload("open_line.png");
+//        assetManager.unload("open_close.png");
         // 场景被销毁时释放资源
         if (beedStage != null) {
             beedStage.dispose();

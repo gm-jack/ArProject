@@ -120,11 +120,11 @@ public class CatchActor extends Actor {
             batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
 
             int regionHeight = texReArray.get(1).getRegionHeight();
-//            int minRadius = regionHeight * 3 / 10;
-//            int maxRadius = regionHeight * 12 / 25;
+            int minRadius = regionHeight * 3 / 10;
+            int maxRadius = regionHeight * 12 / 25;
             //测试
-            int minRadius = 0;
-            int maxRadius = 1000;
+//            int minRadius = 0;
+//            int maxRadius = 1000;
             if (isBig) {
                 batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
                 if (!isStop) {
@@ -203,6 +203,8 @@ public class CatchActor extends Actor {
             }
 
         } else {
+            //绘制遮罩
+            batch.draw(successTexRe.get(2), 0, 0, width, height);
             if (isSuccess) {
                 if (isOpen) {
                     batch.draw(openTexRe.get(0), 0.07f * width, height * 0.11f, width * 0.86f, height * 0.79f);
@@ -326,9 +328,13 @@ public class CatchActor extends Actor {
         if (isCatch) {
             float i = width * 1f / mKeyFrames[0].getRegionWidth();
             float regionHeight = mKeyFrames[0].getRegionHeight() * i;
+            //绘制遮罩
+            batch.draw(successTexRe.get(2), 0, 0, width, height);
             batch.draw(mKeyFrames[0], 0, height / 2 - regionHeight / 2, width, regionHeight);
         }
         if (isCatchTip) {
+            //绘制遮罩
+            batch.draw(successTexRe.get(2), 0, 0, width, height);
             batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
             batch.draw(mKeyFrames[3], width / 2 - mKeyFrames[3].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[3].getRegionWidth(), mKeyFrames[3].getRegionHeight());
             float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
@@ -399,6 +405,7 @@ public class CatchActor extends Actor {
         successTexRe = new ArrayList<>();
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_center.png")));
+        successTexRe.add(new TextureRegion((Texture) assetManager.get("cover.png")));
 
         openTexRe = new ArrayList();
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_bg.png")));

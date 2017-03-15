@@ -17,6 +17,7 @@ import com.rtmap.game.interfaces.StartOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.NetUtil;
+import com.rtmap.game.util.PixmapUtil;
 import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class DetailActor extends Actor {
     private List<TextureRegion> beedList = new ArrayList<>();
     private float bgH;
     private float bgW;
+    private int headWidth = 100;
 
     public DetailActor(AssetManager assetManager) {
         super();
@@ -82,7 +84,10 @@ public class DetailActor extends Actor {
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         Gdx.gl20.glClearColor(0, 0, 0, 0.5f);
+        if (beedList.size() < 0)
+            return;
         if (isOpen) {
+            batch.draw(beedList.get(2), 0, 0, width, height);
             if (result == null)
                 return;
             //从顶部向下绘制
@@ -94,22 +99,22 @@ public class DetailActor extends Actor {
 
             batch.draw(beedList.get(1), width / 2 - beedList.get(1).getRegionWidth() / 2, oriY + bgH * 0.697f, beedList.get(1).getRegionWidth(), beedList.get(1).getRegionHeight());
 
-            float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(13), "店内部分商品参加活动");
-            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(13), "12627238383333333");
+            float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "店内部分商品参加活动");
+            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "12627238383333333");
             if (lazyBitmapFont2 == null)
-                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(13), Color.WHITE);
-            lazyBitmapFont2.draw(batch, "店内部分商品参加活动", width / 2 - fontWidth2 / 2, oriY + bgH * 0.697f - ScreenUtil.dp2px(13), width * 0.707f, Align.left, true);
-            lazyBitmapFont2.draw(batch, "12627238383333333", width / 2 - qrWidth / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(13), width * 0.707f, Align.left, true);
+                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+            lazyBitmapFont2.draw(batch, "店内部分商品参加活动", width / 2 - fontWidth2 / 2, oriY + bgH * 0.697f - ScreenUtil.dp2px(10), width * 0.707f, Align.left, true);
+            lazyBitmapFont2.draw(batch, "12627238383333333", width / 2 - fontWidth3 / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(10), width * 0.707f, Align.left, true);
 
             if (lazyBitmapFont3 == null)
-                lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+                lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(11), Color.WHITE);
 //            lazyBitmapFont3.draw(batch, "11111111111111111", width / 2 - qrWidth / 2, height * 0.377f - 20, width, Align.left, true);
-            float length = ScreenUtil.getLength(ScreenUtil.dp2px(12), "星巴克西單大悅城");
-            lazyBitmapFont3.draw(batch, "星巴克西單大悅城", width / 2 - length / 2, oriY + bgH * 0.831f - ScreenUtil.dp2px(12), width * 0.707f, Align.left, true);
-            float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "兑换地址：" + result.getShopName());
+            float length = ScreenUtil.getLength(ScreenUtil.dp2px(11), result.getMain());
+            lazyBitmapFont3.draw(batch, result.getMain(), width / 2 - length / 2, oriY + bgH * 0.831f - 15, width * 0.707f, Align.left, true);
+            float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(11), "兑换地址：" + result.getShopName());
             lazyBitmapFont3.draw(batch, "兑换地址：" + result.getShopName(), width / 2 - length2 / 2, oriY + bgH * 0.225f, width * 0.707f, Align.left, true);
 //            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限: 2016.09.30-2017.06.30");
-            lazyBitmapFont3.draw(batch, "有效期限: 2016.09.30-2017.06.30", width / 2 - length2 / 2, oriY + bgH * 0.225f - ScreenUtil.dp2px(12), width * 0.707f, Align.left, true);
+            lazyBitmapFont3.draw(batch, "有效期限: " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length2 / 2, oriY + bgH * 0.225f - ScreenUtil.dp2px(11), width * 0.707f, Align.left, true);
 
             if (null != result && null != result.getImgUrl() && texture1 == null) {
                 NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
@@ -139,6 +144,7 @@ public class DetailActor extends Actor {
                                     // 把字节数组加载为 Pixmap
                                     Pixmap pixmap = new Pixmap(result, 0, result.length);
                                     // 把 pixmap 加载为纹理
+
                                     texture1 = new Texture(pixmap);
                                     // pixmap 不再需要使用到, 释放内存占用
                                     pixmap.dispose();
@@ -192,7 +198,7 @@ public class DetailActor extends Actor {
                                     // 把字节数组加载为 Pixmap
                                     Pixmap pixmap = new Pixmap(result, 0, result.length);
                                     // 把 pixmap 加载为纹理
-                                    texture = new Texture(pixmap);
+                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, headWidth / 2, headWidth, headWidth));
                                     // pixmap 不再需要使用到, 释放内存占用
                                     pixmap.dispose();
                                 }
@@ -214,7 +220,7 @@ public class DetailActor extends Actor {
                 });
             } else {
                 if (texture != null)
-                    batch.draw(texture, width / 2 - 50, oriY + bgH * 0.834f, 100, 100);
+                    batch.draw(texture, width / 2 - 50, oriY + bgH * 0.834f, headWidth, headWidth);
             }
         }
     }
@@ -226,6 +232,7 @@ public class DetailActor extends Actor {
     private void initResouces() {
         beedList.add(new TextureRegion((Texture) assetManager.get("beed_open_bg.png")));
         beedList.add(new TextureRegion((Texture) assetManager.get("open_line.png")));
+        beedList.add(new TextureRegion((Texture) assetManager.get("cover.png")));
     }
 
     public void setResult(Result item) {

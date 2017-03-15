@@ -71,7 +71,6 @@ public class LoadingActor extends Actor {
         if (changeRadius >= startX / 2 || isShow) {
             if (startX - changeRadius2 >= -startX / 4) {
                 isShow = true;
-                Gdx.app.error("gdx", changeRadius + "   " + width / 4);
                 batch.draw(texReArray.get(6), startX - changeRadius2, startY - changeRadius2, changeRadius2 * 2, changeRadius2 * 2);
                 changeRadius2 += radius;
             } else {
