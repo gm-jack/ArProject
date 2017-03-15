@@ -6,7 +6,9 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -30,6 +32,7 @@ import com.rtmap.game.MyGame;
 public abstract class MyScreen implements Screen {
 
     private int lineCircle;
+    private float lineLittleCircle;
     private MyGame game;
     public Array<GameObject> instances = new Array<GameObject>();
     private ModelBatch modelBatch;
@@ -52,6 +55,9 @@ public abstract class MyScreen implements Screen {
     private boolean isLineShow = true;
     private int width;
     private int height;
+    private SpriteBatch spriteBatch;
+    private TextureRegion texture;
+    private double angle;
 
     public MyScreen() {
 
@@ -59,6 +65,7 @@ public abstract class MyScreen implements Screen {
 
     public MyScreen(MyGame game) {
         this.game = game;
+        spriteBatch = new SpriteBatch();
 
         mShapeRenderer = new ShapeRenderer();
         mShapeRenderer.setAutoShapeType(true);
@@ -66,7 +73,9 @@ public abstract class MyScreen implements Screen {
 
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+
         lineCircle = width / 2 + 100;
+        lineLittleCircle = width * 0.202f;
 
         if (modelBatch == null)
             modelBatch = new ModelBatch();
@@ -82,7 +91,6 @@ public abstract class MyScreen implements Screen {
             camera.far = 1000.0f;
             camera.near = 1f;
         }
-        game.asset.load("wolf/Wolf_fbx.g3dj", Model.class);
     }
 
     @Override
@@ -95,6 +103,7 @@ public abstract class MyScreen implements Screen {
     }
 
     private void doneLoading() {
+        texture = new TextureRegion(game.asset.get("find_location.png", Texture.class));
         Model ship = game.asset.get("wolf/Wolf_fbx.g3dj", Model.class);
         GameObject shipInstance = new GameObject(ship);
         /**
@@ -132,7 +141,6 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void dispose() {
-        game.asset.unload("wolf/Wolf_fbx.g3dj");
     }
 
     /**
@@ -207,7 +215,24 @@ public abstract class MyScreen implements Screen {
                     else if (project.y < height / 2)
                         y = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - (x - width / 2) * (x - width / 2))));
                 }
+                double c = Math.sqrt((project.x - width / 2) * (project.x - width / 2) + (project.y - height / 2) * (project.y - height / 2));
 
+//                if (project.x >= 0 && project.y >= 0) {
+//                    angle = 360 - Math.asin(project.x / c);
+//                } else if (project.x > 0 && project.y < 0) {
+//                    angle = 270 - Math.asin(project.y / c);
+//                } else if (project.x < 0 && project.y > 0) {
+//                    angle = Math.asin(project.x / c);
+//                } else if (project.x < 0 && project.y <= 0) {
+//                    angle = -Math.asin(project.y / c) - 90;
+//                }
+
+                Gdx.app.error("angle", "angle        " + angle);
+                if (texture != null) {
+                    spriteBatch.begin();
+                    spriteBatch.draw(texture, width / 2 - texture.getRegionWidth() / 2, height / 2 - texture.getRegionHeight() / 2, texture.getRegionWidth() / 2, texture.getRegionHeight() / 2, texture.getRegionWidth(), texture.getRegionHeight(), 3, 3, (float) (-angle));
+                    spriteBatch.end();
+                }
                 mShapeRenderer.begin();
                 mShapeRenderer.line(width / 2, height / 2, x, y);
                 mShapeRenderer.end();

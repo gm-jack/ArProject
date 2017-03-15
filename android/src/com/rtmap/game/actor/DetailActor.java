@@ -112,9 +112,9 @@ public class DetailActor extends Actor {
             float length = ScreenUtil.getLength(ScreenUtil.dp2px(11), result.getMain());
             lazyBitmapFont3.draw(batch, result.getMain(), width / 2 - length / 2, oriY + bgH * 0.831f - 15, width * 0.707f, Align.left, true);
             float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(11), "兑换地址：" + result.getShopName());
-            lazyBitmapFont3.draw(batch, "兑换地址：" + result.getShopName(), width / 2 - length2 / 2, oriY + bgH * 0.225f, width * 0.707f, Align.left, true);
+            lazyBitmapFont3.draw(batch, "兑换地址：" + result.getShopName(), width / 2 - length2 / 2, oriY + bgH * 0.24f, width * 0.707f, Align.left, true);
 //            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限: 2016.09.30-2017.06.30");
-            lazyBitmapFont3.draw(batch, "有效期限: " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length2 / 2, oriY + bgH * 0.225f - ScreenUtil.dp2px(11), width * 0.707f, Align.left, true);
+            lazyBitmapFont3.draw(batch, "有效期限: " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length2 / 2, oriY + bgH * 0.24f - ScreenUtil.dp2px(11), width * 0.707f, Align.left, true);
 
             if (null != result && null != result.getImgUrl() && texture1 == null) {
                 NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {

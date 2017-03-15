@@ -91,6 +91,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("open_close.png", Texture.class);
         mGame.asset.load("open_again.png", Texture.class);
         mGame.asset.load("cover.png", Texture.class);
+        mGame.asset.load("wolf/Wolf_fbx.g3dj", Model.class);
     }
 
     @Override
@@ -218,5 +219,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("open_close.png");
         mGame.asset.unload("open_again.png");
         mGame.asset.unload("cover.png");
+        mGame.asset.unload("wolf/Wolf_fbx.g3dj.png");
     }
 }
