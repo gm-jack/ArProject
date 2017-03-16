@@ -226,7 +226,7 @@ public abstract class MyScreen implements Screen {
 //                } else if (project.x < 0 && project.y <= 0) {
 //                    angle = -Math.asin(project.y / c) - 90;
 //                }
-
+                angle = Math.asin(project.x / c) * 180 / Math.PI;
                 Gdx.app.error("angle", "angle        " + angle);
                 if (texture != null) {
                     spriteBatch.begin();

@@ -92,12 +92,11 @@ public class AimActor extends Actor {
                 }
                 batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
                 for (int i = 0; i < number; i++) {
-                    if (delta < 0.5f && (number - 1) == i) {
-                        Gdx.app.error("gdx", "白块111111111111111111");
-                        batch.draw(mKeyFrames[2], aimWidth, aimHeight, mKeyFrames[2].getRegionWidth() / 2, mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
-                    } else {
+//                    if (delta < 0.5f && (number - 1) == i) {
+//                        batch.draw(mKeyFrames[2], aimWidth, aimHeight, mKeyFrames[2].getRegionWidth() / 2, mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+//                    } else {
                         batch.draw(mKeyFrames[0], aimWidth, aimHeight, mKeyFrames[0].getRegionWidth() / 2, mKeyFrames[0].getRegionHeight() / 2, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
-                    }
+//                    }
                 }
                 if (delta > 1f) {
                     delta = 0;
@@ -179,7 +178,6 @@ public class AimActor extends Actor {
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("aim_blue.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("aim_red.png"));
-        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("aim_white.png"));
     }
 
     @Override

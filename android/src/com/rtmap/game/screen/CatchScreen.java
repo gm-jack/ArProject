@@ -1,6 +1,7 @@
 package com.rtmap.game.screen;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AgainActor;
@@ -228,17 +230,20 @@ public class CatchScreen extends MyScreen {
     }
 
     private void setResult() {
-        NetUtil.getInstance().get(Contacts.WIN_NET, new Net.HttpResponseListener() {
+        catActor.removeListener();
+        catActor.setIsShow(false);
+        NetUtil.getInstance().getConnection(Contacts.WIN_NET, new NetUtil.HttpResponse() {
             @Override
-            public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String resultAsString = httpResponse.getResultAsString();
-                Gdx.app.error("http", "handleHttpResponse  ==  " + resultAsString);
-                catActor.removeListener();
-                catActor.setIsShow(false);
-                Result result = new Gson().fromJson(resultAsString, Result.class);
-//                Result result = new Json().fromJson(Result.class, httpResponse.getResultAsStream());
-                Gdx.app.error("http", "result  ==  " + result.toString());
-                if ("0".equals(result.getCode())) {
+            public void responseString(String response) {
+                Gdx.app.error("http", "responseString  ==  " + response);
+
+                Result result = null;
+                try {
+                    result = new Gson().fromJson(response, Result.class);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+                if (result != null && "0".equals(result.getCode())) {
                     isWin = true;
                     catchActor.setIsWin(isWin);
                     catchActor.setData(result);
@@ -252,19 +257,14 @@ public class CatchScreen extends MyScreen {
             }
 
             @Override
-            public void failed(Throwable t) {
-                Gdx.app.error("http", t.getMessage());
-            }
-
-            @Override
-            public void cancelled() {
-                Gdx.app.error("http", "请求取消");
+            public void responseFail() {
+                isWin = false;
+                catchActor.setIsWin(isWin);
+                catchActor.setIsOpen(true);
+                againActor.setIsShow(!isWin);
+                closeActor.setIsShow(true);
             }
         });
-//        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
-//        Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
-//                "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/17888/15210420307").build();
-//        Gdx.net.sendHttpRequest(httpRequest, );
     }
 
     @Override

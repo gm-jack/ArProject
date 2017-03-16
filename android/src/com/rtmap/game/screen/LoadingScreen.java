@@ -57,7 +57,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("find_bg.png", Texture.class);
         mGame.asset.load("aim_fail.png", Texture.class);
         mGame.asset.load("aim_success.png", Texture.class);
-        mGame.asset.load("aim_white.png", Texture.class);
         mGame.asset.load("aim_red.png", Texture.class);
         mGame.asset.load("aim_blue.png", Texture.class);
         mGame.asset.load("find_center.png", Texture.class);
@@ -185,7 +184,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("find_bg.png");
         mGame.asset.unload("aim_fail.png");
         mGame.asset.unload("aim_success.png");
-        mGame.asset.unload("aim_white.png");
         mGame.asset.unload("aim_red.png");
         mGame.asset.unload("aim_blue.png");
         mGame.asset.unload("find_center.png");
