@@ -40,11 +40,11 @@ public class DetailActor extends Actor {
     private LazyBitmapFont lazyBitmapFont3;
     private LazyBitmapFont lazyBitmapFont2;
     private LazyBitmapFont lazyBitmapFont1;
-    private float qrWidth = 400;
+    private float qrWidth = 0;
     private List<TextureRegion> beedList = new ArrayList<>();
     private float bgH;
     private float bgW;
-    private int headWidth = 100;
+    private float headWidth = 0;
 
     public DetailActor(AssetManager assetManager) {
         super();
@@ -54,8 +54,11 @@ public class DetailActor extends Actor {
         initResouces();
         oriY = height * 0.11f;
         oriX = 0.07f * width;
-        bgH = height * 0.79f;
+        bgH = height * 0.8f;
         bgW = width * 0.86f;
+
+        qrWidth = bgH * 0.275f;
+        headWidth = bgH * 0.076f;
     }
 
     public void setListener(final StartOnClickListener startOnClickListener) {
@@ -92,29 +95,29 @@ public class DetailActor extends Actor {
                 return;
             //从顶部向下绘制
             batch.draw(beedList.get(0), oriX, oriY, bgW, bgH);
-            float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "满100减40");
+            float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(20), "满100减40");
             if (lazyBitmapFont1 == null)
-                lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
-            lazyBitmapFont1.draw(batch, "满100减40", width / 2 - fontWidth1 / 2, oriY + bgH * 0.697f + beedList.get(1).getRegionHeight() + ScreenUtil.dp2px(16), width * 0.707f, Align.left, true);
+                lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(20), Color.WHITE);
+            lazyBitmapFont1.draw(batch, "满100减40", width / 2 - fontWidth1 / 2, oriY + bgH * 0.74f , width * 0.707f, Align.left, true);
 
-            batch.draw(beedList.get(1), width / 2 - beedList.get(1).getRegionWidth() / 2, oriY + bgH * 0.697f, beedList.get(1).getRegionWidth(), beedList.get(1).getRegionHeight());
+            batch.draw(beedList.get(1), width / 2 - beedList.get(1).getRegionWidth() / 2, oriY + bgH * 0.690f, beedList.get(1).getRegionWidth(), beedList.get(1).getRegionHeight());
 
-            float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "店内部分商品参加活动");
-            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "12627238383333333");
+            float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "店内部分商品参加活动");
+            float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "12627238383333333");
             if (lazyBitmapFont2 == null)
-                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
-            lazyBitmapFont2.draw(batch, "店内部分商品参加活动", width / 2 - fontWidth2 / 2, oriY + bgH * 0.697f - ScreenUtil.dp2px(10), width * 0.707f, Align.left, true);
-            lazyBitmapFont2.draw(batch, "12627238383333333", width / 2 - fontWidth3 / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(10), width * 0.707f, Align.left, true);
+                lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
+            lazyBitmapFont2.draw(batch, "店内部分商品参加活动", width / 2 - fontWidth2 / 2, oriY + bgH * 0.690f - ScreenUtil.dp2px(14) / 2, width * 0.707f, Align.left, true);
+            lazyBitmapFont2.draw(batch, "12627238383333333", width / 2 - fontWidth3 / 2, oriY + bgH * 0.348f - ScreenUtil.dp2px(14) / 2, width * 0.707f, Align.left, true);
 
             if (lazyBitmapFont3 == null)
-                lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(11), Color.WHITE);
+                lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
 //            lazyBitmapFont3.draw(batch, "11111111111111111", width / 2 - qrWidth / 2, height * 0.377f - 20, width, Align.left, true);
-            float length = ScreenUtil.getLength(ScreenUtil.dp2px(11), result.getMain());
+            float length = ScreenUtil.getLength(ScreenUtil.dp2px(12), result.getMain());
             lazyBitmapFont3.draw(batch, result.getMain(), width / 2 - length / 2, oriY + bgH * 0.831f - 15, width * 0.707f, Align.left, true);
-            float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(11), "兑换地址：" + result.getShopName());
+            float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "兑换地址：" + result.getShopName());
             lazyBitmapFont3.draw(batch, "兑换地址：" + result.getShopName(), width / 2 - length2 / 2, oriY + bgH * 0.24f, width * 0.707f, Align.left, true);
-//            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限: 2016.09.30-2017.06.30");
-            lazyBitmapFont3.draw(batch, "有效期限: " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length2 / 2, oriY + bgH * 0.24f - ScreenUtil.dp2px(11), width * 0.707f, Align.left, true);
+            float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "有效期限：" + result.getStartTime() + "-" + result.getEndTime());
+            lazyBitmapFont3.draw(batch, "有效期限： " + result.getStartTime() + "-" + result.getEndTime(), width / 2 - length3 / 2, oriY + bgH * 0.24f - ScreenUtil.dp2px(12), width * 0.707f, Align.left, true);
 
             if (null != result && null != result.getImgUrl() && texture1 == null) {
                 NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
@@ -198,7 +201,7 @@ public class DetailActor extends Actor {
                                     // 把字节数组加载为 Pixmap
                                     Pixmap pixmap = new Pixmap(result, 0, result.length);
                                     // 把 pixmap 加载为纹理
-                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, headWidth / 2, headWidth, headWidth));
+                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, (int) headWidth / 2, (int) headWidth, (int) headWidth));
                                     // pixmap 不再需要使用到, 释放内存占用
                                     pixmap.dispose();
                                 }
@@ -220,7 +223,7 @@ public class DetailActor extends Actor {
                 });
             } else {
                 if (texture != null)
-                    batch.draw(texture, width / 2 - 50, oriY + bgH * 0.834f, headWidth, headWidth);
+                    batch.draw(texture, width / 2 - headWidth / 2, oriY + bgH * 0.834f, headWidth, headWidth);
             }
         }
     }

@@ -41,12 +41,10 @@ public class BeedItemActor extends Actor {
     private float scale;
     private float realHeight;
     private boolean isUse = false;
-    private int position;
-    private HttpRequestBuilder requestBuilder;
     private Texture texture;
     private LazyBitmapFont lazyBitmapFont1;
     private LazyBitmapFont lazyBitmapFont2;
-    private int radius = 200;
+    private float radius = 0;
 
     public BeedItemActor(AssetManager assetManager, Result result) {
         super();
@@ -54,8 +52,10 @@ public class BeedItemActor extends Actor {
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+
         initResources();
-        requestBuilder = new HttpRequestBuilder();
+
+        radius = width * 0.173f;
     }
 
     private void initResources() {
@@ -70,7 +70,6 @@ public class BeedItemActor extends Actor {
     }
 
     public void setListener(final BeedItemOnClickListener beedItemOnClickListener, int item) {
-        this.position = item;
         listener = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -96,9 +95,9 @@ public class BeedItemActor extends Actor {
         if (normal.size() <= 0) return;
         batch.draw(normal.get(0), 0, getY() + realHeight * 0.04f, getOriginX(), getOriginY(), width, realHeight, getScaleX(), getScaleY(), getRotation());
         if (isUse)
-            batch.draw(normal.get(2), width - normal.get(2).getRegionWidth() - 100, getY() + realHeight * 0.3f / 2 - normal.get(2).getRegionHeight() / 2 + realHeight * 0.04f, getOriginX(), getOriginY(), normal.get(2).getRegionWidth(), normal.get(2).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
+            batch.draw(normal.get(2), width - normal.get(2).getRegionWidth() * 3 / 2, getY() + realHeight * 0.3f / 2 - normal.get(2).getRegionHeight() / 2 + realHeight * 0.06f, getOriginX(), getOriginY(), normal.get(2).getRegionWidth(), normal.get(2).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
         else
-            batch.draw(normal.get(1), width - normal.get(1).getRegionWidth() - 100, getY() + realHeight * 0.3f / 2 - normal.get(1).getRegionHeight() / 2 + realHeight * 0.04f, getOriginX(), getOriginY(), normal.get(1).getRegionWidth(), normal.get(1).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
+            batch.draw(normal.get(1), width - normal.get(1).getRegionWidth() * 3 / 2, getY() + realHeight * 0.3f / 2 - normal.get(1).getRegionHeight() / 2 + realHeight * 0.06f, getOriginX(), getOriginY(), normal.get(1).getRegionWidth(), normal.get(1).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
         batch.draw(normal.get(3), 0, getY() + realHeight * 0.3f, getOriginX(), getOriginY(), width, normal.get(3).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
 
         if (null != result && null != result.getImgUrl() && texture == null) {
@@ -132,7 +131,7 @@ public class BeedItemActor extends Actor {
 
                                 // 把 pixmap 加载为纹理
                                 int min = Math.min(pixmap.getWidth(), pixmap.getHeight());
-                                texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, min / 2, radius, radius));
+                                texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, min / 2, (int) radius, (int) radius));
                                 // pixmap 不再需要使用到, 释放内存占用
                                 pixmap.dispose();
                             }
@@ -154,16 +153,16 @@ public class BeedItemActor extends Actor {
             });
         } else {
             if (texture != null)
-                batch.draw(texture, width * 0.13f, getY() + realHeight * 0.3f + 50, radius, radius);
+                batch.draw(texture, width * 0.13f, getY() + realHeight * 0.3f + width * 0.04f, radius, radius);
         }
         if (lazyBitmapFont1 == null)
             lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(11), com.badlogic.gdx.graphics.Color.WHITE);
         lazyBitmapFont1.draw(batch, "有效期限: 2016.09.30-2017.06.30", width * 0.13f, getY() + realHeight * 0.3f / 2 + ScreenUtil.dp2px(11) / 2 + realHeight * 0.04f, width, Align.left, false);
-        lazyBitmapFont1.draw(batch, "请到适用门店兑换", width * 0.13f + 250, getY() + realHeight * 0.3f + 120, width, Align.left, false);
+        lazyBitmapFont1.draw(batch, "请到适用门店兑换", width * 0.13f + radius + width * 0.04f, getY() + realHeight / 2, width, Align.left, false);
 
         if (lazyBitmapFont2 == null)
             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(15), com.badlogic.gdx.graphics.Color.WHITE);
-        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + 250, getY() + realHeight * 0.3f + 180, width, Align.left, false);
+        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.65f, width, Align.left, false);
     }
 
 

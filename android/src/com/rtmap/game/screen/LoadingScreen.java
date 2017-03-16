@@ -59,10 +59,10 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("aim_success.png", Texture.class);
         mGame.asset.load("aim_red.png", Texture.class);
         mGame.asset.load("aim_blue.png", Texture.class);
+        mGame.asset.load("aim_line.png", Texture.class);
         mGame.asset.load("find_center.png", Texture.class);
         mGame.asset.load("find_tip.png", Texture.class);
         mGame.asset.load("find_text.png", Texture.class);
-        mGame.asset.load("find_location.png", Texture.class);
         mGame.asset.load("find_left_normal.png", Texture.class);
         mGame.asset.load("find_left_press.png", Texture.class);
         mGame.asset.load("find_right_normal.png", Texture.class);
@@ -186,10 +186,10 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("aim_success.png");
         mGame.asset.unload("aim_red.png");
         mGame.asset.unload("aim_blue.png");
+        mGame.asset.unload("aim_line.png");
         mGame.asset.unload("find_center.png");
         mGame.asset.unload("find_tip.png");
         mGame.asset.unload("find_text.png");
-        mGame.asset.unload("find_location.png");
         mGame.asset.unload("find_left_normal.png");
         mGame.asset.unload("find_left_press.png");
         mGame.asset.unload("find_right_normal.png");

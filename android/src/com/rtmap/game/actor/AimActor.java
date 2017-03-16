@@ -114,9 +114,9 @@ public class AimActor extends Actor {
             batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
             if (isTip) {
                 //绘制遮罩
-                batch.draw(findReArray.get(4), 0, 0, width, height);
-                batch.draw(findReArray.get(2), width / 2 - findReArray.get(2).getRegionWidth() / 2, height / 2 - findReArray.get(2).getRegionHeight() / 2, findReArray.get(2).getRegionWidth(), findReArray.get(2).getRegionHeight());
-                batch.draw(findReArray.get(3), width / 2 - findReArray.get(3).getRegionWidth() / 2, height / 2 - findReArray.get(3).getRegionHeight() / 2 + findReArray.get(3).getRegionHeight() / 5, findReArray.get(3).getRegionWidth(), findReArray.get(3).getRegionHeight());
+                batch.draw(findReArray.get(3), 0, 0, width, height);
+                batch.draw(findReArray.get(1), width / 2 - findReArray.get(1).getRegionWidth() / 2, height / 2 - findReArray.get(1).getRegionHeight() / 2, findReArray.get(1).getRegionWidth(), findReArray.get(1).getRegionHeight());
+                batch.draw(findReArray.get(2), width / 2 - findReArray.get(2).getRegionWidth() / 2, height / 2 - findReArray.get(2).getRegionHeight() / 2 + findReArray.get(2).getRegionHeight() / 5, findReArray.get(2).getRegionWidth(), findReArray.get(2).getRegionHeight());
             }
         }
     }
@@ -171,7 +171,6 @@ public class AimActor extends Actor {
 
         findReArray = new ArrayList<>();
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_center.png")));
-        findReArray.add(new TextureRegion((Texture) assetManager.get("find_location.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_tip.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_text.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("cover.png")));

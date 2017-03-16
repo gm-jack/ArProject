@@ -26,13 +26,14 @@ import com.badlogic.gdx.utils.Array;
 import com.rtmap.game.MagicCamera;
 import com.rtmap.game.MyGame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yxy on 2017/2/24.
  */
 public abstract class MyScreen implements Screen {
 
-    private int lineCircle;
-    private float lineLittleCircle;
     private MyGame game;
     public Array<GameObject> instances = new Array<GameObject>();
     private ModelBatch modelBatch;
@@ -50,14 +51,13 @@ public abstract class MyScreen implements Screen {
     private float num = 0;
     private boolean isAnimation = false;
 
-    private ShapeRenderer mShapeRenderer;
-    private Color lineColor = Color.BLACK;
     private boolean isLineShow = true;
     private int width;
     private int height;
     private SpriteBatch spriteBatch;
-    private TextureRegion texture;
+    private List<TextureRegion> texture = new ArrayList<>();
     private double angle;
+    private double radius;
 
     public MyScreen() {
 
@@ -67,15 +67,10 @@ public abstract class MyScreen implements Screen {
         this.game = game;
         spriteBatch = new SpriteBatch();
 
-        mShapeRenderer = new ShapeRenderer();
-        mShapeRenderer.setAutoShapeType(true);
-        mShapeRenderer.setColor(lineColor);
-
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 
-        lineCircle = width / 2 + 100;
-        lineLittleCircle = width * 0.202f;
+        radius = height * 5 / 12;
 
         if (modelBatch == null)
             modelBatch = new ModelBatch();
@@ -103,7 +98,7 @@ public abstract class MyScreen implements Screen {
     }
 
     private void doneLoading() {
-        texture = new TextureRegion(game.asset.get("find_location.png", Texture.class));
+        texture.add(new TextureRegion(game.asset.get("aim_line.png", Texture.class)));
         Model ship = game.asset.get("wolf/Wolf_fbx.g3dj", Model.class);
         GameObject shipInstance = new GameObject(ship);
         /**
@@ -192,50 +187,24 @@ public abstract class MyScreen implements Screen {
         if (!stopCamera && camera != null) {
             camera.update();
             if (isLineShow) {
-                float x = 0;
-                float y = 0;
-
                 Vector3 project = camera.project(position);
-                Gdx.app.error("camera", "Vector3 x == " + project.x + "  y==  " + project.y + "  z==  " + project.z);
-//                Gdx.app.error("camera", "graphics width == " + width + "  height==  " + height);
-                float maxLeftPointY = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - (-width / 2) * (-width / 2))));
-                float maxRightPointY = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - width / 2 * width / 2)));
-                float minLeftPointY = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - (-width / 2) * (-width / 2))));
-                float minRightPointY = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - width / 2 * width / 2)));
-                if (project.x <= 0 && project.y <= maxLeftPointY && project.y >= minLeftPointY) {
-                    x = 0;
-                    y = (-width / 2) / (project.x - width / 2) * (project.y - height / 2) + height / 2;
-                } else if (project.x >= width && project.y <= maxRightPointY && project.y >= minRightPointY) {
-                    x = width;
-                    y = (width / 2) / (project.x - width / 2) * (project.y - height / 2) + height / 2;
-                } else {
-                    x = project.x;
-                    if (project.y >= height / 2)
-                        y = (float) (height / 2 + Math.abs(Math.sqrt(lineCircle * lineCircle - (x - width / 2) * (x - width / 2))));
-                    else if (project.y < height / 2)
-                        y = (float) (height / 2 - Math.abs(Math.sqrt(lineCircle * lineCircle - (x - width / 2) * (x - width / 2))));
-                }
-                double c = Math.sqrt((project.x - width / 2) * (project.x - width / 2) + (project.y - height / 2) * (project.y - height / 2));
+                //角度计算
+                getAngle(project);
 
-//                if (project.x >= 0 && project.y >= 0) {
-//                    angle = 360 - Math.asin(project.x / c);
-//                } else if (project.x > 0 && project.y < 0) {
-//                    angle = 270 - Math.asin(project.y / c);
-//                } else if (project.x < 0 && project.y > 0) {
-//                    angle = Math.asin(project.x / c);
-//                } else if (project.x < 0 && project.y <= 0) {
-//                    angle = -Math.asin(project.y / c) - 90;
-//                }
-                angle = Math.asin(project.x / c) * 180 / Math.PI;
-                Gdx.app.error("angle", "angle        " + angle);
-                if (texture != null) {
+                double abs = Math.abs(Math.sqrt(radius * radius - width * width / 4));
+                double minRightAngle = Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
+                double maxRightAngle = 90 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
+                double minLeftAngle = 180 + Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
+                double maxLeftAngle = 270 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
+
+                if (texture.size() > 0) {
                     spriteBatch.begin();
-                    spriteBatch.draw(texture, width / 2 - texture.getRegionWidth() / 2, height / 2 - texture.getRegionHeight() / 2, texture.getRegionWidth() / 2, texture.getRegionHeight() / 2, texture.getRegionWidth(), texture.getRegionHeight(), 3, 3, (float) (-angle));
+                    if ((angle >= minRightAngle && angle <= maxRightAngle) || (angle >= minLeftAngle && angle <= maxLeftAngle)) {
+                        spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), width / 2, 1, 1, (float) (-angle));
+                    } else
+                        spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), (float) radius, 1, 1, (float) (-angle));
                     spriteBatch.end();
                 }
-                mShapeRenderer.begin();
-                mShapeRenderer.line(width / 2, height / 2, x, y);
-                mShapeRenderer.end();
             }
         }
         if (instances.size > 0 && !stopRerder) {
@@ -252,7 +221,6 @@ public abstract class MyScreen implements Screen {
             final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
             float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
             if (dist2 <= instance.radius * instance.radius) {
-                Gdx.app.error("gdx", "击中目标111111111111");
                 addNumber();
 //                translateAnimation(new Vector3(0, 0, 5), 5000);
 //                instance.transform.setToTranslation(0, 0, 2);
@@ -260,6 +228,47 @@ public abstract class MyScreen implements Screen {
                 subNumber();
             }
 
+        }
+    }
+
+    /**
+     * 计算角度
+     *
+     * @param project
+     * @return
+     */
+    private void getAngle(Vector3 project) {
+        double tan;
+        if (project.x == width / 2) {
+            if (project.y > height / 2) {
+                angle = 0;
+            } else if (project.y < height / 2) {
+                angle = 180;
+            }
+        } else if (project.y == height / 2) {
+            if (project.x > width / 2) {
+                angle = 90;
+            } else if (project.x < width / 2) {
+                angle = 270;
+            }
+        } else {
+            if (project.x > width / 2 && project.y > height / 2) {
+                //第一象限
+                tan = (project.x - width / 2) / (project.y - height / 2);
+                angle = Math.toDegrees(Math.atan(Math.abs(tan)));
+            } else if (project.x > width / 2 && project.y < height / 2) {
+                //第四象限
+                tan = (project.y - height / 2) / (project.x - width / 2);
+                angle = 90 + Math.toDegrees(Math.atan(Math.abs(tan)));
+            } else if (project.x < width / 2 && project.y < height / 2) {
+                //第三象限
+                tan = (project.x - width / 2) / (project.y - height / 2);
+                angle = 180 + Math.toDegrees(Math.atan(Math.abs(tan)));
+            } else if (project.x < width / 2 && project.y > height / 2) {
+                //第二象限
+                tan = (project.y - height / 2) / (project.x - width / 2);
+                angle = 270 + Math.toDegrees(Math.atan(Math.abs(tan)));
+            }
         }
     }
 

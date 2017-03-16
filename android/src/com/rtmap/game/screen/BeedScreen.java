@@ -45,6 +45,7 @@ import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
+import com.rtmap.game.util.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -256,12 +257,13 @@ public class BeedScreen extends MyScreen {
 
             @Override
             public void failed(Throwable t) {
+                ToastUtil.toast("加载失败");
                 Gdx.app.error("http", t.getMessage());
             }
 
             @Override
             public void cancelled() {
-
+                ToastUtil.toast("加载取消");
             }
         });
 //        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
