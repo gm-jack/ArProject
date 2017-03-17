@@ -256,7 +256,7 @@ public abstract class MyScreen implements Screen {
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
                     if (lazyBitmapFont == null)
-                        lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.BLACK);
+                        lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
 
 //                    if (distance > 100) {
 //                        if (distance - oldDistance > 10)
