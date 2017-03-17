@@ -20,10 +20,12 @@ import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedItemOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.util.MD5Encoder;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.PixmapUtil;
 import com.rtmap.game.util.ScreenUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class BeedItemActor extends Actor {
     private LazyBitmapFont lazyBitmapFont1;
     private LazyBitmapFont lazyBitmapFont2;
     private float radius = 0;
+    private Pixmap picture;
 
     public BeedItemActor(AssetManager assetManager, Result result) {
         super();
@@ -100,8 +103,12 @@ public class BeedItemActor extends Actor {
             batch.draw(normal.get(1), width - normal.get(1).getRegionWidth() * 3 / 2, getY() + realHeight * 0.3f / 2 - normal.get(1).getRegionHeight() / 2 + realHeight * 0.06f, getOriginX(), getOriginY(), normal.get(1).getRegionWidth(), normal.get(1).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
         batch.draw(normal.get(3), 0, getY() + realHeight * 0.3f, getOriginX(), getOriginY(), width, normal.get(3).getRegionHeight(), getScaleX(), getScaleY(), getRotation());
 
-        if (null != result && null != result.getImgUrl() && texture == null) {
-            Gdx.app.error("http", "请求图片   " + (texture == null));
+//        try {
+//            picture = NetUtil.getInstance().getLocalPicture(MD5Encoder.encode(result.getImgUrl()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        if (result != null && result.getImgUrl() != null && texture == null)
             NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
                 @Override
                 public void handleHttpResponse(Net.HttpResponse httpResponse) {
@@ -113,8 +120,12 @@ public class BeedItemActor extends Actor {
                         Gdx.app.error("http", "请求成功");
 
                         // 以字节数组的方式获取响应内容
-                        final byte[] result = httpResponse.getResult();
-
+                        final byte[] results = httpResponse.getResult();
+//                        try {
+//                            NetUtil.getInstance().getFileUtil().setFile(MD5Encoder.encode(result.getImgUrl()), results);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
                         // 还可以以流或字符串的方式获取
                         // httpResponse.getResultAsStream();
                         // httpResponse.getResultAsString();
@@ -127,13 +138,17 @@ public class BeedItemActor extends Actor {
                             @Override
                             public void run() {
                                 // 把字节数组加载为 Pixmap
-                                Pixmap pixmap = new Pixmap(result, 0, result.length);
-
+                                picture = new Pixmap(results, 0, results.length);
+//                                try {
+//                                    NetUtil.getInstance().getMemoryUtil().setLru(MD5Encoder.encode(result.getImgUrl()), picture);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
                                 // 把 pixmap 加载为纹理
-                                int min = Math.min(pixmap.getWidth(), pixmap.getHeight());
-                                texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, min / 2, (int) radius, (int) radius));
+                                int min = Math.min(picture.getWidth(), picture.getHeight());
+                                texture = new Texture(PixmapUtil.createRoundedPixmap(picture, min / 2, (int) radius, (int) radius));
                                 // pixmap 不再需要使用到, 释放内存占用
-                                pixmap.dispose();
+                                picture.dispose();
                             }
                         });
                     } else {
@@ -151,18 +166,17 @@ public class BeedItemActor extends Actor {
                     Gdx.app.error("http", "请求取消");
                 }
             });
-        } else {
-            if (texture != null)
-                batch.draw(texture, width * 0.13f, getY() + realHeight * 0.3f + width * 0.04f, radius, radius);
-        }
+        if (texture != null)
+            batch.draw(texture, width * 0.13f, getY() + realHeight * 0.3f + width * 0.04f, radius, radius);
+
         if (lazyBitmapFont1 == null)
-            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(11), com.badlogic.gdx.graphics.Color.WHITE);
-        lazyBitmapFont1.draw(batch, "有效期限: 2016.09.30-2017.06.30", width * 0.13f, getY() + realHeight * 0.3f / 2 + ScreenUtil.dp2px(11) / 2 + realHeight * 0.04f, width, Align.left, false);
-        lazyBitmapFont1.draw(batch, "请到适用门店兑换", width * 0.13f + radius + width * 0.04f, getY() + realHeight / 2, width, Align.left, false);
+            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(12), com.badlogic.gdx.graphics.Color.WHITE);
+        lazyBitmapFont1.draw(batch, "有效期限：" + result.getStartTime() + "-" + result.getEndTime(), width * 0.13f, getY() + realHeight * 0.3f / 2 + ScreenUtil.dp2px(12) / 2 + realHeight * 0.04f, width, Align.left, false);
+        lazyBitmapFont1.draw(batch, "请到适用门店兑换", width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.3f + width * 0.04f + radius / 4, width, Align.left, false);
 
         if (lazyBitmapFont2 == null)
             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(15), com.badlogic.gdx.graphics.Color.WHITE);
-        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.65f, width, Align.left, false);
+        lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.3f + width * 0.04f + radius * 3 / 4, width, Align.left, false);
     }
 
 

@@ -201,7 +201,6 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onCatchClick() {
                     catchActor.setIsStop(true);
-//                    stop = !stop;
                 }
 
                 @Override
@@ -216,7 +215,6 @@ public class CatchScreen extends MyScreen {
                 public void onClick() {
                     if (mGame != null)
                         mGame.showAimScreen(false);
-                    CatchScreen.this.dispose();
                 }
             });
         if (againActor != null)
@@ -224,7 +222,6 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void againClick() {
                     mGame.showAimScreen(false);
-                    CatchScreen.this.dispose();
                 }
             });
     }

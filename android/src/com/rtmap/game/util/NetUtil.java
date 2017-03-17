@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.rtmap.game.AndroidLauncher;
 
@@ -23,6 +24,8 @@ public class NetUtil {
 
     private static volatile NetUtil netUtil = null;
     private HttpRequestBuilder requestBuilder;
+    private final FileUtil fileUtil;
+    private final MemoryUtil memoryUtil;
 
     public static NetUtil getInstance() {
         if (netUtil == null) {
@@ -37,6 +40,16 @@ public class NetUtil {
 
     private NetUtil() {
         requestBuilder = new HttpRequestBuilder();
+        fileUtil = new FileUtil();
+        memoryUtil = new MemoryUtil();
+    }
+
+    public FileUtil getFileUtil() {
+        return fileUtil;
+    }
+
+    public MemoryUtil getMemoryUtil() {
+        return memoryUtil;
     }
 
     /**
@@ -44,7 +57,7 @@ public class NetUtil {
      *
      * @return
      */
-    public  boolean checkConnection() {
+    public boolean checkConnection() {
         ConnectivityManager connectivityManager = (ConnectivityManager) AndroidLauncher
                 .getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -119,6 +132,18 @@ public class NetUtil {
         Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
                 "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url(url).build();
         Gdx.net.sendHttpRequest(httpRequest, responseListener);
+    }
+
+    public Pixmap getLocalPicture(String url) {
+        Pixmap lru = memoryUtil.getLru(url);
+        if (lru != null) {
+            return lru;
+        }
+        byte[] file = fileUtil.getFile(url);
+        if (file != null) {
+            return new Pixmap(file, 0, file.length);
+        }
+        return null;
     }
 
     /**

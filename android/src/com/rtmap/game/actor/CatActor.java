@@ -28,6 +28,9 @@ public class CatActor extends Actor {
     //判断按钮当前状态
     private boolean isCatch = true;
     private boolean isShow = true;
+    //控制点击次数
+    private boolean isCatchFirst = true;
+    private boolean isOpenFirst = true;
 
     public CatActor(AssetManager assetManager) {
         super();
@@ -43,7 +46,7 @@ public class CatActor extends Actor {
         openNormal = new TextureRegion((Texture) assetManager.get("success_open_normal.png"));
         openPress = new TextureRegion((Texture) assetManager.get("success_open_press.png"));
 
-        setPosition(width / 2, height * 0.15f);
+        setPosition(width / 2, height * 0.12f);
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 
@@ -79,10 +82,13 @@ public class CatActor extends Actor {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
                 if (catchOnClickListener != null) {
-                    if (isCatch)
+                    if (isCatch && isCatchFirst) {
+                        isCatchFirst = false;
                         catchOnClickListener.onCatchClick();
-                    else
+                    } else if (isOpenFirst) {
+                        isOpenFirst = false;
                         catchOnClickListener.onSuccessClick();
+                    }
                 }
             }
         };
@@ -105,14 +111,14 @@ public class CatActor extends Actor {
         if (isShow) {
             if (!isDown) {
                 if (isCatch && press != null)
-                    batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+                    batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.12f, press.getRegionWidth(), press.getRegionHeight());
                 else if (openNormal != null)
-                    batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.15f, press.getRegionWidth(), press.getRegionHeight());
+                    batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.12f, press.getRegionWidth(), press.getRegionHeight());
             } else {
                 if (isCatch && normal != null)
-                    batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+                    batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.12f, normal.getRegionWidth(), normal.getRegionHeight());
                 else if (openPress != null)
-                    batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.15f, normal.getRegionWidth(), normal.getRegionHeight());
+                    batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.12f, normal.getRegionWidth(), normal.getRegionHeight());
             }
         }
     }

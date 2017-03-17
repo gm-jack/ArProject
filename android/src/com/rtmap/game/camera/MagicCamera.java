@@ -1,4 +1,4 @@
-package com.rtmap.game;
+package com.rtmap.game.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;

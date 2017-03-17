@@ -2,8 +2,6 @@ package com.rtmap.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,16 +13,17 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.rtmap.game.MagicCamera;
+import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.MyGame;
+import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.util.ScreenUtil;
+import com.rtmap.game.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,7 @@ public abstract class MyScreen implements Screen {
     private float num = 0;
     private boolean isAnimation = false;
 
+    //设置是否显示距离
     private boolean isLineShow = true;
     private int width;
     private int height;
@@ -58,6 +58,15 @@ public abstract class MyScreen implements Screen {
     private List<TextureRegion> texture = new ArrayList<>();
     private double angle;
     private double radius;
+    private float nowAngle;
+    //弧度制
+    private double v;
+    private LazyBitmapFont lazyBitmapFont;
+    private float x;
+    private float y;
+    private int oldDistance;
+    private boolean isPositive = false;
+    private float delTime = 0;
 
     public MyScreen() {
 
@@ -70,7 +79,7 @@ public abstract class MyScreen implements Screen {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 
-        radius = height * 5 / 12;
+        radius = height / 3;
 
         if (modelBatch == null)
             modelBatch = new ModelBatch();
@@ -136,6 +145,9 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void dispose() {
+
+        if (lazyBitmapFont != null)
+            lazyBitmapFont.dispose();
     }
 
     /**
@@ -186,8 +198,17 @@ public abstract class MyScreen implements Screen {
         }
         if (!stopCamera && camera != null) {
             camera.update();
+            isPositive();
+
+            Vector3 project = camera.project(position);
+            int distance = (int) (Math.abs(Math.sqrt(project.x * project.x + project.y * project.y)) / 150);
+            if (delTime < 1f)
+                delTime += Gdx.graphics.getDeltaTime();
+            if (delTime > 1f && distance <= 10 && !isPositive)
+                isLineShow = false;
+            else
+                isLineShow = true;
             if (isLineShow) {
-                Vector3 project = camera.project(position);
                 //角度计算
                 getAngle(project);
 
@@ -199,10 +220,58 @@ public abstract class MyScreen implements Screen {
 
                 if (texture.size() > 0) {
                     spriteBatch.begin();
-                    if ((angle >= minRightAngle && angle <= maxRightAngle) || (angle >= minLeftAngle && angle <= maxLeftAngle)) {
-                        spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), width / 2, 1, 1, (float) (-angle));
-                    } else
-                        spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), (float) radius, 1, 1, (float) (-angle));
+                    if (angle >= minRightAngle && angle <= 90) {
+                        v = (90 - angle) * Math.PI / 180;
+                        nowAngle = (float) (width / 2 / Math.cos(v));
+                        y = (float) (nowAngle * Math.sin(v));
+                        x = (float) (nowAngle * Math.cos(v));
+                    } else if (angle > 90 && angle <= maxRightAngle) {
+                        v = (angle - 90) * Math.PI / 180;
+                        nowAngle = (float) (width / 2 / Math.cos(v));
+                        y = -(float) (nowAngle * Math.sin(v));
+                        x = (float) (nowAngle * Math.cos(v));
+                    } else if (angle >= minLeftAngle && angle < 270) {
+                        v = (270 - angle) * Math.PI / 180;
+                        nowAngle = (float) (width / 2 / Math.cos(v));
+                        y = -(float) (nowAngle * Math.sin(v));
+                        x = -(float) (nowAngle * Math.cos(v));
+                    } else if (angle >= 270 && angle <= maxLeftAngle) {
+                        v = (angle - 270) * Math.PI / 180;
+                        nowAngle = (float) (width / 2 / Math.cos(v));
+                        y = (float) (nowAngle * Math.sin(v));
+                        x = -(float) (nowAngle * Math.cos(v));
+                    } else {
+                        v = angle * Math.PI / 180;
+                        nowAngle = (float) radius;
+                        x = (float) (nowAngle * Math.sin(v));
+                        y = (float) (nowAngle * Math.cos(v));
+                    }
+                    float fontX = width / 2 - texture.get(0).getRegionWidth() / 2 + x;
+                    if (fontX < 0) {
+                        fontX = width * 0.01f;
+                    } else if (fontX + width * 0.09f > width) {
+                        fontX = width * 0.91f;
+                    }
+
+                    spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
+
+                    if (lazyBitmapFont == null)
+                        lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.BLACK);
+
+//                    if (distance > 100) {
+//                        if (distance - oldDistance > 10)
+//                            lazyBitmapFont.draw(spriteBatch, "距离\n" + distance, fontX, height / 2 + y, width * 0.09f, Align.left, true);
+//                    } else {
+                    String message = "";
+                    if (distance > 100 || isPositive) {
+                        message = "距离\n>100";
+                    } else {
+                        message = "距离\n" + distance;
+                    }
+                    lazyBitmapFont.draw(spriteBatch, message, fontX, height / 2 + y, width * 0.09f, Align.left, true);
+                    //                    }
+//                    oldDistance = distance;
+
                     spriteBatch.end();
                 }
             }
@@ -220,7 +289,7 @@ public abstract class MyScreen implements Screen {
             position.add(instance.center);
             final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
             float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
-            if (dist2 <= instance.radius * instance.radius) {
+            if (dist2 <= instance.radius * instance.radius && !isPositive) {
                 addNumber();
 //                translateAnimation(new Vector3(0, 0, 5), 5000);
 //                instance.transform.setToTranslation(0, 0, 2);
@@ -228,6 +297,18 @@ public abstract class MyScreen implements Screen {
                 subNumber();
             }
 
+        }
+    }
+
+    public void isPositive() {
+        Vector3 direction = camera.direction;
+        Vector3 backDirection = new Vector3(-direction.x, -direction.y, -direction.z);
+        double abs1 = Math.abs(Math.sqrt((direction.x - position.x) * (direction.x - position.x) + (direction.y - position.y) * (direction.y - position.y) + (direction.z - position.z) * (direction.z - position.z)));
+        double abs2 = Math.abs(Math.sqrt((backDirection.x - position.x) * (backDirection.x - position.x) + (backDirection.y - position.y) * (backDirection.y - position.y) + (backDirection.z - position.z) * (backDirection.z - position.z)));
+        if (abs1 - abs2 > 0) {
+            isPositive = true;
+        } else {
+            isPositive = false;
         }
     }
 
@@ -272,12 +353,19 @@ public abstract class MyScreen implements Screen {
         }
     }
 
+    //子类实现
     public void addNumber() {
 
     }
 
+    //子类实现
     public void subNumber() {
 
+    }
+
+    public void setIsLineShow(boolean isLineShow) {
+        this.isLineShow = isLineShow;
+        delTime = 0;
     }
 
     public void setStopCamera(boolean stopCamera) {

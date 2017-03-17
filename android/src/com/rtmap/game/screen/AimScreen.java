@@ -1,25 +1,9 @@
 package com.rtmap.game.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.AndroidLauncher;
-import com.rtmap.game.MagicCamera;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
@@ -30,7 +14,6 @@ import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.util.SPUtil;
 
-import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -144,6 +127,7 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
+        setIsLineShow(true);
         setStopCamera(false);
         setStopRerder(false);
         isAim = (boolean) SPUtil.get(androidLauncher, "first_find", true);

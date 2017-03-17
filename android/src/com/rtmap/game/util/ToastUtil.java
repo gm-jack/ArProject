@@ -8,7 +8,7 @@ import com.rtmap.game.AndroidLauncher;
  * Created by yxy on 2017/3/16.
  */
 public class ToastUtil {
-    public static void toast(String message){
-        Toast.makeText(AndroidLauncher.getInstance(),message,Toast.LENGTH_SHORT).show();
+    public static synchronized void toast(String message) {
+        Toast.makeText(AndroidLauncher.getInstance().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -78,6 +78,7 @@ public class CatchActor extends Actor {
     private LazyBitmapFont lazyBitmapFont3;
     private LazyBitmapFont lazyBitmapFont4;
     private LazyBitmapFont lazyBitmapFont5;
+    private float pictureMeter;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -86,6 +87,8 @@ public class CatchActor extends Actor {
         height = Gdx.graphics.getHeight();
         changeX = width / 2;
         changeY = height / 2;
+
+        pictureMeter = width * 0.136f;
     }
 
     public void setCatchListener(CatchListener catchListener) {
@@ -225,14 +228,14 @@ public class CatchActor extends Actor {
                         if (lazyBitmapFont2 == null)
                             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
                         lazyBitmapFont2.draw(batch, "请到我的-优惠券里查看", width / 2 - fontWidth2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - openTexRe.get(2).getRegionHeight() - 25, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.draw(batch, result.getShopName(), width * 0.293f + 300, height * 0.287f + ScreenUtil.dp2px(10) * 6, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.draw(batch, "门店信息", width * 0.293f, height * 0.287f + ScreenUtil.dp2px(10) * 8, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, result.getShopName(), width * 0.293f + pictureMeter * 9 / 8, height * 0.287f + pictureMeter / 4 + ScreenUtil.dp2px(10) * 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, "门店信息", width * 0.293f, height * 0.287f + pictureMeter * 5 / 4, width * 0.707f, Align.left, true);
 
                         if (lazyBitmapFont3 == null)
                             lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.WHITE);
                         lazyBitmapFont3.draw(batch, "地址:" + result.getPosition(), width * 0.293f, height * 0.287f, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, result.getDesc(), width * 0.293f + 350, height * 0.287f + ScreenUtil.dp2px(10) * 2, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, "离你0.2KM", width * 0.293f + 350, height * 0.287f + ScreenUtil.dp2px(10) * 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, result.getDesc(), width * 0.293f + pictureMeter * 9 / 8, height * 0.287f + pictureMeter / 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, "离你0.2KM", width * 0.293f + pictureMeter * 9 / 8, height * 0.287f + ScreenUtil.dp2px(10) * 2 + pictureMeter / 4, width * 0.707f, Align.left, true);
 
                         if (null != result && null != result.getImgUrl() && texture == null) {
                             NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
@@ -284,7 +287,7 @@ public class CatchActor extends Actor {
                             });
                         } else {
                             if (texture != null)
-                                batch.draw(texture, width * 0.293f, height * 0.287f + 50, 300, 300);
+                                batch.draw(texture, width * 0.293f, height * 0.287f + pictureMeter / 4, pictureMeter, pictureMeter);
                         }
                     } else {
                         float length1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点");
