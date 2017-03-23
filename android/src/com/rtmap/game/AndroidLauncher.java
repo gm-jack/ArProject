@@ -30,6 +30,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
+import com.rtmap.game.util.ParticleGame;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
@@ -68,6 +69,7 @@ public class AndroidLauncher extends AndroidApplication {
         androidDeviceCameraController = new AndroidDeviceCameraController(this);
         asset = new AssetManager();
         initialize(new MyGame(this, androidDeviceCameraController,asset), config);
+//        initialize(new ParticleGame(), config);
 //        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
 //        flMain.addView(view);
         if (graphics.getView() instanceof SurfaceView) {

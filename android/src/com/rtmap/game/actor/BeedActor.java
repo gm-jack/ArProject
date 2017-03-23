@@ -15,6 +15,7 @@ import com.rtmap.game.interfaces.BeedOnClickListener;
  * Created by yxy on 2017/2/21.
  */
 public class BeedActor extends Actor {
+    private boolean isAnimation;
     private int width;
     private int height;
     private AssetManager assetManager;
@@ -22,10 +23,23 @@ public class BeedActor extends Actor {
     private TextureRegion normal;
     private TextureRegion press;
     private boolean isDown = false;
+    private float changeRadius = 0;
+    private boolean isFirst = true;
+    private int regionWidth;
+    private int regionHeight;
+    private int nums = 30;
 
     public BeedActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+    }
+
+    public BeedActor(AssetManager asset, boolean isAnimation) {
+        super();
+        this.assetManager = asset;
+        this.isAnimation = isAnimation;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
     }
@@ -37,6 +51,9 @@ public class BeedActor extends Actor {
 
         setPosition(width - normal.getRegionWidth(), 0);
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
+
+        regionWidth = normal.getRegionWidth();
+        regionHeight = normal.getRegionHeight();
     }
 
     public void setListener(final BeedOnClickListener beedOnClickListener) {
@@ -64,13 +81,24 @@ public class BeedActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (assetManager.update()) {
+        if (assetManager.update() && isFirst) {
             initResources();
+            isFirst = false;
         }
-        if (!isDown && press != null)
-            batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
-        else if (normal != null)
-            batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
+        if (press == null || normal == null) {
+            return;
+        }
+        if (isAnimation) {
+            batch.draw(normal, width - changeRadius, 0, regionWidth, regionHeight);
+            if (changeRadius < regionWidth) {
+                changeRadius += regionWidth / nums;
+            }
+        } else {
+            if (!isDown)
+                batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
+            else
+                batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
+        }
     }
 
     @Override

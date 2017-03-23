@@ -46,7 +46,7 @@ public class CatActor extends Actor {
         openNormal = new TextureRegion((Texture) assetManager.get("success_open_normal.png"));
         openPress = new TextureRegion((Texture) assetManager.get("success_open_press.png"));
 
-        setPosition(width / 2, height * 0.12f);
+        setPosition(width / 2 - normal.getRegionWidth() / 2, height * 0.12f);
         setSize(normal.getRegionWidth(), normal.getRegionHeight());
     }
 

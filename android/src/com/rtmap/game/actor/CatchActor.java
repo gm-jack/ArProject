@@ -45,13 +45,13 @@ public class CatchActor extends Actor {
     //捕捉监听
     private CatchListener catchListener;
     //红圈半径变化值
-    private float changeRadiu = height * 2 / 5;
+    private float changeRadiu = 0;
     //控制红圈的动画速率
     private int num = 150;
     //控制红圈缩放次数
     public int catchNumber = 0;
     //控制红圈的放大和缩小
-    private boolean isBig = false;
+    private boolean isBig = true;
     //控制红圈是否暂停缩放
     private boolean isStop = false;
     //控制监听触发次数=1
@@ -87,7 +87,7 @@ public class CatchActor extends Actor {
         height = Gdx.graphics.getHeight();
         changeX = width / 2;
         changeY = height / 2;
-
+        changeRadiu = height * 2 / 5;
         pictureMeter = width * 0.136f;
     }
 
@@ -165,7 +165,6 @@ public class CatchActor extends Actor {
                 }
                 if (changeRadiu >= height * 2 / 5) {
                     isBig = false;
-                    catchNumber++;
                 }
             } else {
                 batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
@@ -177,6 +176,7 @@ public class CatchActor extends Actor {
                             catchListener.onNumberFail(catchNumber);
                         }
                     }
+                    catchNumber++;
                 }
                 if (!isStop) {
                     if (changeRadiu < maxRadius) {
@@ -397,6 +397,10 @@ public class CatchActor extends Actor {
         this.isWin = isWin;
     }
 
+    public void setData(Result result) {
+        this.result = result;
+    }
+
     public void initResources() {
         texReArray = new ArrayList<>();
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_bg.png")));
@@ -449,9 +453,5 @@ public class CatchActor extends Actor {
             lazyBitmapFont4.dispose();
         if (lazyBitmapFont5 != null)
             lazyBitmapFont5.dispose();
-    }
-
-    public void setData(Result result) {
-        this.result = result;
     }
 }

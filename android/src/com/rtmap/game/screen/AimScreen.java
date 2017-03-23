@@ -9,9 +9,11 @@ import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.actor.BackActor;
 import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.interfaces.AimListener;
+import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
+import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.SPUtil;
 
 import java.util.Timer;
@@ -33,6 +35,7 @@ public class AimScreen extends MyScreen {
     private AimActor aimActor;
     private boolean isFirst = true;
     private boolean isAim = false;
+    private boolean isAnimation;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
         super(game);
@@ -42,15 +45,15 @@ public class AimScreen extends MyScreen {
         aimStage = new AimStage(new ScreenViewport());
 
         group2 = new Group();
-        aimActor = new AimActor(mGame.asset);
+        aimActor = new AimActor(mGame.asset,isAnimation);
         aimActor.setPosition(0, 0);
         aimActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group2.addActor(aimActor);
 
-        backActor = new BackActor(mGame.asset);
+        backActor = new BackActor(mGame.asset,isAnimation);
         group2.addActor(backActor);
 
-        beedActor = new BeedActor(mGame.asset);
+        beedActor = new BeedActor(mGame.asset,isAnimation);
         group2.addActor(beedActor);
         aimStage.addActor(group2);
     }
@@ -93,6 +96,48 @@ public class AimScreen extends MyScreen {
                     aimActor.setIsFind(false);
                 }
             });
+            aimActor.setIsStartAnimation(true);
+            aimActor.setAnimationListener(new AnimationListener() {
+                @Override
+                public void startAnim(boolean isDistance) {
+
+                }
+
+                @Override
+                public void endAnim() {
+                    aimActor.setIsStartAnimation(false);
+                    setIsAnim(true);
+                }
+            });
+            setAnimationListener(new AnimationListener() {
+                @Override
+                public void startAnim(boolean isDistance) {
+                    if (isDistance) {
+                        aimActor.setIsStartAnimation(true);
+                    } else {
+                        isAim = (boolean) SPUtil.get("first_find", true);
+                        if (isAim) {
+                            aimActor.setIsTip(true);
+                            SPUtil.put( "first_find", false);
+                            timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    aimActor.setIsTip(false);
+                                }
+                            }, 1000);
+                        }
+                        aimActor.setIsStartAnimation(false);
+                        setIsAnim(false);
+                    }
+                }
+
+                @Override
+                public void endAnim() {
+                    setIsAnim(false);
+                    aimActor.setIsStartAnimation(true);
+                }
+            });
         }
     }
 
@@ -130,19 +175,8 @@ public class AimScreen extends MyScreen {
         setIsLineShow(true);
         setStopCamera(false);
         setStopRerder(false);
-        isAim = (boolean) SPUtil.get(androidLauncher, "first_find", true);
-        if (isAim) {
-            aimActor.setIsTip(true);
-            SPUtil.put(androidLauncher, "first_find", false);
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    aimActor.setIsTip(false);
-                }
-            }, 1000);
-        }
         initListener();
+        isAnimation = (boolean) SPUtil.get(Contacts.ANIM_IS_ANIMATION, true);
         super.resize(width, height);
     }
 

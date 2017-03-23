@@ -1,6 +1,10 @@
 package com.rtmap.game.screen;
 
 
+import android.os.Handler;
+import android.os.Message;
+import android.view.animation.LinearInterpolator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -33,6 +37,7 @@ public class LoadingScreen extends MyScreen {
     private LoadingActor loadingActor;
     private AssetManager assetManager;
     private boolean isFirst = true;
+    private Timer timer;
 
     public LoadingScreen(MyGame game) {
         super(game);
@@ -40,7 +45,7 @@ public class LoadingScreen extends MyScreen {
         assetManager = new AssetManager();
         initLoadingAsset();
         initAssets();
-
+        timer = new Timer();
     }
 
     private void initLoadingAsset() {
@@ -60,6 +65,10 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("aim_red.png", Texture.class);
         mGame.asset.load("aim_blue.png", Texture.class);
         mGame.asset.load("aim_line.png", Texture.class);
+        mGame.asset.load("anim_bg_top.png", Texture.class);
+        mGame.asset.load("anim_bg_left.png", Texture.class);
+        mGame.asset.load("anim_bg_right.png", Texture.class);
+        mGame.asset.load("anim_bg_bottom.png", Texture.class);
         mGame.asset.load("find_center.png", Texture.class);
         mGame.asset.load("find_tip.png", Texture.class);
         mGame.asset.load("find_text.png", Texture.class);
@@ -67,6 +76,8 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("find_left_press.png", Texture.class);
         mGame.asset.load("find_right_normal.png", Texture.class);
         mGame.asset.load("find_right_press.png", Texture.class);
+        mGame.asset.load("find_circle.png", Texture.class);
+        mGame.asset.load("find_anim.png", Texture.class);
         mGame.asset.load("catch_bg.png", Texture.class);
         mGame.asset.load("catch_center.png", Texture.class);
         mGame.asset.load("catch_circle.png", Texture.class);
@@ -111,32 +122,27 @@ public class LoadingScreen extends MyScreen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        if (isFirst)
-//            new Thread() {
-//                public boolean isRun = true;
-//                @Override
-//                public void run() {
-//                    isFirst = false;
-//                    while (isRun) {
-//                        if (mGame.asset.update()) {
-//                            isRun = false;
-//                            Gdx.app.postRunnable(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (mGame != null)
-//                                        mGame.showAimScreen(false);
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//            }.start();
         percent = Interpolation.linear.apply(percent, mGame.asset.getProgress(), 0.1f);
         Gdx.app.log("percent", "percent---->" + percent);
-        if (mGame.asset.update()) {
-            if (mGame != null)
-                mGame.showAimScreen(false);
+        if (mGame.asset.update() && loadingActor != null && !loadingActor.isAnimation() && isFirst) {
+            loadingActor.setIsEndAnimation(true);
+            isFirst = false;
             return;
+        }
+
+        if (!isFirst && loadingActor != null && !loadingActor.isEndAnimation()) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mGame != null)
+                                mGame.showAimScreen(false);
+                        }
+                    });
+                }
+            }, 200);
         }
 
         // 更新舞台逻辑
@@ -170,6 +176,9 @@ public class LoadingScreen extends MyScreen {
         if (loadingStage != null) {
             loadingStage.dispose();
         }
+        if (timer != null) {
+            timer.cancel();
+        }
         unLoadAsset();
     }
 
@@ -187,6 +196,10 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("aim_red.png");
         mGame.asset.unload("aim_blue.png");
         mGame.asset.unload("aim_line.png");
+        mGame.asset.unload("anim_bg_top.png");
+        mGame.asset.unload("anim_bg_left.png");
+        mGame.asset.unload("anim_bg_right.png");
+        mGame.asset.unload("anim_bg_bottom.png");
         mGame.asset.unload("find_center.png");
         mGame.asset.unload("find_tip.png");
         mGame.asset.unload("find_text.png");
@@ -194,6 +207,8 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("find_left_press.png");
         mGame.asset.unload("find_right_normal.png");
         mGame.asset.unload("find_right_press.png");
+        mGame.asset.unload("find_circle.png");
+        mGame.asset.unload("find_anim.png");
         mGame.asset.unload("catch_bg.png");
         mGame.asset.unload("catch_center.png");
         mGame.asset.unload("catch_circle.png");

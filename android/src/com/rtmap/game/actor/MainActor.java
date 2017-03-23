@@ -24,6 +24,7 @@ public class MainActor extends Actor {
     private int width;
     private int height;
     private LazyBitmapFont lazyBitmapFont1;
+    private float scale = 1;
 
 
     public MainActor(AssetManager assetManager) {
@@ -43,9 +44,7 @@ public class MainActor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         if (asset.update()) {
-            texReArray = new ArrayList<>();
-            texReArray.add(new TextureRegion((Texture) asset.get("m_bg.png")));
-            texReArray.add(new TextureRegion((Texture) asset.get("m_rule.png")));
+            initResource();
         }
         // 如果 region 为 null 或者 演员不可见, 则直接不绘制
         if (!isVisible()) {
@@ -64,6 +63,17 @@ public class MainActor extends Actor {
 //        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f);
     }
 
+    private void initResource() {
+        texReArray = new ArrayList<>();
+        texReArray.add(new TextureRegion((Texture) asset.get("m_bg.png")));
+        texReArray.add(new TextureRegion((Texture) asset.get("m_rule.png")));
+
+        scale = width / texReArray.get(0).getRegionWidth();
+    }
+
+    public float getScale() {
+        return scale;
+    }
 
     @Override
     public void clear() {

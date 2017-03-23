@@ -56,7 +56,7 @@ public class MainScreen extends MyScreen {
         mainActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group.addActor(mainActor);
 
-        startActor = new StartActor(assetManager);
+        startActor = new StartActor(assetManager, mainActor);
         group.addActor(startActor);
 
         mainStage.addActor(group);

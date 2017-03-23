@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.rtmap.game.interfaces.BeedOnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +20,27 @@ public class BeedBackActor extends Actor {
     private AssetManager assetManager;
     private List<TextureRegion> beedList = new ArrayList<>();
     private float regionHeight;
+    private float scale = 1;
+    private float realWidth;
+    private float realHeight;
 
-    public BeedBackActor(AssetManager assetManager, MyBeedActor myBeedActor) {
+    public BeedBackActor(AssetManager assetManager, GameBeedActor gameBeedActor) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        regionHeight = myBeedActor.getTitleHeight();
+        regionHeight = gameBeedActor.getTitleHeight();
+        scale = gameBeedActor.getScale();
         initResources();
     }
-    
+
     private void initResources() {
         beedList.add(new TextureRegion((Texture) assetManager.get("beed_back.png")));
 
-        setPosition(30, height - regionHeight / 2 - beedList.get(0).getRegionHeight() / 2);
-        setSize(beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
+        realWidth = beedList.get(0).getRegionWidth() * scale;
+        realHeight = beedList.get(0).getRegionHeight() * scale;
+        setPosition(30, height - regionHeight / 2 - realHeight / 2);
+        setSize(realWidth, realHeight);
     }
 
     @Override
@@ -49,7 +52,8 @@ public class BeedBackActor extends Actor {
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (beedList.size() > 0) {
-            batch.draw(beedList.get(0), 30, height - regionHeight / 2 - beedList.get(0).getRegionHeight() / 2, beedList.get(0).getRegionWidth(), beedList.get(0).getRegionHeight());
+            batch.draw(beedList.get(0), 30, height - regionHeight / 2 - realHeight / 2, realWidth, realHeight)
+            ;
         }
     }
 

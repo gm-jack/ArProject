@@ -6,61 +6,41 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.MyGame;
-import com.rtmap.game.actor.AimActor;
-import com.rtmap.game.actor.BackActor;
-import com.rtmap.game.actor.BeedActor;
 import com.rtmap.game.actor.BeedBackActor;
 import com.rtmap.game.actor.BeedItemActor;
 import com.rtmap.game.actor.CloseActor;
 import com.rtmap.game.actor.DetailActor;
-import com.rtmap.game.actor.MyBeedActor;
+import com.rtmap.game.actor.GameBeedActor;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedItemOnClickListener;
-import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.scrollpane.BeedScrollPane;
-import com.rtmap.game.stage.AimStage;
 import com.rtmap.game.stage.BeedStage;
-import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.ToastUtil;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by yxy on 2017/2/20.
  */
 public class BeedScreen extends MyScreen {
-    private MyBeedActor myBeedActor;
+    private GameBeedActor gameBeedActor;
     private BeedStage beedStage;
     private MyGame mGame;
     private BeedBackActor beedBackActor;
@@ -92,12 +72,12 @@ public class BeedScreen extends MyScreen {
         initResouce();
 
         group = new Group();
-        myBeedActor = new MyBeedActor(assetManager);
-        myBeedActor.setPosition(0, 0);
-        myBeedActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        group.addActor(myBeedActor);
+        gameBeedActor = new GameBeedActor(assetManager);
+        gameBeedActor.setPosition(0, 0);
+        gameBeedActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        group.addActor(gameBeedActor);
 
-        beedBackActor = new BeedBackActor(assetManager, myBeedActor);
+        beedBackActor = new BeedBackActor(assetManager, gameBeedActor);
         group.addActor(beedBackActor);
 
         table = new Table();
@@ -108,7 +88,7 @@ public class BeedScreen extends MyScreen {
         beedScrollPane.setScrollingDisabled(true, false);//设置是否可上下、左右移动..这里设置了横向可移动、纵向不可移动
         beedScrollPane.setSmoothScrolling(true);
 //        beedScrollPane.setFlickScroll(false);
-        beedScrollPane.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - myBeedActor.getTitleHeight());
+        beedScrollPane.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - gameBeedActor.getTitleHeight());
 //        beedScrollPane.setPosition(Utils.xAxisCenter(getWidth()), Utils.yAxisCenter(getHeight()) - 20);
         beedScrollPane.layout();
         group.addActor(beedScrollPane);

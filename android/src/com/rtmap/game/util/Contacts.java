@@ -6,4 +6,5 @@ package com.rtmap.game.util;
 public class Contacts {
     public static final String LIST_NET="http://182.92.31.114/rest/act/card/17888/18618180336";
     public static final String WIN_NET="http://182.92.31.114/rest/act/17888/18618180336";
+    public static final String ANIM_IS_ANIMATION = "anim_is_animation";
 }

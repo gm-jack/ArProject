@@ -98,7 +98,7 @@ public class DetailActor extends Actor {
             float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(20), "满100减40");
             if (lazyBitmapFont1 == null)
                 lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(20), Color.WHITE);
-            lazyBitmapFont1.draw(batch, "满100减40", width / 2 - fontWidth1 / 2, oriY + bgH * 0.74f , width * 0.707f, Align.left, true);
+            lazyBitmapFont1.draw(batch, "满100减40", width / 2 - fontWidth1 / 2, oriY + bgH * 0.74f, width * 0.707f, Align.left, true);
 
             batch.draw(beedList.get(1), width / 2 - beedList.get(1).getRegionWidth() / 2, oriY + bgH * 0.690f, beedList.get(1).getRegionWidth(), beedList.get(1).getRegionHeight());
 
@@ -201,7 +201,7 @@ public class DetailActor extends Actor {
                                     // 把字节数组加载为 Pixmap
                                     Pixmap pixmap = new Pixmap(result, 0, result.length);
                                     // 把 pixmap 加载为纹理
-                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, (int) headWidth / 2, (int) headWidth, (int) headWidth));
+                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, (int)(headWidth / 2), (int) headWidth, (int) headWidth));
                                     // pixmap 不再需要使用到, 释放内存占用
                                     pixmap.dispose();
                                 }

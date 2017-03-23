@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by yxy on 2017/2/21.
  */
-public class MyBeedActor extends Actor {
+public class GameBeedActor extends Actor {
     private int width;
     private int height;
     private AssetManager assetManager;
@@ -35,7 +35,7 @@ public class MyBeedActor extends Actor {
 
 
 
-    public MyBeedActor(AssetManager assetManager) {
+    public GameBeedActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
@@ -72,7 +72,9 @@ public class MyBeedActor extends Actor {
         batch.draw(beedList.get(1), 0, height - beedList.get(1).getRegionHeight() * scale, width, beedList.get(1).getRegionHeight() * scale);
     }
 
-
+    public float getScale() {
+        return scale;
+    }
 
     @Override
     public void act(float delta) {

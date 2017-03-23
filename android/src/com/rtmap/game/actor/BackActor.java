@@ -17,6 +17,7 @@ import com.rtmap.game.interfaces.BackOnClickListener;
  * Created by yxy on 2017/2/21.
  */
 public class BackActor extends Actor {
+    private boolean isAnimation;
     private int width;
     private int height;
     private AssetManager assetManager;
@@ -29,6 +30,13 @@ public class BackActor extends Actor {
     public BackActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+    }
+
+    public BackActor(AssetManager asset, boolean isAnimation) {
+        this.assetManager = asset;
+        this.isAnimation = isAnimation;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
     }
@@ -70,10 +78,17 @@ public class BackActor extends Actor {
         if (assetManager.update()) {
             initResources();
         }
-        if (!isDown && press != null)
-            batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
-        else if( normal != null)
-            batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
+        if (press == null || normal == null) {
+            return;
+        }
+        if (isAnimation) {
+
+        } else {
+            if (!isDown)
+                batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
+            else
+                batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
+        }
 
     }
 

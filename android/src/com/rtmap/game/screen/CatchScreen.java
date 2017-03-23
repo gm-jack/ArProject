@@ -114,7 +114,7 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onFirst() {
                     Gdx.app.error("gdx", "onFirst");
-                    SPUtil.put(context, "first_catch", false);
+                    SPUtil.put("first_catch", false);
                     coverActor.setIsFirst(true);
                     setlistener();
                 }
@@ -127,7 +127,7 @@ public class CatchScreen extends MyScreen {
                         @Override
                         public void run() {
                             if (firstCatch) {
-                                SPUtil.put(context, "first_catch", false);
+                                SPUtil.put("first_catch", false);
                                 coverActor.setIsFirst(false);
                                 catchActor.setIsFirst(false);
                             }
@@ -282,7 +282,7 @@ public class CatchScreen extends MyScreen {
             Gdx.app.error("gdx", "CatchScreen resize");
             isInit = false;
             catchActor.setIsStop(true);
-            firstCatch = (boolean) SPUtil.get(context, "first_catch", true);
+            firstCatch = (boolean) SPUtil.get("first_catch", true);
             catchActor.setIsFirst(firstCatch);
             if (timer == null)
                 timer = new Timer();

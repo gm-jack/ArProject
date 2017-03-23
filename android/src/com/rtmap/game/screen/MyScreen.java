@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.MyGame;
+import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.ScreenUtil;
 import com.rtmap.game.util.ToastUtil;
@@ -64,9 +65,16 @@ public abstract class MyScreen implements Screen {
     private LazyBitmapFont lazyBitmapFont;
     private float x;
     private float y;
-    private int oldDistance;
     private boolean isPositive = false;
     private float delTime = 0;
+    private int distance = 11;
+    private int delNum = 0;
+    private int drawNum = 100;
+    //是否箭头动画
+    private boolean isAnim = false;
+    private AnimationListener animationListener;
+    //保存箭头显示布尔值
+    private boolean oldIsLineShow = true;
 
     public MyScreen() {
 
@@ -79,7 +87,7 @@ public abstract class MyScreen implements Screen {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 
-        radius = height / 3;
+        radius = height * 3 / 8;
 
         if (modelBatch == null)
             modelBatch = new ModelBatch();
@@ -108,6 +116,7 @@ public abstract class MyScreen implements Screen {
 
     private void doneLoading() {
         texture.add(new TextureRegion(game.asset.get("aim_line.png", Texture.class)));
+        texture.add(new TextureRegion(game.asset.get("find_anim.png", Texture.class)));
         Model ship = game.asset.get("wolf/Wolf_fbx.g3dj", Model.class);
         GameObject shipInstance = new GameObject(ship);
         /**
@@ -200,26 +209,34 @@ public abstract class MyScreen implements Screen {
             camera.update();
             isPositive();
 
-            Vector3 project = camera.project(position);
-            int distance = (int) (Math.abs(Math.sqrt(project.x * project.x + project.y * project.y)) / 150);
-            if (delTime < 1f)
-                delTime += Gdx.graphics.getDeltaTime();
-            if (delTime > 1f && distance <= 10 && !isPositive)
-                isLineShow = false;
-            else
-                isLineShow = true;
-            if (isLineShow) {
-                //角度计算
-                getAngle(project);
+            if (texture.size() > 0) {
+                spriteBatch.begin();
+                Vector3 project = camera.project(position);
+                distance = (int) (Math.abs(Math.sqrt(project.x * project.x + project.y * project.y)) / 150);
+//                Gdx.app.error("animationListener", "oldIsLineShow != isLineShow   " + (oldIsLineShow != isLineShow) + "  distance >= 10  " + (distance >= 10));
+                if (animationListener != null && oldIsLineShow != isLineShow) {
+                    animationListener.startAnim(distance >= 9);
+                    oldIsLineShow = isLineShow;
+                }
 
-                double abs = Math.abs(Math.sqrt(radius * radius - width * width / 4));
-                double minRightAngle = Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
-                double maxRightAngle = 90 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
-                double minLeftAngle = 180 + Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
-                double maxLeftAngle = 270 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
+                if (delTime < 1f)
+                    delTime += Gdx.graphics.getDeltaTime();
+                if (delTime > 1f && distance < 9 && !isPositive)
+                    isLineShow = false;
+                else
+                    isLineShow = true;
 
-                if (texture.size() > 0) {
-                    spriteBatch.begin();
+                if (isLineShow) {
+                    //角度计算
+                    getAngle(project);
+
+                    double abs = Math.abs(Math.sqrt(radius * radius - width * width / 4));
+                    double minRightAngle = Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
+                    double maxRightAngle = 90 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
+                    double minLeftAngle = 180 + Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
+                    double maxLeftAngle = 270 + Math.toDegrees(Math.atan(Math.abs(abs / width * 2)));
+
+
                     if (angle >= minRightAngle && angle <= 90) {
                         v = (90 - angle) * Math.PI / 180;
                         nowAngle = (float) (width / 2 / Math.cos(v));
@@ -246,22 +263,17 @@ public abstract class MyScreen implements Screen {
                         x = (float) (nowAngle * Math.sin(v));
                         y = (float) (nowAngle * Math.cos(v));
                     }
-                    float fontX = width / 2 - texture.get(0).getRegionWidth() / 2 + x;
+                    float fontX = width / 2 + texture.get(0).getRegionWidth() / 2 + x;
                     if (fontX < 0) {
                         fontX = width * 0.01f;
                     } else if (fontX + width * 0.09f > width) {
                         fontX = width * 0.91f;
                     }
-
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
                     if (lazyBitmapFont == null)
-                        lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
+                        lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.valueOf("#ffb54b"));
 
-//                    if (distance > 100) {
-//                        if (distance - oldDistance > 10)
-//                            lazyBitmapFont.draw(spriteBatch, "距离\n" + distance, fontX, height / 2 + y, width * 0.09f, Align.left, true);
-//                    } else {
                     String message = "";
                     if (distance > 100 || isPositive) {
                         message = "距离\n>100";
@@ -269,11 +281,21 @@ public abstract class MyScreen implements Screen {
                         message = "距离\n" + distance;
                     }
                     lazyBitmapFont.draw(spriteBatch, message, fontX, height / 2 + y, width * 0.09f, Align.left, true);
-                    //                    }
-//                    oldDistance = distance;
 
-                    spriteBatch.end();
+
                 }
+                if (isAnim) {
+                    if (delNum <= drawNum) {
+                        spriteBatch.draw(texture.get(1), width / 2 + x * 0.75f / drawNum * delNum + x * 0.186f - texture.get(1).getRegionWidth() / 2, height / 2 + y * 0.75f / drawNum * delNum + y * 0.186f, texture.get(1).getRegionWidth() / 2, 0, texture.get(1).getRegionWidth(), texture.get(1).getRegionHeight(), 2, 2, (float) (-angle));
+                        delNum++;
+                    } else {
+                        if (animationListener != null) {
+                            animationListener.endAnim();
+                        }
+                        delNum = 0;
+                    }
+                }
+                spriteBatch.end();
             }
         }
         if (instances.size > 0 && !stopRerder) {
@@ -300,6 +322,31 @@ public abstract class MyScreen implements Screen {
         }
     }
 
+    public void setAnimationListener(AnimationListener animationListener) {
+        this.animationListener = animationListener;
+    }
+
+    public boolean isAnim() {
+        return isAnim;
+    }
+
+    public void setIsAnim(boolean isAnim) {
+        this.isAnim = isAnim;
+        delNum = 0;
+    }
+
+    public void setIsLineShow(boolean isLineShow) {
+        this.isLineShow = isLineShow;
+        delTime = 0;
+    }
+
+    public boolean isLineShow() {
+        return isLineShow;
+    }
+
+    /**
+     * 判断模型在摄像机正面还是背面
+     */
     public void isPositive() {
         Vector3 direction = camera.direction;
         Vector3 backDirection = new Vector3(-direction.x, -direction.y, -direction.z);
@@ -361,11 +408,6 @@ public abstract class MyScreen implements Screen {
     //子类实现
     public void subNumber() {
 
-    }
-
-    public void setIsLineShow(boolean isLineShow) {
-        this.isLineShow = isLineShow;
-        delTime = 0;
     }
 
     public void setStopCamera(boolean stopCamera) {
