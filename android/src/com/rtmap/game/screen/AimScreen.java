@@ -35,7 +35,7 @@ public class AimScreen extends MyScreen {
     private AimActor aimActor;
     private boolean isFirst = true;
     private boolean isAim = false;
-    private boolean isAnimation;
+    private boolean isAnimation = true;
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
         super(game);
@@ -45,15 +45,15 @@ public class AimScreen extends MyScreen {
         aimStage = new AimStage(new ScreenViewport());
 
         group2 = new Group();
-        aimActor = new AimActor(mGame.asset,isAnimation);
+        aimActor = new AimActor(mGame.asset, isAnimation);
         aimActor.setPosition(0, 0);
         aimActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         group2.addActor(aimActor);
 
-        backActor = new BackActor(mGame.asset,isAnimation);
+        backActor = new BackActor(mGame.asset, isAnimation);
         group2.addActor(backActor);
 
-        beedActor = new BeedActor(mGame.asset,isAnimation);
+        beedActor = new BeedActor(mGame.asset, isAnimation);
         group2.addActor(beedActor);
         aimStage.addActor(group2);
     }
@@ -96,7 +96,6 @@ public class AimScreen extends MyScreen {
                     aimActor.setIsFind(false);
                 }
             });
-            aimActor.setIsStartAnimation(true);
             aimActor.setAnimationListener(new AnimationListener() {
                 @Override
                 public void startAnim(boolean isDistance) {
@@ -112,23 +111,25 @@ public class AimScreen extends MyScreen {
             setAnimationListener(new AnimationListener() {
                 @Override
                 public void startAnim(boolean isDistance) {
-                    if (isDistance) {
-                        aimActor.setIsStartAnimation(true);
-                    } else {
-                        isAim = (boolean) SPUtil.get("first_find", true);
-                        if (isAim) {
-                            aimActor.setIsTip(true);
-                            SPUtil.put( "first_find", false);
-                            timer = new Timer();
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    aimActor.setIsTip(false);
-                                }
-                            }, 1000);
+                    if (!aimActor.isAnimation()) {
+                        if (isDistance) {
+                            aimActor.setIsStartAnimation(true);
+                        } else {
+                            isAim = (boolean) SPUtil.get("first_find", true);
+                            if (isAim) {
+                                aimActor.setIsTip(true);
+                                SPUtil.put("first_find", false);
+                                timer = new Timer();
+                                timer.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        aimActor.setIsTip(false);
+                                    }
+                                }, 1000);
+                            }
+                            aimActor.setIsStartAnimation(false);
+                            setIsAnim(false);
                         }
-                        aimActor.setIsStartAnimation(false);
-                        setIsAnim(false);
                     }
                 }
 
@@ -172,11 +173,11 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
-        setIsLineShow(true);
+        setIsLineShow(false);
         setStopCamera(false);
         setStopRerder(false);
         initListener();
-        isAnimation = (boolean) SPUtil.get(Contacts.ANIM_IS_ANIMATION, true);
+//        isAnimation = (boolean) SPUtil.get(Contacts.ANIM_IS_ANIMATION, true);
         super.resize(width, height);
     }
 

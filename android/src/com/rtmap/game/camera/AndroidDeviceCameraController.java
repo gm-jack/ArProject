@@ -5,9 +5,11 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import com.badlogic.gdx.Gdx;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.interfaces.DeviceCameraControl;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AndroidDeviceCameraController implements DeviceCameraControl,
@@ -128,4 +130,5 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
     }
+
 }

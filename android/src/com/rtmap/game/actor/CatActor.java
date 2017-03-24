@@ -30,7 +30,7 @@ public class CatActor extends Actor {
     private boolean isShow = true;
     //控制点击次数
     private boolean isCatchFirst = true;
-    private boolean isOpenFirst = true;
+    private boolean isOpenFirst = false;
 
     public CatActor(AssetManager assetManager) {
         super();
@@ -70,6 +70,10 @@ public class CatActor extends Actor {
         this.isShow = isShow;
     }
 
+    public void setIsOpenFirst(boolean isOpenFirst) {
+        this.isOpenFirst = isOpenFirst;
+    }
+
     public void setListener(final CatchOnClickListener catchOnClickListener) {
         listener = new InputListener() {
             @Override
@@ -85,7 +89,7 @@ public class CatActor extends Actor {
                     if (isCatch && isCatchFirst) {
                         isCatchFirst = false;
                         catchOnClickListener.onCatchClick();
-                    } else if (isOpenFirst) {
+                    } else if (!isCatch && isOpenFirst) {
                         isOpenFirst = false;
                         catchOnClickListener.onSuccessClick();
                     }

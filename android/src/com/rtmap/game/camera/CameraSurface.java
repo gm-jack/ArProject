@@ -14,50 +14,99 @@
 package com.rtmap.game.camera;
 
 import android.content.Context;
+import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.io.IOException;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+import com.rtmap.game.util.FileUtil;
 
-public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback {
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.Semaphore;
+
+public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     private Camera camera;
-    public CameraSurface( Context context ) {
-        super( context );
+    private int size;
+    private byte[] bytes;
+    private FileUtil fileUtil;
+    private int i = 0;
+    private Semaphore mYuvBufferlock;
+
+    public CameraSurface(Context context) {
+        super(context);
+        fileUtil = new FileUtil();
+        mYuvBufferlock = new Semaphore(1);
         // We're implementing the Callback interface and want to get notified
         // about certain surface events.
-        getHolder().addCallback( this );
+        getHolder().addCallback(this);
         // We're changing the surface to a PUSH surface, meaning we're receiving
         // all buffer data from another component - the camera, in this case.
-        getHolder().setType( SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS );
+        getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
-    public void surfaceCreated( SurfaceHolder holder ) {
+
+    public void surfaceCreated(SurfaceHolder holder) {
         // Once the surface is created, simply open a handle to the camera hardware.
         camera = Camera.open();
         camera.setDisplayOrientation(90);
     }
-    public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
+
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         // This method is called when the surface changes, e.g. when it's size is set.
         // We use the opportunity to initialize the camera preview display dimensions.
         Camera.Parameters p = camera.getParameters();
 //        p.setPreviewSize( width, height );
-        camera.setParameters( p );
+        p.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+
+        camera.setParameters(p);
 // We also assign the preview display to this surface...
+        size = p.getPreviewSize().height * p.getPreviewSize().width * ImageFormat.getBitsPerPixel(p.getPreviewFormat()) / 8;
+        bytes = new byte[size];
+        Gdx.app.error("camera", "" + bytes.length);
+        camera.addCallbackBuffer(bytes);
+        camera.setPreviewCallbackWithBuffer(this);
         try {
-            camera.setPreviewDisplay( holder );
-        } catch( IOException e ) {
+            camera.setPreviewDisplay(holder);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void surfaceDestroyed( SurfaceHolder holder ) {
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
         // Once the surface gets destroyed, we stop the preview mode and release
-        // the whole camera since we no longer need it.
+        // the whole camera since we no lon
+        // ger need it.
+        camera.setPreviewCallback(null);
         camera.stopPreview();
         camera.release();
         camera = null;
     }
+
     public Camera getCamera() {
         return camera;
+    }
+
+    @Override
+    public void onPreviewFrame(byte[] data, Camera cam) {
+//        Gdx.app.error("camera", "onPreviewFrame   " + Gdx.files.getExternalStoragePath());
+//        if (bytes == null)
+
+        byte[] bytess = new byte[size];
+//        for (int i = 0; i < data.length * 2 / 3; i++) {
+//            if (i < data.length * 2 / 3)
+//                bytess[i] = data[i];
+//            else
+//                bytess[i] = 0;
+//        }
+        System.arraycopy(data, 0, bytess, 0, data.length * 2 / 3);
+//        i++;
+//        fileUtil.setFile("Libgdx" + i, bytes);
+        camera.addCallbackBuffer(bytess);
+//        this.invalidate();
     }
 }

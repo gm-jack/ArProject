@@ -26,6 +26,11 @@ public class BackActor extends Actor {
     private TextureRegion press;
     private Batch batch;
     private boolean isDown = false;
+    private float changeRadius;
+    private float regionWidth;
+    private float regionHeight;
+    private float nums = 30;
+    private boolean isFirst = true;
 
     public BackActor(AssetManager assetManager) {
         super();
@@ -44,9 +49,12 @@ public class BackActor extends Actor {
     private void initResources() {
         normal = new TextureRegion((Texture) assetManager.get("find_left_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_left_press.png"));
-
+        regionWidth = normal.getRegionWidth();
+        changeRadius = regionWidth;
+        regionHeight = normal.getRegionHeight();
         setPosition(0, 0);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+        setSize(regionWidth, regionHeight);
+
     }
 
     public void setListener(final BackOnClickListener backOnClickListener) {
@@ -75,14 +83,18 @@ public class BackActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (assetManager.update()) {
+        if (assetManager.update() && isFirst) {
             initResources();
+            isFirst = false;
         }
         if (press == null || normal == null) {
             return;
         }
         if (isAnimation) {
-
+            batch.draw(normal, 0 - changeRadius, 0, regionWidth, regionHeight);
+            if (changeRadius > 0) {
+                changeRadius -= regionWidth / nums;
+            }
         } else {
             if (!isDown)
                 batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());

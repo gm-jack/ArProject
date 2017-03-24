@@ -28,12 +28,14 @@ public class FileUtil {
         FileHandle external = null;
         if (!TextUtils.isEmpty(filePath)) {
             if (isExternal) {
-                external = Gdx.files.external(filePath + "/" + url);
+                external = Gdx.files.external(filePath + url);
             } else if (isLocal) {
-                external = Gdx.files.local(filePath + "/" + url);
+                external = Gdx.files.local(filePath + url);
             }
-            if (external != null)
+            if (external != null) {
                 external.writeBytes(data, false);
+                Gdx.app.error("camera", "onPreviewFrame   " + external.path());
+            }
         }
     }
 
@@ -41,9 +43,9 @@ public class FileUtil {
         FileHandle external = null;
         if (!TextUtils.isEmpty(filePath)) {
             if (isExternal) {
-                external = Gdx.files.external(filePath + "/" + url);
+                external = Gdx.files.external(filePath + url);
             } else if (isLocal) {
-                external = Gdx.files.local(filePath + "/" + url);
+                external = Gdx.files.local(filePath + url);
             }
             if (external != null)
                 return external.readBytes();

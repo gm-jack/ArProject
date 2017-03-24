@@ -70,7 +70,7 @@ public class AimActor extends Actor {
     private float bottomWidth;
     private float bottomHeight;
     //开场动画
-    private boolean isAnimation;
+    private boolean isAnimation = true;
     private int nums = 30;
     private float topAnim = 0;
     private float leftAnim = 0;
@@ -124,7 +124,9 @@ public class AimActor extends Actor {
             if (topAnim < topHeight) {
                 topAnim += topHeight / nums;
             } else {
-                SPUtil.put(Contacts.ANIM_IS_ANIMATION, false);
+                isAnimation = false;
+                setIsStartAnimation(true);
+                SPUtil.put(Contacts.ANIM_IS_ANIMATION, isAnimation);
             }
             batch.draw(texReArray.get(3), leftAnim - leftWidth, height / 2 - leftHeight / 2, leftWidth, leftHeight);
             if (leftAnim < leftWidth) {
@@ -196,6 +198,10 @@ public class AimActor extends Actor {
                 }
             }
         }
+    }
+
+    public boolean isAnimation() {
+        return isAnimation;
     }
 
     public void setAnimationListener(AnimationListener animationListener) {

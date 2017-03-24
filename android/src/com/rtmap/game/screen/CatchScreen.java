@@ -201,6 +201,7 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onCatchClick() {
                     catchActor.setIsStop(true);
+                    catActor.setIsOpenFirst(true);
                 }
 
                 @Override

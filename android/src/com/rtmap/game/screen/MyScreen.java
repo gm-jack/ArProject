@@ -218,13 +218,14 @@ public abstract class MyScreen implements Screen {
                     animationListener.startAnim(distance >= 9);
                     oldIsLineShow = isLineShow;
                 }
-
-                if (delTime < 1f)
+//                Gdx.app.error("camera", "!isPositive  " + !isPositive);
+                if (delTime <= Gdx.graphics.getDeltaTime() * 30)
                     delTime += Gdx.graphics.getDeltaTime();
-                if (delTime > 1f && distance < 9 && !isPositive)
-                    isLineShow = false;
-                else
-                    isLineShow = true;
+                if (delTime > Gdx.graphics.getDeltaTime() * 30)
+                    if (distance < 9 && !isPositive)
+                        isLineShow = false;
+                    else
+                        isLineShow = true;
 
                 if (isLineShow) {
                     //角度计算
@@ -281,10 +282,8 @@ public abstract class MyScreen implements Screen {
                         message = "距离\n" + distance;
                     }
                     lazyBitmapFont.draw(spriteBatch, message, fontX, height / 2 + y, width * 0.09f, Align.left, true);
-
-
                 }
-                if (isAnim) {
+                if (isLineShow && isAnim) {
                     if (delNum <= drawNum) {
                         spriteBatch.draw(texture.get(1), width / 2 + x * 0.75f / drawNum * delNum + x * 0.186f - texture.get(1).getRegionWidth() / 2, height / 2 + y * 0.75f / drawNum * delNum + y * 0.186f, texture.get(1).getRegionWidth() / 2, 0, texture.get(1).getRegionWidth(), texture.get(1).getRegionHeight(), 2, 2, (float) (-angle));
                         delNum++;

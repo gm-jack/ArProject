@@ -89,13 +89,13 @@ public class LoadingActor extends Actor {
                 if (startX - changeOutRadiu >= -startX / 4) {
                     batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
                     changeInRadiu += texReArray.get(2).getRegionHeight() / 8;
+                }else {
+                    isLodingShow = false;
+                    isEndAnimation = false;
                 }
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
                 if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
-                } else {
-                    isLodingShow = false;
-                    isEndAnimation = false;
                 }
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
