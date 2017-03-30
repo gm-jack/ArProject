@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "23.0.2"
-    compileSdkVersion 23
+    buildToolsVersion "25.0.0"
+    compileSdkVersion 25
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -10,6 +10,7 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
+            jni.srcDirs = ['src/main/jni', 'src/main/jni/']
         }
 
         instrumentTest.setRoot('tests')
@@ -20,11 +21,13 @@ android {
     defaultConfig {
         applicationId "com.rtmap.game"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 25
+
     }
     lintOptions {
         abortOnError false
     }
+
 }
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
@@ -126,5 +129,5 @@ idea {
     }
 }
 dependencies {
-    compile project(':core')
+compile project(path: ':library')
 }

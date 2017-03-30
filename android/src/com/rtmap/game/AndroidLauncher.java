@@ -1,39 +1,19 @@
 package com.rtmap.game;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
-import android.graphics.SurfaceTexture;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraMetadata;
-import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.Size;
-import android.view.Surface;
 import android.view.SurfaceView;
-import android.view.TextureView;
-import android.view.View;
-import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
-import com.rtmap.game.util.ParticleGame;
 
 import java.lang.ref.SoftReference;
-import java.util.Arrays;
 
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -55,12 +35,6 @@ public class AndroidLauncher extends AndroidApplication {
 //        mainTexture = (TextureView) findViewById(R.id.texture_main);
         context = this;
         contexts = new SoftReference<Context>(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED||checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
-                return;
-            }
-        }
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.a = 8;
         config.r = 8;

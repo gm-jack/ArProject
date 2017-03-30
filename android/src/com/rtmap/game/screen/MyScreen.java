@@ -19,12 +19,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.MyGame;
+import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.ScreenUtil;
-import com.rtmap.game.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +96,7 @@ public abstract class MyScreen implements Screen {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         if (camera == null) {
-            camera = new MagicCamera(67f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            camera = new MagicCamera(67f, width, height);
             camera.translate(0, 0, 0);
             camera.lookAt(0, 0, 10);
             camera.far = 1000.0f;

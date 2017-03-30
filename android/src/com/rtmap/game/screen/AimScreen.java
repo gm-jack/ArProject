@@ -13,7 +13,6 @@ import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.stage.AimStage;
-import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.SPUtil;
 
 import java.util.Timer;

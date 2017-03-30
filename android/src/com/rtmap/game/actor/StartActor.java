@@ -8,16 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.StartOnClickListener;
-
-import java.util.ArrayList;
 
 /**
  * Created by yxy on 2017/2/21.
  */
 public class StartActor extends Actor {
-    private MainActor mainActor;
     private int width;
     private int height;
     private AssetManager assetManager;
@@ -25,13 +21,16 @@ public class StartActor extends Actor {
     private TextureRegion normal;
     private float regionWidth;
     private float regionHeight;
+    private float scale = 1;
+    private TextureRegion backGround;
+    private boolean isFirst = true;
 
-    public StartActor(AssetManager assetManager, MainActor mainActor) {
+    public StartActor(AssetManager assetManager) {
         super();
-        this.mainActor = mainActor;
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+        scale = 1;
     }
 
     public void setListener(final StartOnClickListener startOnClickListener) {
@@ -57,17 +56,23 @@ public class StartActor extends Actor {
         if (!isVisible()) {
             return;
         }
-        if (assetManager.update()) {
+        if (assetManager.update() && isFirst) {
             initResouces();
+            Gdx.app.error("start", "regionWidth  = " + regionWidth + "  regionHeight=  " + regionHeight);
+            isFirst = false;
         }
-        if (assetManager.isLoaded("m_start.png"))
+
+        if (normal != null)
             batch.draw(normal, width / 2 - regionWidth / 2, height * 0.08f, regionWidth, regionHeight);
     }
 
     private void initResouces() {
         normal = new TextureRegion((Texture) assetManager.get("m_start.png"));
-        regionWidth = normal.getRegionWidth() * mainActor.getScale();
-        regionHeight = normal.getRegionHeight() * mainActor.getScale();
+        backGround = new TextureRegion((Texture) assetManager.get("m_bg.png"));
+
+        scale = (float) width / (float) backGround.getRegionWidth();
+        regionWidth = normal.getRegionWidth() * scale;
+        regionHeight = normal.getRegionHeight() * scale;
         setPosition(width / 2 - regionWidth / 2, height * 0.08f);
         setSize(regionWidth, regionHeight);
     }
@@ -82,5 +87,7 @@ public class StartActor extends Actor {
         super.clear();
         if (normal != null)
             normal.getTexture().dispose();
+        if (backGround != null)
+            backGround.getTexture().dispose();
     }
 }

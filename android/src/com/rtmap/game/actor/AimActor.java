@@ -3,7 +3,6 @@ package com.rtmap.game.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -55,6 +54,7 @@ public class AimActor extends Actor {
     private int num = 60;
     //蓝圈半径变化值
     private float changeRadiu = 0;
+    private float findRadiu = 0;
     private int centerWidth;
     //是否开启篮圈变化
     private boolean isStartAnimation = false;
@@ -76,6 +76,9 @@ public class AimActor extends Actor {
     private float leftAnim = 0;
     private float rightAnim = 0;
     private float bottomAnim = 0;
+    private float findAnim = 0;
+    private boolean isBig = true;
+    private int findNum = 10;
 
     public AimActor(AssetManager assetManager) {
         super();
@@ -140,7 +143,17 @@ public class AimActor extends Actor {
             if (bottomAnim < bottomHeight) {
                 bottomAnim += bottomHeight / nums;
             }
-            batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
+            batch.draw(findReArray.get(0), changeX - findRadiu, changeY - findRadiu, findRadiu * 2, findRadiu * 2);
+            if (findRadiu <= centerWidth * 3 / 4 && isBig) {
+                if (findRadiu >= centerWidth * 5 / 8) {
+                    isBig = false;
+                }
+                findRadiu += centerWidth / 2 / findNum;
+            } else if (findRadiu > centerWidth / 2) {
+                findRadiu -= centerWidth / 2 / findNum;
+            } else {
+                batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
+            }
         } else {
             batch.draw(texReArray.get(2), 0, height - topHeight, width, topHeight);
             batch.draw(texReArray.get(3), 0, height / 2 - leftHeight / 2, leftWidth, leftHeight);

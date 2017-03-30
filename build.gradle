@@ -14,11 +14,12 @@ buildscript {
         maven { url "http://mavensync.zkoss.org/maven2/" }
         maven { url "http://maven.springframework.org/release/" }
         maven { url "https://repository.jboss.org/nexus/content/groups/public-jboss/" }
-
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
 
@@ -38,6 +39,7 @@ allprojects {
     }
 
     repositories {
+        jcenter()
         mavenLocal()
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "http://maven.aliyun.com/nexus/content/repositories/snapshots/" }
@@ -55,6 +57,7 @@ allprojects {
 
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+
     }
 }
 
@@ -64,7 +67,6 @@ project(":android") {
     configurations { natives }
 
     dependencies {
-        //compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -96,24 +98,11 @@ project(":android") {
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 //        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
         compile 'com.google.code.gson:gson:2.2.4'
+
+//        compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     }
 }
 
-project(":core") {
-    apply plugin: "java"
-
-
-    dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-    }
-}
 tasks.eclipse.doLast {
     delete ".project"
 }
