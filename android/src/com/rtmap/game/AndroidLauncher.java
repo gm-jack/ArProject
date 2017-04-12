@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.SurfaceView;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -42,7 +41,7 @@ public class AndroidLauncher extends AndroidApplication {
         config.b = 8;
         androidDeviceCameraController = new AndroidDeviceCameraController(this);
         asset = new AssetManager();
-        initialize(new MyGame(this, androidDeviceCameraController,asset), config);
+        initialize(new MyGame(this, androidDeviceCameraController, asset), config);
 //        initialize(new ParticleGame(), config);
 //        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
 //        flMain.addView(view);
@@ -79,10 +78,27 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (androidDeviceCameraController != null)
+            androidDeviceCameraController.resumeCircleCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        if (androidDeviceCameraController != null) {
+            androidDeviceCameraController.stopPreviewAsync();
+            androidDeviceCameraController.pauseCircleCamera();
+        }
+        super.onPause();
+
+    }
+
+    @Override
     protected void onDestroy() {
         if (androidDeviceCameraController != null) {
-            Gdx.app.error("gdx", "onDestroy");
             androidDeviceCameraController.stopPreviewAsync();
+            androidDeviceCameraController.pauseCircleCamera();
         }
         super.onDestroy();
     }

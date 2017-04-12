@@ -45,7 +45,6 @@ public class BeedScreen extends MyScreen {
     private MyGame mGame;
     private BeedBackActor beedBackActor;
     private Group group;
-    private ScreenViewport screenViewport;
     private Array<BeedItemActor> itemActors = new Array<>();
     private BeedScrollPane beedScrollPane;
     private Table table;
@@ -63,11 +62,10 @@ public class BeedScreen extends MyScreen {
         }
     };
 
-    public BeedScreen(MyGame game, AndroidLauncher androidLauncher) {
+    public BeedScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         this.mGame = game;
         //瞄准怪兽舞台
-        screenViewport = new ScreenViewport();
-        beedStage = new BeedStage(screenViewport);
+        beedStage = new BeedStage(viewport);
         assetManager = new AssetManager();
         initResouce();
 

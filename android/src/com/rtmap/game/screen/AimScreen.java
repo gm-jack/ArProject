@@ -35,13 +35,14 @@ public class AimScreen extends MyScreen {
     private boolean isFirst = true;
     private boolean isAim = false;
     private boolean isAnimation = true;
+    private int nums = 0;
 
-    public AimScreen(MyGame game, AndroidLauncher androidLauncher) {
+    public AimScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
         this.mGame = game;
         this.androidLauncher = androidLauncher;
         //瞄准怪兽舞台
-        aimStage = new AimStage(new ScreenViewport());
+        aimStage = new AimStage(viewport);
 
         group2 = new Group();
         aimActor = new AimActor(mGame.asset, isAnimation);
@@ -64,14 +65,20 @@ public class AimScreen extends MyScreen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(aimStage);
+
         if (isFirst) {
             isFirst = false;
             backActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
-                    Gdx.app.error("gdx", "退出");
-                    if (mGame != null)
-                        mGame.showCatchScreen();
+                    nums++;
+                    if (nums > 2) {
+                        nums = 0;
+                    }
+                    setModelNumber(nums);
+//                    Gdx.app.error("gdx", "退出");
+//                    if (mGame != null)
+//                        mGame.showCatchScreen();
                 }
             });
             beedActor.setListener(new BeedOnClickListener() {

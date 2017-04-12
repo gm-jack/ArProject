@@ -1,14 +1,9 @@
 package com.rtmap.game.screen;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -28,10 +23,8 @@ import com.rtmap.game.interfaces.CatchOnClickListener;
 import com.rtmap.game.model.Result;
 import com.rtmap.game.stage.CatchStage;
 import com.rtmap.game.util.Contacts;
-import com.rtmap.game.util.MD5Encoder;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.SPUtil;
-import com.rtmap.game.util.StringUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -64,12 +57,12 @@ public class CatchScreen extends MyScreen {
     private boolean isWin = false;
     private boolean isInit = true;
 
-    public CatchScreen(MyGame game, AndroidLauncher androidLauncher) {
+    public CatchScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
         this.mGame = game;
         this.context = androidLauncher;
         //捕捉怪兽舞台
-        catchStage = new CatchStage(new ScreenViewport());
+        catchStage = new CatchStage(viewport);
 
         group3 = new Group();
         catchActor = new CatchActor(mGame.asset);

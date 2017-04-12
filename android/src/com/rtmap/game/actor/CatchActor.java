@@ -79,6 +79,8 @@ public class CatchActor extends Actor {
     private LazyBitmapFont lazyBitmapFont5;
     private float pictureMeter;
     private float bottomHeight;
+    private float mX;
+    private float mFloat;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -90,6 +92,8 @@ public class CatchActor extends Actor {
         changeRadiu = height * 2 / 5;
         pictureMeter = width * 0.136f;
         bottomHeight = height * 0.287f;
+        mX = width * 0.293f;
+        mFloat = height * 0.68f;
     }
 
     public void setCatchListener(CatchListener catchListener) {
@@ -216,28 +220,30 @@ public class CatchActor extends Actor {
                         if (result == null)
                             return;
                         //从顶部向下绘制
-                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() * 1.5f / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() / 2, getOriginX(), getOriginY(), openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight(), 1.5f, 1.5f, getRotation());
+                        batch.draw(openTexRe.get(1), width / 2 - openTexRe.get(1).getRegionWidth() * 1.5f / 2, mFloat - openTexRe.get(1).getRegionHeight() / 2, getOriginX(), getOriginY(), openTexRe.get(1).getRegionWidth(), openTexRe.get(1).getRegionHeight(), 1.5f, 1.5f, getRotation());
 
                         float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), result.getMain());
                         if (lazyBitmapFont1 == null)
                             lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
-                        lazyBitmapFont1.draw(batch, result.getMain(), width / 2 - fontWidth1 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight(), width * 0.707f, Align.left, true);
+                        lazyBitmapFont1.draw(batch, result.getMain(), width / 2 - fontWidth1 / 2, mFloat - openTexRe.get(1).getRegionHeight(), width * 0.707f, Align.left, true);
 
-                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
+                        batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, mFloat - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
 
                         float fontWidth2 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "请到我的-优惠券里查看");
                         if (lazyBitmapFont2 == null)
                             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
-                        lazyBitmapFont2.draw(batch, "请到我的-优惠券里查看", width / 2 - fontWidth2 / 2, height * 0.68f - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - openTexRe.get(2).getRegionHeight() - 25, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.draw(batch, result.getShopName(), width * 0.293f + pictureMeter * 9 / 8, height * 0.287f + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
 
-                        lazyBitmapFont2.draw(batch, "门店信息", width * 0.293f, bottomHeight + pictureMeter * 7 / 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, "请到我的-优惠券里查看", width / 2 - fontWidth2 / 2, mFloat - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - openTexRe.get(2).getRegionHeight() - 25, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, result.getShopName(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
+
+
+                        lazyBitmapFont2.draw(batch, "门店信息", mX, bottomHeight + pictureMeter * 7 / 4, width * 0.707f, Align.left, true);
 
                         if (lazyBitmapFont3 == null)
                             lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.WHITE);
-                        lazyBitmapFont3.draw(batch, "地址:" + result.getPosition(), width * 0.293f, bottomHeight, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, result.getDesc(), width * 0.293f + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 4, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, "离你0.2KM", width * 0.293f + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, "地址:" + result.getPosition(), mX, bottomHeight, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, result.getDesc(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, "离你0.2KM", mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
 
                         if (null != result && null != result.getImgUrl() && texture == null) {
                             NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {
@@ -289,7 +295,7 @@ public class CatchActor extends Actor {
                             });
                         } else {
                             if (texture != null)
-                                batch.draw(texture, width * 0.293f, bottomHeight + pictureMeter / 4, pictureMeter, pictureMeter);
+                                batch.draw(texture, mX, bottomHeight + pictureMeter / 4, pictureMeter, pictureMeter);
                         }
                     } else {
                         float length1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点");

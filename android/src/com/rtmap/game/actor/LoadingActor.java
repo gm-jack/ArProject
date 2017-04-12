@@ -1,13 +1,15 @@
 package com.rtmap.game.actor;
 
 
+import android.view.animation.Animation;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.rtmap.game.camera.AndroidDeviceCameraController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class LoadingActor extends Actor {
     private final int numbers = 10;
     private final int number = 20;
     private final int radius;
+    private final AndroidDeviceCameraController cameraController;
     private AssetManager asset;
     private List<TextureRegion> texReArray = new ArrayList();
     private int width;
@@ -46,9 +49,10 @@ public class LoadingActor extends Actor {
     private boolean isEndAnimation = false;
     private boolean isLodingShow = true;
 
-    public LoadingActor(AssetManager assetManager) {
+    public LoadingActor(AssetManager assetManager, AndroidDeviceCameraController cameraController) {
         super();
         this.asset = assetManager;
+        this.cameraController = cameraController;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         startX = width / 2;
@@ -89,14 +93,29 @@ public class LoadingActor extends Actor {
                 if (startX - changeOutRadiu >= -startX / 4) {
                     batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
                     changeInRadiu += texReArray.get(2).getRegionHeight() / 8;
-                }else {
-                    isLodingShow = false;
-                    isEndAnimation = false;
                 }
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
                 if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
                 }
+                cameraController.animationCenter(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        cameraController.endAnimation();
+                        isLodingShow = false;
+                        isEndAnimation = false;
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));

@@ -44,11 +44,11 @@ public class MainScreen extends MyScreen {
     private AssetManager assetManager;
     private final TextField mTextField;
 
-    public MainScreen(MyGame game, AndroidLauncher androidLauncher) {
+    public MainScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         this.mGame = game;
         this.androidLauncher = androidLauncher;
 
-        mainStage = new MainStage(new ScreenViewport());
+        mainStage = new MainStage(viewport);
         assetManager = new AssetManager();
 
         initResources();

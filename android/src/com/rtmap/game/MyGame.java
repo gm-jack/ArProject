@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
 import com.rtmap.game.screen.AimScreen;
 import com.rtmap.game.screen.BeedScreen;
@@ -40,6 +41,7 @@ public class MyGame extends Game {
     public AssetManager asset;
     private MainScreen mainScreen;
     private AimScreen aimScreen;
+    private ScreenViewport mViewport;
 
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController, AssetManager asset) {
         this.androidLauncher = androidLauncher;
@@ -50,8 +52,9 @@ public class MyGame extends Game {
 
     @Override
     public void create() {
-        mainScreen = new MainScreen(this, androidLauncher);
-        loadingScreen = new LoadingScreen(this);
+        mViewport = new ScreenViewport();
+        mainScreen = new MainScreen(this, androidLauncher,mViewport);
+        loadingScreen = new LoadingScreen(this,mViewport,androidDeviceCameraController);
 
         setScreen(mainScreen);
     }
@@ -106,7 +109,7 @@ public class MyGame extends Game {
     }
 
     public void showCatchScreen() {
-        catchScreen = new CatchScreen(this, androidLauncher);
+        catchScreen = new CatchScreen(this, androidLauncher,mViewport);
         setScreen(catchScreen);
     }
 
@@ -121,15 +124,17 @@ public class MyGame extends Game {
 
     public void showBeedScreen(Screen oldScreen) {
         this.oldScreen = oldScreen;
-        setScreen(new BeedScreen(this, androidLauncher));
+        setScreen(new BeedScreen(this, androidLauncher,mViewport));
     }
 
     public void showLoadingScreen() {
         setScreen(loadingScreen);
     }
 
+
+
     public void showAimScreen(boolean fail) {
-        aimScreen = new AimScreen(this, androidLauncher);
+        aimScreen = new AimScreen(this, androidLauncher,mViewport);
         setScreen(aimScreen);
         aimScreen.setIsFail(fail);
     }

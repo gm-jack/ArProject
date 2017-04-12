@@ -2,6 +2,7 @@ package com.rtmap.game.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -10,6 +11,9 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class MagicCamera extends PerspectiveCamera {
+
+    private Vector3 mModelPosition;
+
     public MagicCamera() {
     }
 
@@ -43,5 +47,15 @@ public class MagicCamera extends PerspectiveCamera {
         super.update();
     }
 
+    public void updateModel(ModelInstance modelInstance) {
+        if (mModelPosition == null) mModelPosition = new Vector3();
+        modelInstance.transform.getTranslation(mModelPosition);
+        modelInstance.transform.setToLookAt(directionVector3, mModelPosition);
+        modelInstance.calculateTransforms();
+    }
+
+    public Vector3 getVec3() {
+        return directionVector3;
+    }
 
 }

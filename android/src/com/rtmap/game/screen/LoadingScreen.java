@@ -1,22 +1,12 @@
 package com.rtmap.game.screen;
 
 
-import android.os.Handler;
-import android.os.Message;
-import android.view.animation.LinearInterpolator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.AsyncResult;
-import com.badlogic.gdx.utils.async.AsyncTask;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.actor.LoadingActor;
@@ -32,6 +22,7 @@ import java.util.TimerTask;
  */
 public class LoadingScreen extends MyScreen {
 
+    private AndroidDeviceCameraController cameraController;
     private MyGame mGame;
     private GameStage loadingStage;
     private LoadingActor loadingActor;
@@ -39,13 +30,22 @@ public class LoadingScreen extends MyScreen {
     private boolean isFirst = true;
     private Timer timer;
 
-    public LoadingScreen(MyGame game) {
+    public LoadingScreen(MyGame game, ScreenViewport viewport, AndroidDeviceCameraController androidDeviceCameraController) {
         super(game);
         this.mGame = game;
+        this.cameraController = androidDeviceCameraController;
         assetManager = new AssetManager();
+
         initLoadingAsset();
         initAssets();
         timer = new Timer();
+        loadingStage = new LoadingStage(viewport);
+
+        loadingActor = new LoadingActor(assetManager, cameraController);
+        loadingActor.setPosition(0, 0);
+        loadingActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        loadingStage.addActor(loadingActor);
     }
 
     private void initLoadingAsset() {
@@ -101,19 +101,14 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("open_close.png", Texture.class);
         mGame.asset.load("open_again.png", Texture.class);
         mGame.asset.load("cover.png", Texture.class);
-        mGame.asset.load("wolf/Wolf_fbx.g3dj", Model.class);
+        mGame.asset.load("tiger/laohu-zhuaqu.g3dj", Model.class);
+        mGame.asset.load("tiger/laohu-huanhu.g3dj", Model.class);
+        mGame.asset.load("tiger/laohu-pao.g3dj", Model.class);
     }
 
     @Override
     public void show() {
-        loadingStage = new LoadingStage(new ScreenViewport());
-//        loadingStage = new LoadingStage(new ScalingViewport(Scaling.stretch, 750, 1334));
 
-        loadingActor = new LoadingActor(assetManager);
-        loadingActor.setPosition(0, 0);
-        loadingActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        loadingStage.addActor(loadingActor);
     }
 
     private float percent;
@@ -232,6 +227,8 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("open_close.png");
         mGame.asset.unload("open_again.png");
         mGame.asset.unload("cover.png");
-        mGame.asset.unload("wolf/Wolf_fbx.g3dj.png");
+        mGame.asset.unload("tiger/laohu-zhuaqu.g3dj");
+        mGame.asset.unload("tiger/laohu-huanhu.g3dj");
+        mGame.asset.unload("tiger/laohu-pao.g3dj");
     }
 }

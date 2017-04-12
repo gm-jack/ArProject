@@ -177,7 +177,7 @@ public class AimActor extends Actor {
                         batch.draw(mKeyFrames[0], aimWidth, aimHeight, mKeyFrames[0].getRegionWidth() / 2, mKeyFrames[0].getRegionHeight() / 2, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
 //                    }
                     }
-                    if (delta > 1f) {
+                    if (delta > 0.5f) {
                         delta = 0;
                     }
                 } else if (STATE == STATE_FAIL) {
@@ -185,7 +185,7 @@ public class AimActor extends Actor {
                     for (int i = 0; i < number; i++) {
                         batch.draw(mKeyFrames[1], aimWidth, aimHeight, mKeyFrames[1].getRegionWidth() / 2, mKeyFrames[1].getRegionHeight() / 2, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
                     }
-                    if (delta > 1f) {
+                    if (delta > 0.5f) {
                         delta = 0;
                     }
                 }
@@ -251,7 +251,7 @@ public class AimActor extends Actor {
             isOne = false;
         }
         delta += Gdx.graphics.getDeltaTime();
-        if (delta > 1f)
+        if (number <= maxNumber && delta > 0.5f)
             number++;
     }
 
@@ -264,7 +264,7 @@ public class AimActor extends Actor {
         }
         STATE = STATE_FAIL;
         delta += Gdx.graphics.getDeltaTime();
-        if (number > 0 && delta > 1f)
+        if (number > 0 && delta > 0.5f)
             number--;
     }
 

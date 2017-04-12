@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.rtmap.game.MyGame;
 import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.interfaces.AnimationListener;
@@ -27,12 +28,15 @@ import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by yxy on 2017/2/24.
  */
 public abstract class MyScreen implements Screen {
 
+    private Viewport viewPort;
+    //    private CameraInputController camController;
     private MyGame game;
     public Array<GameObject> instances = new Array<GameObject>();
     private ModelBatch modelBatch;
@@ -45,8 +49,9 @@ public abstract class MyScreen implements Screen {
     private boolean isLoading = true;
     //是否停止绘制模型
     private boolean stopRerder = false;
-    private float degree = 180;
-    private AnimationController animationController;
+    private AnimationController animationController1;
+    private AnimationController animationController2;
+    private AnimationController animationController3;
     private float num = 0;
     private boolean isAnimation = false;
 
@@ -64,22 +69,39 @@ public abstract class MyScreen implements Screen {
     private LazyBitmapFont lazyBitmapFont;
     private float x;
     private float y;
+    //模型在球形背面
     private boolean isPositive = false;
-    private float delTime = 0;
     private int distance = 11;
     private int delNum = 0;
     private int drawNum = 100;
-    //是否箭头动画
+    //是否开启箭头动画
     private boolean isAnim = false;
     private AnimationListener animationListener;
-    //保存箭头显示布尔值
+    //保存箭头是否显示
     private boolean oldIsLineShow = true;
+    //动画持续时间，动画完成设置初始值0
+    private float durations = 0;
+    //判断是否正在平移动画
+    private boolean isTranslate = false;
+    private float time = 0;
+    //是否启动线性移动，优先级高
+    private boolean isStart = true;
+    private Vector3 now;
+
+    private int modelNumber = 0;
+    //世界坐标转换成的屏幕坐标
+    private Vector3 mProject;
+    private float delTime = 0;
+    private float mTextWidthRadiu;
+    private int rayDistance;
+    private Vector3 old;
 
     public MyScreen() {
 
     }
 
     public MyScreen(MyGame game) {
+//        DefaultShader.defaultCullFace = 0;
         this.game = game;
         spriteBatch = new SpriteBatch();
 
@@ -92,17 +114,50 @@ public abstract class MyScreen implements Screen {
             modelBatch = new ModelBatch();
         if (environment == null)
             environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+
+        environment.set(new ColorAttribute(ColorAttribute.Emissive, 0.4f, 0.4f, 0.4f, 0f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
 
         if (camera == null) {
             camera = new MagicCamera(67f, width, height);
             camera.translate(0, 0, 0);
-            camera.lookAt(0, 0, 10);
-            camera.far = 1000.0f;
+            camera.lookAt(7, 0, 7);
+            camera.far = 100.0f;
             camera.near = 1f;
         }
+//        camController = new CameraInputController(camera);
     }
+
+//    public MyScreen(MyGame game, Viewport viewPort) {
+//        DefaultShader.defaultCullFace = 0;
+//        this.game = game;
+//        this.viewPort = viewPort;
+//        spriteBatch = new SpriteBatch();
+//
+//        width = Gdx.graphics.getWidth();
+//        height = Gdx.graphics.getHeight();
+//
+//        radius = height * 3 / 8;
+//
+//        if (modelBatch == null)
+//            modelBatch = new ModelBatch();
+//        if (environment == null)
+//            environment = new Environment();
+//
+//        environment.set(new ColorAttribute(ColorAttribute.Emissive, 0.4f, 0.4f, 0.4f, 0f));
+//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+//
+//
+//        if (camera == null) {
+//            camera = new MagicCamera(67f, width, height);
+//            camera.translate(7, 7, 7);
+//            camera.lookAt(0, 0, 0);
+//            camera.far = 100.0f;
+//            camera.near = 1f;
+//        }
+////        camController = new CameraInputController(camera);
+//    }
 
     @Override
     public void show() {
@@ -116,8 +171,23 @@ public abstract class MyScreen implements Screen {
     private void doneLoading() {
         texture.add(new TextureRegion(game.asset.get("aim_line.png", Texture.class)));
         texture.add(new TextureRegion(game.asset.get("find_anim.png", Texture.class)));
-        Model ship = game.asset.get("wolf/Wolf_fbx.g3dj", Model.class);
-        GameObject shipInstance = new GameObject(ship);
+        texture.add(new TextureRegion(game.asset.get("aim_success.png", Texture.class)));
+        mTextWidthRadiu = texture.get(2).getRegionWidth() * 0.495f / 2;
+
+        GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/laohu-huanhu.g3dj", Model.class));
+        GameObject shipInstancePao = new GameObject(game.asset.get("tiger/laohu-pao.g3dj", Model.class));
+        GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/laohu-zhuaqu.g3dj", Model.class));
+
+//        shipInstanceHuanHu.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
+//        shipInstancePao.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
+//        shipInstanceZhuaQu.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
+
+
+//        Gdx.app.error("mate",id);
+//        Array<Material> materials = shipInstance.materials;
+//        for (int i = 0; i < materials.size; i++) {
+//            ship.
+//        }
         /**
          * 0:run2|Wolf_creep_cycle
          * 1:run2|Wolf_Idle_
@@ -125,13 +195,19 @@ public abstract class MyScreen implements Screen {
          * 3:run2|Wolf_seat_
          * 4:run2|Wolf_Walk_cycle_
          */
-        shipInstance.transform.setToTranslation(0, 0, 5);
+        shipInstanceHuanHu.transform.setToTranslation(-7, 0, -7);
 //        shipInstance.transform.setToScaling(1, 1, 1);
-        shipInstance.transform.rotate(0, 1, 0, degree);
-        animationController = new AnimationController(shipInstance);
-        animationController.setAnimation("run2|Wolf_Run_Cycle_", -1);
-
-        instances.add(shipInstance);
+//        shipInstanceHuanHu.transform.setToLookAt()
+        animationController1 = new AnimationController(shipInstanceHuanHu);
+        animationController1.setAnimation("Take 001", -1);
+        animationController2 = new AnimationController(shipInstancePao);
+        animationController2.setAnimation("Take 001", -1);
+        animationController3 = new AnimationController(shipInstanceZhuaQu);
+        animationController3.setAnimation("Take 001", -1);
+//        Take 001
+        instances.add(shipInstanceHuanHu);
+        instances.add(shipInstancePao);
+        instances.add(shipInstanceZhuaQu);
         Gdx.app.error("gdx", "doneLoading()");
         isLoading = false;
     }
@@ -153,6 +229,9 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void dispose() {
+        for (int i = 0; i < texture.size(); i++) {
+            texture.get(i).getTexture().dispose();
+        }
 
         if (lazyBitmapFont != null)
             lazyBitmapFont.dispose();
@@ -160,42 +239,40 @@ public abstract class MyScreen implements Screen {
 
     /**
      * 平移渐变动画
-     *
-     * @param positions 新的世界坐标
-     * @param time      平移持续时间
      */
-    public void translateAnimation(Vector3 positions, float time) {
-//        if (instances.size > 0 && !isAnimation) {
-//            isAnimation = true;
-//            instances.get(0).transform.setToTranslation(positions);
-//        }
+    public void translateAnimation() {
+        if (time < durations) {
+            float renderTime = Gdx.graphics.getDeltaTime();
+            Gdx.app.error("now", "now.x  " + now.x + "  now.y   " + now.y + "  now.z  " + now.z);
+            float scollY = (now.y - old.y) * renderTime / durations;
+            float scollX = (now.x - old.x) * renderTime / durations;
+            float scollZ = (now.z - old.z) * renderTime / durations;
+            instances.get(modelNumber).transform.translate(scollX, scollY, scollZ);
+            this.time += renderTime;
+            Gdx.app.error("position", "time  =  " + this.time + "   durations == " + durations + "  scollX = " + scollX + "  scollY = " + scollY + "  scollZ = " + scollZ);
+        } else {
+            Gdx.app.error("positions", "translate finish");
+            isStart = true;
+            durations = 0;
+        }
 
-        if (instances.size > 0 && !isAnimation) {
-            isAnimation = true;
-            float scollX = positions.x - position.x;
-            float scollY = positions.y - position.y;
-            float scollZ = positions.z - position.z;
-//            float oldL = oldPosition.x * oldPosition.x + oldPosition.y * oldPosition.y + oldPosition.z * oldPosition.z;
-            float newL = positions.x * positions.x + 0 + positions.z * positions.z;
-            double sqrt = Math.sqrt(Math.abs(scollX) * Math.abs(scollX) + Math.abs(scollY) * Math.abs(scollY) + Math.abs(scollZ) * Math.abs(scollZ));
-//            double cos = (sqrt * sqrt + oldL * oldL - newL * newL) / 2 / oldL / sqrt;
-//            num = (int) (sqrt / time * 1000);
-//            Gdx.app.error("animation", " num   ==  " + num);
-            Gdx.app.error("animation", " oldPosition ==  " + position.x + "  " + position.y + "    " + position.z);
-            float number = time / Gdx.graphics.getDeltaTime();
-            Gdx.app.error("animation", " getDeltaTime   ==  " + Gdx.graphics.getDeltaTime());
-//            for (int i = 1; i <= num; i++) {
-//               instances.get(0).transform.setToTranslation(oldPosition.x + scollX * i / num, oldPosition.y + scollY * i / num, oldPosition.z + scollZ * i / num);
-//            }
-            if (num <= number) {
-                instances.get(0).transform.setToTranslation(position.x + scollX * Gdx.graphics.getDeltaTime() * num, position.y + scollY * Gdx.graphics.getDeltaTime() * num, position.z + scollZ * Gdx.graphics.getDeltaTime() * num);
-                Gdx.app.error("animation", " position ==  " + (position.x + scollX * Gdx.graphics.getDeltaTime() * num) + "  " + (position.y + scollY * Gdx.graphics.getDeltaTime() * num) + "    " + (position.z + scollZ * Gdx.graphics.getDeltaTime() * num));
-                num++;
-            }
+    }
 
-//            degree -= cos * 180 / 3.14;
-//            instances.get(0).transform.rotate(0, 1, 0, degree);
-//            isAnimation = false;
+    public void setTranslate(boolean translate) {
+        isTranslate = translate;
+    }
+
+    public void setStart(boolean start) {
+        isStart = start;
+    }
+
+    public void setDurations(Vector3 now, int time) {
+        if (isStart) {
+            this.time = 0;
+            this.durations = time;
+            this.now = now;
+            this.old = position;
+            isStart = false;
         }
     }
 
@@ -206,13 +283,18 @@ public abstract class MyScreen implements Screen {
         }
         if (!stopCamera && camera != null) {
             camera.update();
+//            instances.get(0).transform.rotate()
+//            Vector3 vec3 = camera.getVec3();
+//            instances.get(modelNumber).transform.setFromEulerAngles(-vec3.x, -vec3.y, -vec3.z);
             isPositive();
 
             if (texture.size() > 0) {
                 spriteBatch.begin();
-                Vector3 project = camera.project(position);
-                distance = (int) (Math.abs(Math.sqrt(project.x * project.x + project.y * project.y)) / 150);
-//                Gdx.app.error("animationListener", "oldIsLineShow != isLineShow   " + (oldIsLineShow != isLineShow) + "  distance >= 10  " + (distance >= 10));
+                mProject = camera.project(position);
+//                distance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
+                rayDistance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
+                distance = rayDistance / 120;
+                Gdx.app.error("distance", "  distance " + distance);
                 if (animationListener != null && oldIsLineShow != isLineShow) {
                     animationListener.startAnim(distance >= 9);
                     oldIsLineShow = isLineShow;
@@ -228,7 +310,7 @@ public abstract class MyScreen implements Screen {
 
                 if (isLineShow) {
                     //角度计算
-                    getAngle(project);
+                    getAngle(mProject);
 
                     double abs = Math.abs(Math.sqrt(radius * radius - width * width / 4));
                     double minRightAngle = Math.toDegrees(Math.atan(Math.abs(width / 2 / abs)));
@@ -271,6 +353,7 @@ public abstract class MyScreen implements Screen {
                     }
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
+
                     if (lazyBitmapFont == null)
                         lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.valueOf("#ffb54b"));
 
@@ -297,28 +380,71 @@ public abstract class MyScreen implements Screen {
             }
         }
         if (instances.size > 0 && !stopRerder) {
+            GameObject object = instances.get(modelNumber);
             modelBatch.begin(camera);
-            if (isVisible(camera, instances.get(0))) {
-                modelBatch.render(instances, environment);
+            if (isVisible(camera, object)) {
+                modelBatch.render(object, environment);
             }
             modelBatch.end();
-            animationController.update(Gdx.graphics.getDeltaTime());
+            //线性移动
+            Random random = new Random();
+            int i = random.nextInt(4) - 2;
+            setDurations(new Vector3(position.x + i, position.y, position.z), 2);
+            translateAnimation();
+
+            Gdx.app.error("anim", "position.x  " + position.x + "  position.y   " + position.y + "  position.z  " + position.z);
+            switchAnimationModel();
+
+
+//            Gdx.app.error("mdoel", " unproject  x == " + unproject.x + "   unproject   y ==  " + unproject.y + "  unproject   z == " + unproject.z);
+//            if (rayDistance < mTextWidthRadiu && !isPositive) {
+//                addNumber();
+//
+//            } else {
+//                subNumber();
+//            }
+            /**
+             * 添加射线
+             */
             Ray ray = camera.getPickRay(width / 2, height / 2);
-            final GameObject instance = instances.get(0);
+            final GameObject instance = object;
             instance.transform.getTranslation(position);
             position.add(instance.center);
             final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
             float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
             if (dist2 <= instance.radius * instance.radius && !isPositive) {
                 addNumber();
-//                translateAnimation(new Vector3(0, 0, 5), 5000);
-//                instance.transform.setToTranslation(0, 0, 2);
             } else {
                 subNumber();
             }
-
         }
     }
+
+    //设置显示模型
+    public void setModelNumber(int number) {
+        this.modelNumber = number;
+        if (instances.size > 0) {
+            instances.get(number).transform.setToTranslation(position.x, position.y, position.z);
+//        shipInstance.transform.setToScaling(1, 1, 1);
+//            instances.get(number).transform.rotate(0, 1, 0, 45);
+        }
+    }
+
+    public void switchAnimationModel() {
+        switch (modelNumber) {
+            case 0:
+                animationController1.update(Gdx.graphics.getDeltaTime());
+                break;
+            case 1:
+                animationController2.update(Gdx.graphics.getDeltaTime());
+                break;
+            case 2:
+                animationController3.update(Gdx.graphics.getDeltaTime());
+                break;
+        }
+    }
+
+    ;
 
     public void setAnimationListener(AnimationListener animationListener) {
         this.animationListener = animationListener;

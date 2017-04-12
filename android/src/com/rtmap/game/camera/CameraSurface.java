@@ -15,33 +15,22 @@ package com.rtmap.game.camera;
 
 import android.content.Context;
 import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.rtmap.game.util.FileUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.Semaphore;
 
 public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     private Camera camera;
     private int size;
     private byte[] bytes;
-    private FileUtil fileUtil;
     private int i = 0;
-    private Semaphore mYuvBufferlock;
 
     public CameraSurface(Context context) {
         super(context);
-        fileUtil = new FileUtil();
-        mYuvBufferlock = new Semaphore(1);
         // We're implementing the Callback interface and want to get notified
         // about certain surface events.
         getHolder().addCallback(this);
@@ -109,4 +98,8 @@ public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback
         camera.addCallbackBuffer(bytess);
 //        this.invalidate();
     }
+
+     static interface DataCallBack{
+         void cameraData(byte[] data);
+     }
 }
