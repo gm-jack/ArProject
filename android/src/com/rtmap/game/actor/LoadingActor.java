@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.rtmap.game.MyGame;
 import com.rtmap.game.camera.AndroidDeviceCameraController;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class LoadingActor extends Actor {
     private final int number = 20;
     private final int radius;
     private final AndroidDeviceCameraController cameraController;
+    private final MyGame mGame;
     private AssetManager asset;
     private List<TextureRegion> texReArray = new ArrayList();
     private int width;
@@ -48,11 +50,13 @@ public class LoadingActor extends Actor {
     private boolean isFirst = true;
     private boolean isEndAnimation = false;
     private boolean isLodingShow = true;
+    private boolean isAnimationFirst = true;
 
-    public LoadingActor(AssetManager assetManager, AndroidDeviceCameraController cameraController) {
+    public LoadingActor(AssetManager assetManager, AndroidDeviceCameraController cameraController, MyGame game) {
         super();
         this.asset = assetManager;
         this.cameraController = cameraController;
+        this.mGame = game;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         startX = width / 2;
@@ -98,24 +102,46 @@ public class LoadingActor extends Actor {
                 if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
                 }
-                cameraController.animationCenter(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                if (isAnimationFirst) {
+                    isAnimationFirst = false;
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            Gdx.app.error("camera", "render()");
+                            cameraController.animationCenter(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
 
-                    }
+                                }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        cameraController.endAnimation();
-                        isLodingShow = false;
-                        isEndAnimation = false;
-                    }
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    cameraController.endAnimation();
+                                }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
+                                }
+                            });
+//                            cameraController.showImage(true);
+//                            cameraController.pictureCamera();
+//                            cameraController.setAnimationEnd(new AnimationEnd() {
+//                                @Override
+//                                public void end() {
+//                                    Gdx.app.postRunnable(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            if (mGame != null) {
+//                                                mGame.showAimScreen(false);
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                            });
+                        }
+                    });
+                }
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));

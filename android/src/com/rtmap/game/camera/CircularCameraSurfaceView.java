@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import jp.co.cyberagent.android.gpuimage.util.CameraInterface;
 import jp.co.cyberagent.android.gpuimage.util.TextureUtil;
 
 public class CircularCameraSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
@@ -39,21 +40,23 @@ public class CircularCameraSurfaceView extends GLSurfaceView implements GLSurfac
             CameraInterface.getInstance().getCamera().startPreview();
     }
 
+    public void prepare(){
+        if (!CameraInterface.getInstance().isPreviewing()) {
+            CameraInterface.getInstance().doStartPreview(mSurface, 1f);
+        }
+    }
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         mTextureID = createTextureID();
         mSurface = TextureUtil.getInstance().initSurfaceTexture(mTextureID);
         mSurface.setOnFrameAvailableListener(this);
         mDirectDrawer = new DirectDrawer(mTextureID);
-        CameraInterface.getInstance().doOpenCamera(null);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        if (!CameraInterface.getInstance().isPreviewing()) {
-            CameraInterface.getInstance().doStartPreview(mSurface, 1f);
-        }
+        prepare();
     }
 
     @Override

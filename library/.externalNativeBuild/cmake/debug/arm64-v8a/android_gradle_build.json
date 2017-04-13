@@ -1,0 +1,38 @@
+
+{
+	"buildFiles" : [ "C:/Users/yxy/Desktop/ArProject/library/CMakeLists.txt" ],
+	"cFileExtensions" : [ "c" ],
+	"cleanCommands" : 
+	[
+		"C:\\Users\\yxy\\Downloads\\android-sdk_r24.4.1-windows\\android-sdk-windows\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\yxy\\Desktop\\ArProject\\library\\.externalNativeBuild\\cmake\\debug\\arm64-v8a --target clean"
+	],
+	"libraries" : 
+	{
+		"gpuimage-library-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "gpuimage-library",
+			"buildCommand" : "C:\\Users\\yxy\\Downloads\\android-sdk_r24.4.1-windows\\android-sdk-windows\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\yxy\\Desktop\\ArProject\\library\\.externalNativeBuild\\cmake\\debug\\arm64-v8a --target gpuimage-library",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android --gcc-toolchain=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/windows-x86_64 --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-21/arch-arm64 -Dgpuimage_library_EXPORTS -I..\\..\\..\\..\\jni  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC      -c ",
+					"src" : "C:/Users/yxy/Desktop/ArProject/library/jni/yuv-decoder.c",
+					"workingDirectory" : "C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/debug/arm64-v8a"
+				}
+			],
+			"output" : "C:/Users/yxy/Desktop/ArProject/library/libs/arm64-v8a/libgpuimage-library.so",
+			"toolchain" : "1358199185"
+		}
+	},
+	"toolchains" : 
+	{
+		"1358199185" : 
+		{
+			"cCompilerExecutable" : "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}

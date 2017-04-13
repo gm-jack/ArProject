@@ -1,0 +1,16 @@
+Executable : C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\cmake.exe
+arguments : 
+-HC:\Users\yxy\Desktop\ArProject\library
+-BC:\Users\yxy\Desktop\ArProject\library\.externalNativeBuild\cmake\release\x86_64
+-GAndroid Gradle - Ninja
+-DANDROID_ABI=x86_64
+-DANDROID_NDK=C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\ndk-bundle
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\Users\yxy\Desktop\ArProject\library\build\intermediates\cmake\release\obj\x86_64
+-DCMAKE_BUILD_TYPE=Release
+-DCMAKE_MAKE_PROGRAM=C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe
+-DCMAKE_TOOLCHAIN_FILE=C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\ndk-bundle\build\cmake\android.toolchain.cmake
+-DANDROID_PLATFORM=android-21
+-DCMAKE_CXX_FLAGS=-DANDROID_NDK -D_DEBUG
+-DANDROID_STL=gnustl_shared
+jvmArgs : 
+

@@ -15,7 +15,6 @@ import com.rtmap.game.stage.GameStage;
 import com.rtmap.game.stage.LoadingStage;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by yxy on 2017/2/20.
@@ -41,7 +40,7 @@ public class LoadingScreen extends MyScreen {
         timer = new Timer();
         loadingStage = new LoadingStage(viewport);
 
-        loadingActor = new LoadingActor(assetManager, cameraController);
+        loadingActor = new LoadingActor(assetManager, cameraController,mGame);
         loadingActor.setPosition(0, 0);
         loadingActor.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -123,21 +122,6 @@ public class LoadingScreen extends MyScreen {
             loadingActor.setIsEndAnimation(true);
             isFirst = false;
             return;
-        }
-
-        if (!isFirst && loadingActor != null && !loadingActor.isEndAnimation()) {
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mGame != null)
-                                mGame.showAimScreen(false);
-                        }
-                    });
-                }
-            }, 200);
         }
 
         // 更新舞台逻辑

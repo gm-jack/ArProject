@@ -103,7 +103,8 @@ public abstract class MyScreen implements Screen {
     public MyScreen(MyGame game) {
 //        DefaultShader.defaultCullFace = 0;
         this.game = game;
-        spriteBatch = new SpriteBatch();
+        if (spriteBatch == null)
+            spriteBatch = new SpriteBatch();
 
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
@@ -278,6 +279,7 @@ public abstract class MyScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (spriteBatch == null) return;
         if (game.asset.update() && isLoading) {
             doneLoading();
         }
