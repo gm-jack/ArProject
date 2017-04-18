@@ -80,15 +80,15 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onResume() {
         super.onResume();
-//        if (androidDeviceCameraController != null)
-//            androidDeviceCameraController.resumeCircleCamera();
+        if (androidDeviceCameraController != null)
+            androidDeviceCameraController.resumeCircleCamera();
     }
 
     @Override
     protected void onPause() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
-//            androidDeviceCameraController.pauseCircleCamera();
+            androidDeviceCameraController.pauseCircleCamera();
         }
         super.onPause();
 
@@ -98,7 +98,7 @@ public class AndroidLauncher extends AndroidApplication {
     protected void onDestroy() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
-//            androidDeviceCameraController.pauseCircleCamera();
+            androidDeviceCameraController.pauseCircleCamera();
         }
         super.onDestroy();
     }

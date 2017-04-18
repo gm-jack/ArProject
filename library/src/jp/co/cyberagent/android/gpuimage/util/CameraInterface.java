@@ -40,6 +40,10 @@ public class CameraInterface {
         return isOpen;
     }
 
+    public void setPreviewing(boolean previewing) {
+        isPreviewing = previewing;
+    }
+
     public static synchronized CameraInterface getInstance() {
         if (mCameraInterface == null) {
             mCameraInterface = new CameraInterface();
@@ -111,7 +115,6 @@ public class CameraInterface {
             mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
         mCamera.setParameters(mParams);
-        isPreviewing = true;
         mPreviwRate = previewRate;
         mParams = mCamera.getParameters();
     }

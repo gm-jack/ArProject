@@ -80,7 +80,7 @@ public class CatchScreen extends MyScreen {
         group3.addActor(coverActor);
 
         catActor = new CatActor(mGame.asset);
-        group3.addActor(catActor);
+
         //添加关闭按钮actor
         closeActor = new CloseActor(mGame.asset);
         group3.addActor(closeActor);
@@ -288,6 +288,7 @@ public class CatchScreen extends MyScreen {
                     if (!firstCatch) {
                         catchActor.setIsStop(false);
                     }
+                    group3.addActor(catActor);
                     initListener();
                 }
             }, 1000);

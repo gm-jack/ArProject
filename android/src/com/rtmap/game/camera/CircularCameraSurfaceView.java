@@ -6,6 +6,7 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.util.AttributeSet;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -19,6 +20,7 @@ public class CircularCameraSurfaceView extends GLSurfaceView implements GLSurfac
     SurfaceTexture mSurface;
     int mTextureID = -1;
     DirectDrawer mDirectDrawer;
+    private int radius;
 
     public CircularCameraSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,16 +37,29 @@ public class CircularCameraSurfaceView extends GLSurfaceView implements GLSurfac
         this(context, null);
     }
 
-    public void startPreview() {
-        if (CameraInterface.getInstance().isOpen())
-            CameraInterface.getInstance().getCamera().startPreview();
+    public int getRadius() {
+        return radius;
     }
 
-    public void prepare(){
-        if (!CameraInterface.getInstance().isPreviewing()) {
-            CameraInterface.getInstance().doStartPreview(mSurface, 1f);
+    public void setRadius(int radius) {
+        this.radius = radius;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            mSurface.setDefaultBufferSize(radius, radius);
+            requestLayout();
         }
     }
+
+    public void startPreview() {
+        if (CameraInterface.getInstance().isOpen() && !CameraInterface.getInstance().isPreviewing()) {
+            CameraInterface.getInstance().getCamera().startPreview();
+            CameraInterface.getInstance().setPreviewing(true);
+        }
+    }
+
+    public void prepare() {
+        CameraInterface.getInstance().doStartPreview(mSurface, 1f);
+    }
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         mTextureID = createTextureID();

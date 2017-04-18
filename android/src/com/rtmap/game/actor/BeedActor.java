@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.rtmap.game.interfaces.BeedOnClickListener;
 
 /**
@@ -25,9 +24,11 @@ public class BeedActor extends Actor {
     private boolean isDown = false;
     private float changeRadius = 0;
     private boolean isFirst = true;
-    private int regionWidth;
-    private int regionHeight;
+    private float regionWidth;
+    private float regionHeight;
     private int nums = 30;
+    private TextureRegion mScaleTex;
+    private float scale;
 
     public BeedActor(AssetManager assetManager) {
         super();
@@ -45,15 +46,17 @@ public class BeedActor extends Actor {
     }
 
     private void initResources() {
+        mScaleTex = new TextureRegion((Texture) assetManager.get("anim_bg_top.png"));
+        scale = (float) width / mScaleTex.getRegionWidth();
 
         normal = new TextureRegion((Texture) assetManager.get("find_right_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_right_press.png"));
 
-        setPosition(width - normal.getRegionWidth(), 0);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+        regionWidth = normal.getRegionWidth() * scale;
+        regionHeight = normal.getRegionHeight() * scale;
 
-        regionWidth = normal.getRegionWidth();
-        regionHeight = normal.getRegionHeight();
+        setPosition(width - regionHeight, 0);
+        setSize(regionWidth, regionHeight);
     }
 
     public void setListener(final BeedOnClickListener beedOnClickListener) {
@@ -95,9 +98,9 @@ public class BeedActor extends Actor {
             }
         } else {
             if (!isDown)
-                batch.draw(press, width - press.getRegionWidth(), 0, press.getRegionWidth(), press.getRegionHeight());
+                batch.draw(press, width - press.getRegionWidth() * scale, 0, press.getRegionWidth() * scale, press.getRegionHeight() * scale);
             else
-                batch.draw(normal, width - normal.getRegionWidth(), 0, normal.getRegionWidth(), normal.getRegionHeight());
+                batch.draw(normal, width - normal.getRegionWidth() * scale, 0, normal.getRegionWidth() * scale, normal.getRegionHeight() * scale);
         }
     }
 

@@ -234,7 +234,7 @@ public class CatchActor extends Actor {
                             lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
 
                         lazyBitmapFont2.draw(batch, "请到我的-优惠券里查看", width / 2 - fontWidth2 / 2, mFloat - openTexRe.get(1).getRegionHeight() - ScreenUtil.dp2px(18) - openTexRe.get(2).getRegionHeight() - 25, width * 0.707f, Align.left, true);
-                        lazyBitmapFont2.draw(batch, result.getShopName(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
+                        lazyBitmapFont2.draw(batch, result.getShopName(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter, width * 0.707f, Align.left, true);
 
 
                         lazyBitmapFont2.draw(batch, "门店信息", mX, bottomHeight + pictureMeter * 7 / 4, width * 0.707f, Align.left, true);
@@ -242,8 +242,8 @@ public class CatchActor extends Actor {
                         if (lazyBitmapFont3 == null)
                             lazyBitmapFont3 = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.WHITE);
                         lazyBitmapFont3.draw(batch, "地址:" + result.getPosition(), mX, bottomHeight, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, result.getDesc(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 4, width * 0.707f, Align.left, true);
-                        lazyBitmapFont3.draw(batch, "离你0.2KM", mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, result.getDesc(), mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter / 2, width * 0.707f, Align.left, true);
+                        lazyBitmapFont3.draw(batch, "离你0.2KM", mX + pictureMeter * 9 / 8, bottomHeight + pictureMeter * 3 / 4, width * 0.707f, Align.left, true);
 
                         if (null != result && null != result.getImgUrl() && texture == null) {
                             NetUtil.getInstance().getPicture(result.getImgUrl(), new Net.HttpResponseListener() {

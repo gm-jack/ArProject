@@ -237,8 +237,8 @@ public class AimActor extends Actor {
     public void setIsFail(boolean isFail) {
         this.isFail = isFail;
         if (isFail) {
-            number = maxNumber;
-            STATE = STATE_FAIL;
+            number = 0;
+            STATE = STATE_NORMAL;
             setIsFind(true);
         }
     }
@@ -303,6 +303,9 @@ public class AimActor extends Actor {
     public void clear() {
         for (int i = 0; i < texReArray.size(); i++) {
             texReArray.get(i).getTexture().dispose();
+        }
+        for (int i = 0; i < findReArray.size(); i++) {
+            findReArray.get(i).getTexture().dispose();
         }
         for (int i = 0; i < mKeyFrames.length; i++) {
             mKeyFrames[i].getTexture().dispose();

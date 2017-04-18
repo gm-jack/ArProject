@@ -77,8 +77,8 @@ public class AimScreen extends MyScreen {
                     }
                     setModelNumber(nums);
 //                    Gdx.app.error("gdx", "退出");
-//                    if (mGame != null)
-//                        mGame.showCatchScreen();
+                    if (mGame != null && nums ==2)
+                    mGame.showCatchScreen();
                 }
             });
             beedActor.setListener(new BeedOnClickListener() {

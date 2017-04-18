@@ -21,13 +21,14 @@ public class BackActor extends Actor {
     private InputListener listener;
     private TextureRegion normal;
     private TextureRegion press;
-    private Batch batch;
     private boolean isDown = false;
     private float changeRadius;
     private float regionWidth;
     private float regionHeight;
     private float nums = 30;
     private boolean isFirst = true;
+    private TextureRegion mScaleTex;
+    private float scale;
 
     public BackActor(AssetManager assetManager) {
         super();
@@ -44,11 +45,14 @@ public class BackActor extends Actor {
     }
 
     private void initResources() {
+        mScaleTex = new TextureRegion((Texture) assetManager.get("anim_bg_top.png"));
+        scale = (float) width / mScaleTex.getRegionWidth();
+
         normal = new TextureRegion((Texture) assetManager.get("find_left_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("find_left_press.png"));
-        regionWidth = normal.getRegionWidth();
+        regionWidth = normal.getRegionWidth() * scale;
         changeRadius = regionWidth;
-        regionHeight = normal.getRegionHeight();
+        regionHeight = normal.getRegionHeight() * scale;
         setPosition(0, 0);
         setSize(regionWidth, regionHeight);
 
@@ -95,9 +99,9 @@ public class BackActor extends Actor {
             }
         } else {
             if (!isDown)
-                batch.draw(press, 0, 0, press.getRegionWidth(), press.getRegionHeight());
+                batch.draw(press, 0, 0, press.getRegionWidth() * scale, press.getRegionHeight() * scale);
             else
-                batch.draw(normal, 0, 0, normal.getRegionWidth(), normal.getRegionHeight());
+                batch.draw(normal, 0, 0, normal.getRegionWidth() * scale, normal.getRegionHeight() * scale);
         }
 
     }

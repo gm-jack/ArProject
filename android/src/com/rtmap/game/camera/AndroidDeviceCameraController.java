@@ -1,5 +1,8 @@
 package com.rtmap.game.camera;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
@@ -8,11 +11,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 
-import com.badlogic.gdx.Gdx;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.interfaces.DeviceCameraControl;
 import com.rtmap.game.util.CameraHelper;
@@ -36,6 +36,8 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     private CircularCameraSurfaceView mCircularCameraSurfaceView;
     private FrameLayout.LayoutParams mParams;
     private Point mP;
+    private boolean isFirst = true;
+    private float defaultRaidus = 300f;
 
     public AndroidDeviceCameraController(AndroidLauncher androidLauncher) {
         this.androidLauncher = androidLauncher;
@@ -70,8 +72,8 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         mParams = (FrameLayout.LayoutParams) mCircularCameraSurfaceView.getLayoutParams();
         mP = DisplayUtil.getScreenMetrics(androidLauncher);
         mParams.gravity = Gravity.CENTER;
-        mParams.width = 500;
-        mParams.height = 500;
+        mParams.width = (int) defaultRaidus;
+        mParams.height = (int) defaultRaidus;
         mCircularCameraSurfaceView.setLayoutParams(mParams);
     }
 
@@ -99,26 +101,45 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     }
 
     public void endAnimation() {
-
+        mCircularCameraSurfaceView.startPreview();
         mGPUImage.setFilter(new GPUImageGrayscaleFilter());
         showCenter(false);
     }
 
-    public void animationCenter(final Animation.AnimationListener listener) {
+    public void animationCenter(final Animator.AnimatorListener listener) {
         androidLauncher.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mCircularCameraSurfaceView.prepare();
+                mCircularCameraSurfaceView.startPreview();
                 showCenter(true);
                 if (mCircularCameraSurfaceView.getVisibility() == View.VISIBLE) {
-                    mCircularCameraSurfaceView.startPreview();
-                    Gdx.app.error("camera", "animation");
-                    float scale = (float) (Math.abs(Math.sqrt((mP.x * mP.x) + (mP.y * mP.y))) / 500f);
-                    ScaleAnimation scaleAnimation = new ScaleAnimation(ScaleAnimation.RELATIVE_TO_SELF, scale, ScaleAnimation.RELATIVE_TO_SELF, scale, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                    scaleAnimation.setDuration(2000);
-                    scaleAnimation.setFillAfter(true);
-                    mCircularCameraSurfaceView.setAnimation(scaleAnimation);
-                    scaleAnimation.setAnimationListener(listener);
-                    scaleAnimation.start();
+
+                    //沿x轴放大
+//                    ObjectAnimator scaleXAnimator = ObjectAnimator.ofInt(mCircularCameraSurfaceView, "radius", 500, (int) Math.abs(Math.sqrt((mP.x * mP.x) + (mP.y * mP.y))));
+//                    scaleXAnimator.setDuration(2000);
+//                    scaleXAnimator.addListener(listener);
+//                    scaleXAnimator.start();
+                    float scale = mP.y / defaultRaidus;
+                    //沿x轴放大
+                    ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(mCircularCameraSurfaceView, "scaleX", 1f, scale);
+                    //沿y轴放大
+                    ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(mCircularCameraSurfaceView, "scaleY", 1f, scale);
+                    AnimatorSet set = new AnimatorSet();
+                    //同时沿X,Y轴放大，且改变透明度，然后移动
+                    set.play(scaleXAnimator).with(scaleYAnimator);
+                    //都设置3s，也可以为每个单独设置
+                    set.setDuration(2000);
+                    set.addListener(listener);
+                    set.start();
+
+//                    float scale = (float) (Math.abs(Math.sqrt((mP.x * mP.x) + (mP.y * mP.y))) / 500f);
+//                    ScaleAnimation scaleAnimation = new ScaleAnimation(ScaleAnimation.RELATIVE_TO_SELF, scale, ScaleAnimation.RELATIVE_TO_SELF, scale, ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+//                    scaleAnimation.setDuration(2000);
+//                    scaleAnimation.setFillAfter(true);
+//                    mCircularCameraSurfaceView.setAnimation(scaleAnimation);
+//                    scaleAnimation.setAnimationListener(listener);
+//                    scaleAnimation.start();
                 }
             }
         });
@@ -138,6 +159,12 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             mGPUImage.setUpCamera(CameraInterface.getInstance().getCamera(), orientation, flipHorizontal, false);
             mCircularCameraSurfaceView.startPreview();
             showCenter(false);
+
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                mGPUImage.setFilter(new GPUImageGrayscaleFilter());
+            }
         }
 //        if (mCamera != null)
 //            mCamera.onResume();
@@ -220,7 +247,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public boolean isReady() {
-        if (mGlSurfaceView != null) {
+        if (mGlSurfaceView != null && mCircularCameraSurfaceView != null) {
             return true;
         }
         return false;
@@ -228,75 +255,5 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
-    }
-
-    private class CameraLoader {
-
-        private int mCurrentCameraId = 0;
-        private Camera mCameraInstance;
-
-        public void onResume() {
-            setUpCamera(mCurrentCameraId);
-        }
-
-        public void onPause() {
-            releaseCamera();
-        }
-
-        public void switchCamera(int id) {
-            releaseCamera();
-            setUpCamera(id);
-        }
-
-        private void setUpCamera(final int id) {
-            mCameraInstance = CameraInterface.getInstance().getCamera();
-//            Camera.Parameters parameters = mCameraInstance.getParameters();
-//            // TODO adjust by getting supportedPreviewSizes and then choosing
-//            // the best one for screen size (best fill screen)
-//
-////            parameters.setPreviewFormat(ImageFormat.NV21);
-////            parameters.setPictureFormat(ImageFormat.NV21);
-//            if (parameters.getSupportedFocusModes().contains(
-//                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-//                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-//            }
-//            mCameraInstance.setParameters(parameters);
-
-            int orientation = mCameraHelper.getCameraDisplayOrientation(
-                    androidLauncher, mCurrentCameraId);
-            CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
-            mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
-            boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
-            mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false);
-        }
-
-        public Camera getCameraInstance() {
-            return mCameraInstance;
-        }
-
-        /**
-         * A safe way to get an instance of the Camera object.
-         */
-        private Camera getCameraInstance(final int id) {
-            Camera c = null;
-            try {
-                c = mCameraHelper.openCamera(id);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return c;
-        }
-
-        private void stopCamera() {
-            mCameraInstance.stopPreview();
-        }
-
-        private void releaseCamera() {
-            if (mCameraInstance != null) {
-                mCameraInstance.setPreviewCallback(null);
-                mCameraInstance.release();
-                mCameraInstance = null;
-            }
-        }
     }
 }

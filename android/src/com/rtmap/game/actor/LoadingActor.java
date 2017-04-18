@@ -1,7 +1,7 @@
 package com.rtmap.game.actor;
 
 
-import android.view.animation.Animation;
+import android.animation.Animator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -108,19 +108,31 @@ public class LoadingActor extends Actor {
                         @Override
                         public void run() {
                             Gdx.app.error("camera", "render()");
-                            cameraController.animationCenter(new Animation.AnimationListener() {
+                            cameraController.animationCenter(new Animator.AnimatorListener() {
                                 @Override
-                                public void onAnimationStart(Animation animation) {
+                                public void onAnimationStart(Animator animation) {
 
                                 }
 
                                 @Override
-                                public void onAnimationEnd(Animation animation) {
+                                public void onAnimationEnd(Animator animation) {
                                     cameraController.endAnimation();
+                                    Gdx.app.postRunnable(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (mGame != null)
+                                                mGame.showAimScreen(false);
+                                        }
+                                    });
                                 }
 
                                 @Override
-                                public void onAnimationRepeat(Animation animation) {
+                                public void onAnimationCancel(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
 
                                 }
                             });

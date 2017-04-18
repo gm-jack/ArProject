@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.rtmap.game.MyGame;
+import com.rtmap.game.TestShader;
 import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.text.LazyBitmapFont;
@@ -35,6 +38,7 @@ import java.util.Random;
  */
 public abstract class MyScreen implements Screen {
 
+    private TestShader shader;
     private Viewport viewPort;
     //    private CameraInputController camController;
     private MyGame game;
@@ -66,6 +70,7 @@ public abstract class MyScreen implements Screen {
     private float nowAngle;
     //弧度制
     private double v;
+    //字体
     private LazyBitmapFont lazyBitmapFont;
     private float x;
     private float y;
@@ -76,6 +81,7 @@ public abstract class MyScreen implements Screen {
     private int drawNum = 100;
     //是否开启箭头动画
     private boolean isAnim = false;
+    //动画监听
     private AnimationListener animationListener;
     //保存箭头是否显示
     private boolean oldIsLineShow = true;
@@ -95,6 +101,10 @@ public abstract class MyScreen implements Screen {
     private float mTextWidthRadiu;
     private int rayDistance;
     private Vector3 old;
+    private float initAngle = 50f;
+    private Material originalMaterial;
+    private double mRelative;
+    private String message;
 
     public MyScreen() {
 
@@ -119,14 +129,20 @@ public abstract class MyScreen implements Screen {
         environment.set(new ColorAttribute(ColorAttribute.Emissive, 0.4f, 0.4f, 0.4f, 0f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-
+//        shader = new TestShader();
+//        shader.init();
         if (camera == null) {
             camera = new MagicCamera(67f, width, height);
             camera.translate(0, 0, 0);
             camera.lookAt(7, 0, 7);
-            camera.far = 100.0f;
+            camera.far = 500.0f;
             camera.near = 1f;
         }
+
+
+        originalMaterial = new Material();
+        originalMaterial.set(new ColorAttribute(ColorAttribute.createDiffuse(Color.YELLOW)));
+//        originalMaterial.set(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("tiger/laohu.png"))), TextureAttribute.createAmbient(new Texture(Gdx.files.internal("tiger/laohu.png"))), TextureAttribute.createBump(new Texture(Gdx.files.internal("tiger/laohu.png"))), TextureAttribute.createEmissive(new Texture(Gdx.files.internal("tiger/laohu.png"))), TextureAttribute.createNormal(new Texture(Gdx.files.internal("tiger/laohu.png"))), TextureAttribute.createReflection(new Texture(Gdx.files.internal("tiger/laohu.png"))));
 //        camController = new CameraInputController(camera);
     }
 
@@ -178,13 +194,15 @@ public abstract class MyScreen implements Screen {
         GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/laohu-huanhu.g3dj", Model.class));
         GameObject shipInstancePao = new GameObject(game.asset.get("tiger/laohu-pao.g3dj", Model.class));
         GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/laohu-zhuaqu.g3dj", Model.class));
-
+        shipInstanceHuanHu.userData = new Color(android.graphics.Color.YELLOW);
+//        Material material = shipInstanceHuanHu.getMaterial("");
+//        material.set(ColorAttribute.createDiffuse(Color.YELLOW));
 //        shipInstanceHuanHu.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
 //        shipInstancePao.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
 //        shipInstanceZhuaQu.materials.get(0).set(new TextureAttribute(TextureAttribute.Emissive, new Texture(Gdx.files.internal("tiger/laohu.png"))));
 
 
-//        Gdx.app.error("mate",id);
+//        Gdx.app.error("model",id);
 //        Array<Material> materials = shipInstance.materials;
 //        for (int i = 0; i < materials.size; i++) {
 //            ship.
@@ -196,7 +214,8 @@ public abstract class MyScreen implements Screen {
          * 3:run2|Wolf_seat_
          * 4:run2|Wolf_Walk_cycle_
          */
-        shipInstanceHuanHu.transform.setToTranslation(-7, 0, -7);
+        shipInstanceHuanHu.transform.setToTranslation(-7, 0, 7);
+//        shipInstanceHuanHu.transform.rotate(0, 1, 0, initAngle);
 //        shipInstance.transform.setToScaling(1, 1, 1);
 //        shipInstanceHuanHu.transform.setToLookAt()
         animationController1 = new AnimationController(shipInstanceHuanHu);
@@ -209,9 +228,34 @@ public abstract class MyScreen implements Screen {
         instances.add(shipInstanceHuanHu);
         instances.add(shipInstancePao);
         instances.add(shipInstanceZhuaQu);
-        Gdx.app.error("gdx", "doneLoading()");
+
+        Array<Material> materials = instances.get(0).materials;
+        for (int i = 0; i < materials.size; i++) {
+            Material mat = materials.get(i);
+            mat.clear();
+            mat.set(originalMaterial);
+        }
+        getModelAngle();
+
+
+        Gdx.app.error("model", "doneLoading()");
         isLoading = false;
     }
+
+    /**
+     * 设置模型正对相机角度
+     */
+    public void getModelAngle() {
+        Vector3 modelAngle = new Vector3();
+        instances.get(modelNumber).transform.getTranslation(modelAngle);
+//        instances.get(modelNumber).transform.setToLookAt(modelAngle, new Vector3(0, 0, 0), new Vector3(modelAngle.x, modelAngle.y + 1, modelAngle.z));
+        Quaternion quaternion = new Quaternion();
+        double mAngle = Math.toDegrees(Math.asin(modelAngle.x / Math.sqrt(modelAngle.x * modelAngle.x + modelAngle.z * modelAngle.z)));
+        instances.get(modelNumber).transform.rotate(0, 1, 0, -(float) mAngle - 80);
+        instances.get(modelNumber).transform.getRotation(quaternion);
+        Gdx.app.error("model", "模型角度  = " + mAngle + "  quaternion.getAngle()   " + quaternion.getAngle());
+    }
+
 
     @Override
     public void pause() {
@@ -244,15 +288,16 @@ public abstract class MyScreen implements Screen {
     public void translateAnimation() {
         if (time < durations) {
             float renderTime = Gdx.graphics.getDeltaTime();
-            Gdx.app.error("now", "now.x  " + now.x + "  now.y   " + now.y + "  now.z  " + now.z);
+            Gdx.app.error("model", "now.x  " + now.x + "  now.y   " + now.y + "  now.z  " + now.z);
             float scollY = (now.y - old.y) * renderTime / durations;
             float scollX = (now.x - old.x) * renderTime / durations;
             float scollZ = (now.z - old.z) * renderTime / durations;
             instances.get(modelNumber).transform.translate(scollX, scollY, scollZ);
             this.time += renderTime;
-            Gdx.app.error("position", "time  =  " + this.time + "   durations == " + durations + "  scollX = " + scollX + "  scollY = " + scollY + "  scollZ = " + scollZ);
+            Gdx.app.error("model", "time  =  " + this.time + "   durations == " + durations + "  scollX = " + scollX + "  scollY = " + scollY + "  scollZ = " + scollZ);
         } else {
-            Gdx.app.error("positions", "translate finish");
+            Gdx.app.error("model", "translate finish");
+//            getModelAngle();
             isStart = true;
             durations = 0;
         }
@@ -267,14 +312,50 @@ public abstract class MyScreen implements Screen {
         isStart = start;
     }
 
-    public void setDurations(Vector3 now, int time) {
+    public void setDurations(int time) {
         if (isStart) {
+            Random random = new Random();
+            int i = random.nextInt(6) - 3;
+            int j = random.nextInt(4) - 2;
+            float offsetX = position.x + i;
+            float offsetY = position.y + i;
+            float offsetZ = position.z + j;
+            Vector3 vector3 = new Vector3(offsetX, position.y, offsetZ);
+
+            switchPosition(vector3);
+
             this.time = 0;
             this.durations = time;
-            this.now = now;
+            this.now = vector3;
             this.old = position;
+
+            getModelInstanceAngle();
+
             isStart = false;
         }
+    }
+
+    /**
+     * 计算移动旋转角度
+     */
+    public void getModelInstanceAngle() {
+        float relativeX = now.x - old.x;
+        float relativeY = now.z - old.z;
+        if (relativeX > 0 && relativeY >= 0) {
+            //一象限
+            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeY / relativeX)));
+        } else if (relativeX >= 0 && relativeY < 0) {
+            //四象限
+            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeX / relativeY))) - 90;
+        } else if (relativeX < 0 && relativeY <= 0) {
+            //三象限
+            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeY / relativeX))) - 180;
+        } else if (relativeX <= 0 && relativeY > 0) {
+            //二象限
+            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeX / relativeY))) - 270;
+        }
+        Gdx.app.error("angle", "angle  =  " + (-(float) mRelative));
+        instances.get(modelNumber).transform.rotate(new Vector3(0, 1, 0), -(float) mRelative - 360);
     }
 
     @Override
@@ -289,19 +370,18 @@ public abstract class MyScreen implements Screen {
 //            Vector3 vec3 = camera.getVec3();
 //            instances.get(modelNumber).transform.setFromEulerAngles(-vec3.x, -vec3.y, -vec3.z);
             isPositive();
-
             if (texture.size() > 0) {
                 spriteBatch.begin();
                 mProject = camera.project(position);
 //                distance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
                 rayDistance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
                 distance = rayDistance / 120;
-                Gdx.app.error("distance", "  distance " + distance);
+                Gdx.app.error("model", "  distance " + distance);
                 if (animationListener != null && oldIsLineShow != isLineShow) {
                     animationListener.startAnim(distance >= 9);
                     oldIsLineShow = isLineShow;
                 }
-//                Gdx.app.error("camera", "!isPositive  " + !isPositive);
+                Gdx.app.error("model", "mProject  x=  " + mProject.x + "  mProject  y=  " + mProject.y + "  mProject  z=  " + mProject.z);
                 if (delTime <= Gdx.graphics.getDeltaTime() * 30)
                     delTime += Gdx.graphics.getDeltaTime();
                 if (delTime > Gdx.graphics.getDeltaTime() * 30)
@@ -353,13 +433,13 @@ public abstract class MyScreen implements Screen {
                     } else if (fontX + width * 0.09f > width) {
                         fontX = width * 0.91f;
                     }
+                    //绘制指示器
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
 
                     if (lazyBitmapFont == null)
                         lazyBitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(10), Color.valueOf("#ffb54b"));
 
-                    String message = "";
                     if (distance > 100 || isPositive) {
                         message = "距离\n>100";
                     } else {
@@ -389,12 +469,11 @@ public abstract class MyScreen implements Screen {
             }
             modelBatch.end();
             //线性移动
-            Random random = new Random();
-            int i = random.nextInt(4) - 2;
-            setDurations(new Vector3(position.x + i, position.y, position.z), 2);
+
+            setDurations(2);
             translateAnimation();
 
-            Gdx.app.error("anim", "position.x  " + position.x + "  position.y   " + position.y + "  position.z  " + position.z);
+            Gdx.app.error("model", "position.x  " + position.x + "  position.y   " + position.y + "  position.z  " + position.z);
             switchAnimationModel();
 
 
@@ -422,13 +501,16 @@ public abstract class MyScreen implements Screen {
         }
     }
 
+    private void switchPosition(Vector3 rangeVec) {
+
+    }
+
     //设置显示模型
     public void setModelNumber(int number) {
         this.modelNumber = number;
         if (instances.size > 0) {
             instances.get(number).transform.setToTranslation(position.x, position.y, position.z);
-//        shipInstance.transform.setToScaling(1, 1, 1);
-//            instances.get(number).transform.rotate(0, 1, 0, 45);
+            getModelAngle();
         }
     }
 
@@ -445,8 +527,6 @@ public abstract class MyScreen implements Screen {
                 break;
         }
     }
-
-    ;
 
     public void setAnimationListener(AnimationListener animationListener) {
         this.animationListener = animationListener;
@@ -472,6 +552,8 @@ public abstract class MyScreen implements Screen {
 
     /**
      * 判断模型在摄像机正面还是背面
+     * true:背面
+     * false:正面
      */
     public void isPositive() {
         Vector3 direction = camera.direction;
@@ -508,20 +590,40 @@ public abstract class MyScreen implements Screen {
         } else {
             if (project.x > width / 2 && project.y > height / 2) {
                 //第一象限
-                tan = (project.x - width / 2) / (project.y - height / 2);
-                angle = Math.toDegrees(Math.atan(Math.abs(tan)));
+                if (isPositive) {
+                    tan = (project.x - width / 2) / (project.y - height / 2);
+                    angle = Math.toDegrees(Math.atan(Math.abs(tan))) - 180;
+                } else {
+                    tan = (project.x - width / 2) / (project.y - height / 2);
+                    angle = Math.toDegrees(Math.atan(Math.abs(tan)));
+                }
             } else if (project.x > width / 2 && project.y < height / 2) {
                 //第四象限
-                tan = (project.y - height / 2) / (project.x - width / 2);
-                angle = 90 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                if (isPositive) {
+                    tan = (project.y - height / 2) / (project.x - width / 2);
+                    angle = Math.toDegrees(Math.atan(Math.abs(tan))) - 90;
+                } else {
+                    tan = (project.y - height / 2) / (project.x - width / 2);
+                    angle = 90 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                }
             } else if (project.x < width / 2 && project.y < height / 2) {
                 //第三象限
-                tan = (project.x - width / 2) / (project.y - height / 2);
-                angle = 180 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                if (isPositive) {
+                    tan = (project.x - width / 2) / (project.y - height / 2);
+                    angle = Math.toDegrees(Math.atan(Math.abs(tan)));
+                } else {
+                    tan = (project.x - width / 2) / (project.y - height / 2);
+                    angle = 180 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                }
             } else if (project.x < width / 2 && project.y > height / 2) {
                 //第二象限
-                tan = (project.y - height / 2) / (project.x - width / 2);
-                angle = 270 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                if (isPositive) {
+                    tan = (project.y - height / 2) / (project.x - width / 2);
+                    angle = 90 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                } else {
+                    tan = (project.y - height / 2) / (project.x - width / 2);
+                    angle = 270 + Math.toDegrees(Math.atan(Math.abs(tan)));
+                }
             }
         }
     }
