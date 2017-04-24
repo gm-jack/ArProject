@@ -26,7 +26,6 @@ import android.hardware.Camera.Size;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -37,7 +36,7 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import jp.co.cyberagent.android.gpuimage.util.CameraInterface;
+import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
 import jp.co.cyberagent.android.gpuimage.util.TextureRotationUtil;
 import jp.co.cyberagent.android.gpuimage.util.TextureUtil;
 
@@ -108,6 +107,8 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         mOutputWidth = width;
         mOutputHeight = height;
         GLES20.glViewport(0, 0, width, height);
+//        Matrix.perspectiveM(mProjectionMatrix, 0, 45, (float) width / height, 2, 15);
+//        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 12, 0, 0, 0, 0, 1, 0);
         GLES20.glUseProgram(mFilter.getProgram());
         mFilter.onOutputSizeChanged(width, height);
         adjustImageScaling();
@@ -116,9 +117,21 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         }
     }
 
+//    private final float[] mProjectionMatrix = new float[16];
+//    private final float[] mViewMatrix = new float[16];
+//    private final float[] mModuleMatrix = new float[16];
+//    private final float[] mViewProjectionMatrix = new float[16];
+//    private final float[] mMVPMatrix = new float[16];
+
     @Override
     public void onDrawFrame(final GL10 gl) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        GLES20.glClearColor(0, 0, 0, 0);
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
+//        Matrix.setIdentityM(mModuleMatrix, 0);//矩阵归位
+////        Matrix.scaleM(mModuleMatrix, 0, scale, scale, scale);
+//        Matrix.multiplyMM(mViewProjectionMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+//        Matrix.multiplyMM(mMVPMatrix, 0, mViewProjectionMatrix, 0, mModuleMatrix, 0);
+//        mFilter.setMvpMatrix(mMVPMatrix);
         runAll(mRunOnDraw);
         mFilter.onDraw(mGLTextureId, mGLCubeBuffer, mGLTextureBuffer);
         runAll(mRunOnDrawEnd);
@@ -181,10 +194,9 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
                 GLES20.glGenTextures(1, textures, 0);
                 mSurfaceTexture = TextureUtil.getInstance().initSurfaceTexture(textures[0]);
                 try {
-//                    camera.setPreviewTexture(mSurfaceTexture);
+                    camera.setPreviewTexture(mSurfaceTexture);
                     camera.setPreviewCallback(GPUImageRenderer.this);
-                    if (!CameraInterface.getInstance().isPreviewing())
-                        CameraInterface.getInstance().doStartPreview(mSurfaceTexture, 1f);
+//                    camera.startPreview();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -357,5 +369,9 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         synchronized (mRunOnDrawEnd) {
             mRunOnDrawEnd.add(runnable);
         }
+    }
+
+    public void setCat(boolean cat, AnimEndListener listener) {
+        mFilter.setCat(cat, listener);
     }
 }

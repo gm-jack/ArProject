@@ -81,6 +81,7 @@ public class CatchActor extends Actor {
     private float bottomHeight;
     private float mX;
     private float mFloat;
+    private boolean isCatchFirst = true;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -321,19 +322,20 @@ public class CatchActor extends Actor {
                     batch.draw(successTexRe.get(1), width / 2 - successTexRe.get(1).getRegionWidth() / 2, height / 2 - successTexRe.get(1).getRegionHeight() / 2, successTexRe.get(1).getRegionWidth(), successTexRe.get(1).getRegionHeight());
                 }
             } else {
-                batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
-                batch.draw(mKeyFrames[1], width / 2 - mKeyFrames[1].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight());
+//                batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
+//                batch.draw(mKeyFrames[1], width / 2 - mKeyFrames[1].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight());
+//
+//                float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
+//                if (lazyBitmapFont2 == null)
+//                    lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+//                lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 - 15, width, Align.left, true);
 
-                float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
-                if (lazyBitmapFont2 == null)
-                    lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
-                lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 - 15, width, Align.left, true);
-
-                if (Gdx.input.isTouched()) {
-                    if (catchListener != null) {
-                        catchListener.onTouched(0);
-                    }
+//                if (Gdx.input.isTouched()) {
+                if (catchListener != null && isCatchFirst) {
+                    isCatchFirst = false;
+                    catchListener.onTouched(0);
                 }
+//                }
             }
         }
         if (isCatch) {

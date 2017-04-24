@@ -1,193 +1,99 @@
 package com.rtmap.game.camera;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import com.badlogic.gdx.Gdx;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.interfaces.DeviceCameraControl;
 import com.rtmap.game.util.CameraHelper;
-import com.rtmap.game.util.DisplayUtil;
 
 import java.util.List;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageGrayscaleFilter;
-import jp.co.cyberagent.android.gpuimage.util.CameraInterface;
+import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
 
 
 public class AndroidDeviceCameraController implements DeviceCameraControl,
         Camera.PictureCallback, Camera.AutoFocusCallback {
 
-    private CameraHelper mCameraHelper;
-    //    private CameraLoader mCamera;
+    private final CameraHelper mCameraHelper;
+    private final CameraLoader mCamera;
     private AndroidLauncher androidLauncher;
     private GPUImage mGPUImage;
     private GLSurfaceView mGlSurfaceView;
-    private CircularCameraSurfaceView mCircularCameraSurfaceView;
-    private FrameLayout.LayoutParams mParams;
-    private Point mP;
-    private boolean isFirst = true;
-    private float defaultRaidus = 300f;
+    private FrameLayout mLayout;
+    private CameraSurface mCameraSurface;
 
     public AndroidDeviceCameraController(AndroidLauncher androidLauncher) {
         this.androidLauncher = androidLauncher;
+
         mCameraHelper = new CameraHelper(androidLauncher);
+        mCamera = new CameraLoader();
+
+    }
+
+    public void setFilter() {
+        mGPUImage.setFilter(new GPUImageGrayscaleFilter());
     }
 
     @Override
     public synchronized void prepareCamera() {
-
-        CameraInterface.getInstance().doOpenCamera(null);
-
-        FrameLayout layout = new FrameLayout(androidLauncher);
-        layout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-        mCircularCameraSurfaceView = new CircularCameraSurfaceView(androidLauncher);
-        mCircularCameraSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        mLayout = new FrameLayout(androidLauncher);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mLayout.setLayoutParams(params);
+        if (mCameraSurface == null) {
+            mCameraSurface = new CameraSurface(androidLauncher);
+        }
 
         mGlSurfaceView = new GLSurfaceView(androidLauncher);
-        layout.addView(mGlSurfaceView);
-        layout.addView(mCircularCameraSurfaceView);
+        mLayout.addView(mGlSurfaceView);
+        mLayout.addView(mCameraSurface);
 
-        androidLauncher.addContentView(layout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        androidLauncher.addContentView(mLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         mGPUImage = new GPUImage(androidLauncher);
         mGPUImage.setGLSurfaceView(mGlSurfaceView);
-
-//        mCamera = new CameraLoader(androidLauncher, mCameraHelper, mGPUImage);
-        initViewParams();
     }
-
-    private void initViewParams() {
-        mParams = (FrameLayout.LayoutParams) mCircularCameraSurfaceView.getLayoutParams();
-        mP = DisplayUtil.getScreenMetrics(androidLauncher);
-        mParams.gravity = Gravity.CENTER;
-        mParams.width = (int) defaultRaidus;
-        mParams.height = (int) defaultRaidus;
-        mCircularCameraSurfaceView.setLayoutParams(mParams);
-    }
-
-    public void resumeCircleCamera() {
-        if (mCircularCameraSurfaceView != null) {
-            mCircularCameraSurfaceView.bringToFront();
-        }
-        if (mGlSurfaceView != null) {
-            mGlSurfaceView.onResume();
-        }
-    }
-
-    public void pauseCircleCamera() {
-        if (mCircularCameraSurfaceView != null) {
-            mCircularCameraSurfaceView.onPause();
-        }
-        if (mGlSurfaceView != null) {
-            mGlSurfaceView.onPause();
-        }
-    }
-
-    public void showCenter(boolean show) {
-        if (mCircularCameraSurfaceView != null)
-            mCircularCameraSurfaceView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    public void endAnimation() {
-        mCircularCameraSurfaceView.startPreview();
-        mGPUImage.setFilter(new GPUImageGrayscaleFilter());
-        showCenter(false);
-    }
-
-    public void animationCenter(final Animator.AnimatorListener listener) {
-        androidLauncher.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularCameraSurfaceView.prepare();
-                mCircularCameraSurfaceView.startPreview();
-                showCenter(true);
-                if (mCircularCameraSurfaceView.getVisibility() == View.VISIBLE) {
-
-                    //沿x轴放大
-//                    ObjectAnimator scaleXAnimator = ObjectAnimator.ofInt(mCircularCameraSurfaceView, "radius", 500, (int) Math.abs(Math.sqrt((mP.x * mP.x) + (mP.y * mP.y))));
-//                    scaleXAnimator.setDuration(2000);
-//                    scaleXAnimator.addListener(listener);
-//                    scaleXAnimator.start();
-                    float scale = mP.y / defaultRaidus;
-                    //沿x轴放大
-                    ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(mCircularCameraSurfaceView, "scaleX", 1f, scale);
-                    //沿y轴放大
-                    ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(mCircularCameraSurfaceView, "scaleY", 1f, scale);
-                    AnimatorSet set = new AnimatorSet();
-                    //同时沿X,Y轴放大，且改变透明度，然后移动
-                    set.play(scaleXAnimator).with(scaleYAnimator);
-                    //都设置3s，也可以为每个单独设置
-                    set.setDuration(2000);
-                    set.addListener(listener);
-                    set.start();
-
-//                    float scale = (float) (Math.abs(Math.sqrt((mP.x * mP.x) + (mP.y * mP.y))) / 500f);
-//                    ScaleAnimation scaleAnimation = new ScaleAnimation(ScaleAnimation.RELATIVE_TO_SELF, scale, ScaleAnimation.RELATIVE_TO_SELF, scale, ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-//                    scaleAnimation.setDuration(2000);
-//                    scaleAnimation.setFillAfter(true);
-//                    mCircularCameraSurfaceView.setAnimation(scaleAnimation);
-//                    scaleAnimation.setAnimationListener(listener);
-//                    scaleAnimation.start();
-                }
-            }
-        });
-    }
-
 
     @Override
     public synchronized void startPreview() {
+        // ...and start previewing. From now on, the camera keeps pushing
+        // preview
+        // images to the surface.
 
-        if (mCircularCameraSurfaceView != null) {
-//            CameraInterface.getInstance().doOpenCamera(null);
-            int orientation = mCameraHelper.getCameraDisplayOrientation(
-                    androidLauncher, 0);
-            CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
-            mCameraHelper.getCameraInfo(0, cameraInfo);
-            boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
-            mGPUImage.setUpCamera(CameraInterface.getInstance().getCamera(), orientation, flipHorizontal, false);
-            mCircularCameraSurfaceView.startPreview();
-            showCenter(false);
-
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                mGPUImage.setFilter(new GPUImageGrayscaleFilter());
-            }
+        if (mCameraSurface != null) {
+            mCameraSurface.getCamera().startPreview();
         }
-//        if (mCamera != null)
-//            mCamera.onResume();
-//        mGPUImage.setFilter(new GPUImageGrayscaleFilter());
+        if (mCamera != null)
+            mCamera.onResume();
     }
 
     @Override
     public synchronized void stopPreview() {
-        if (mGlSurfaceView != null && mCircularCameraSurfaceView != null) {
+        if (mGlSurfaceView != null) {
             ViewParent parentView = mGlSurfaceView.getParent();
             if (parentView instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) parentView;
                 viewGroup.removeView(mGlSurfaceView);
-                viewGroup.removeView(mCircularCameraSurfaceView);
+                viewGroup.removeView(mCameraSurface);
             }
-            CameraInterface.getInstance().doStopCamera();
-//            mCamera.onPause();
-            mGPUImage = null;
+            if (mCameraSurface != null) {
+                mCameraSurface.getCamera().stopPreview();
+            }
             androidLauncher.restoreFixedSize();
         }
     }
 
     public void setCameraParametersForPicture(Camera camera) {
+        // Before we take the picture - we make sure all camera parameters are
+        // as we like them
+        // Use max resolution and auto focus
         Camera.Parameters p = camera.getParameters();
         List<Camera.Size> supportedSizes = p.getSupportedPictureSizes();
         int maxSupportedWidth = -1;
@@ -247,7 +153,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public boolean isReady() {
-        if (mGlSurfaceView != null && mCircularCameraSurfaceView != null) {
+        if (mCameraSurface != null && mCameraSurface.getCamera() != null) {
             return true;
         }
         return false;
@@ -255,5 +161,72 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
+    }
+
+    public void setCat(final boolean b, final AnimEndListener listener) {
+        androidLauncher.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mGlSurfaceView.setVisibility(View.VISIBLE);
+                Gdx.app.error("camera", "visible");
+            }
+        });
+        mGPUImage.setCat(b, listener);
+
+    }
+
+    private class CameraLoader {
+
+        private int mCurrentCameraId = 0;
+        private Camera mCameraInstance;
+
+        public void onResume() {
+            setUpCamera(mCurrentCameraId);
+        }
+
+        public void onPause() {
+            releaseCamera();
+        }
+
+        public void switchCamera() {
+            releaseCamera();
+            mCurrentCameraId = (mCurrentCameraId + 1) % mCameraHelper.getNumberOfCameras();
+            setUpCamera(mCurrentCameraId);
+        }
+
+        private void setUpCamera(final int id) {
+            mCameraInstance = mCameraSurface.getCamera();
+            int orientation = mCameraHelper.getCameraDisplayOrientation(
+                    androidLauncher, mCurrentCameraId);
+            CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
+            mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
+            boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
+            mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false, -1);
+        }
+
+        /**
+         * A safe way to get an instance of the Camera object.
+         */
+        private Camera getCameraInstance(final int id) {
+            Camera c = null;
+            try {
+                c = mCameraHelper.openCamera(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return c;
+        }
+
+        private void stopCamera() {
+            mCameraInstance.stopPreview();
+        }
+
+        private void releaseCamera() {
+            if (mCameraInstance != null) {
+                mCameraInstance.setPreviewCallback(null);
+                mCameraInstance.release();
+                mCameraInstance = null;
+            }
+        }
     }
 }

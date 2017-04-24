@@ -1,8 +1,6 @@
 package com.rtmap.game.actor;
 
 
-import android.animation.Animator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +12,8 @@ import com.rtmap.game.camera.AndroidDeviceCameraController;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
 
 /**
  * Created by yxy on 2017/2/20.
@@ -101,59 +101,59 @@ public class LoadingActor extends Actor {
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
                 if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
-                }
-                if (isAnimationFirst) {
-                    isAnimationFirst = false;
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            Gdx.app.error("camera", "render()");
-                            cameraController.animationCenter(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
+                } else {
+                    if (isAnimationFirst) {
+                        Gdx.app.error("camera", "render()");
+                        isLodingShow = false;
+                        isEndAnimation = false;
+                        isAnimationFirst = false;
 
-                                }
+                        cameraController.setCat(true, new AnimEndListener() {
+                            @Override
+                            public void animEnd() {
+                                cameraController.setFilter();
+                                Gdx.app.postRunnable(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mGame != null)
+                                            mGame.showAimScreen(false);
+                                    }
+                                });
+                            }
+                        });
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
 
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    cameraController.endAnimation();
-                                    Gdx.app.postRunnable(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (mGame != null)
-                                                mGame.showAimScreen(false);
-                                        }
-                                    });
-                                }
 
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-
-                                }
-                            });
-//                            cameraController.showImage(true);
-//                            cameraController.pictureCamera();
-//                            cameraController.setAnimationEnd(new AnimationEnd() {
-//                                @Override
-//                                public void end() {
-//                                    Gdx.app.postRunnable(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            if (mGame != null) {
-//                                                mGame.showAimScreen(false);
+//                                cameraController.animationCenter(new Animation.AnimationListener() {
+//                                    @Override
+//                                    public void onAnimationStart(Animation animation) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onAnimationEnd(Animation animation) {
+//                                        cameraController.endAnimation();
+//                                        Gdx.app.postRunnable(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                if (mGame != null)
+//                                                    mGame.showAimScreen(false);
 //                                            }
-//                                        }
-//                                    });
-//                                }
-//                            });
-                        }
-                    });
+//                                        });
+//                                    }
+//
+//                                    @Override
+//                                    public void onAnimationRepeat(Animation animation) {
+//
+//                                    }
+//                                });
+                            }
+                        });
+                    }
                 }
+
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));

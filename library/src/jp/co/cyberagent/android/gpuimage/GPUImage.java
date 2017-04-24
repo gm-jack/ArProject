@@ -32,7 +32,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -47,7 +46,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.util.CameraInterface;
+import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
 
 /**
  * The main accessor for GPUImage functionality. This class helps to do common
@@ -105,6 +104,10 @@ public class GPUImage {
         mGlSurfaceView.requestRender();
     }
 
+    public void setCat(boolean isCat, AnimEndListener listener) {
+        mRenderer.setCat(isCat, listener);
+    }
+
     /**
      * Sets the background color
      *
@@ -131,7 +134,7 @@ public class GPUImage {
      * @param camera the camera
      */
     public void setUpCamera(final Camera camera) {
-        setUpCamera(camera, 0, false, false);
+        setUpCamera(camera, 0, false, false, 0);
     }
 
     /**
@@ -143,14 +146,17 @@ public class GPUImage {
      * @param flipVertical   if the image should be flipped vertically
      */
     public void setUpCamera(final Camera camera, final int degrees, final boolean flipHorizontal,
-                            final boolean flipVertical) {
+                            final boolean flipVertical, int flag) {
         mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            setUpCameraGingerbread(camera);
+        if (flag == 1) {
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+                setUpCameraGingerbread(camera);
+//            } else {
+//                camera.setPreviewCallback(mRenderer);
+//                camera.startPreview();
+//            }
         } else {
             camera.setPreviewCallback(mRenderer);
-            if (!CameraInterface.getInstance().isPreviewing())
-                camera.startPreview();
         }
         Rotation rotation = Rotation.NORMAL;
         switch (degrees) {

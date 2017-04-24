@@ -78,7 +78,7 @@ public class NetUtil {
             URL u = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) u.openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(60000);
+            conn.setConnectTimeout(4000);
             conn.setRequestProperty("Content-Type",
                     "application/json;charset=UTF-8");
             conn.connect();
@@ -158,7 +158,7 @@ public class NetUtil {
         Gdx.net.sendHttpRequest(httpRequest, responseListener);
     }
 
-    public static interface HttpResponse {
+    public  interface HttpResponse {
         void responseString(String response);
 
         void responseFail();

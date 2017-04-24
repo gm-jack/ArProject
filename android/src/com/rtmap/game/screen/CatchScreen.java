@@ -56,9 +56,11 @@ public class CatchScreen extends MyScreen {
     private AgainActor againActor;
     private boolean isWin = false;
     private boolean isInit = true;
+    private boolean isFirstNumber = true;
 
     public CatchScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
+
         this.mGame = game;
         this.context = androidLauncher;
         //捕捉怪兽舞台
@@ -161,8 +163,18 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onTouched(int num) {
                     if (num == 0) {
-                        if (mGame != null)
-                            mGame.showAimScreen(true);
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Gdx.app.postRunnable(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mGame != null)
+                                            mGame.showAimScreen(true);
+                                    }
+                                });
+                            }
+                        },500);
                     } else if (num == 1) {
                         catchActor.setIsCatchTip(false);
                         catchActor.setIsStop(false);
@@ -263,6 +275,11 @@ public class CatchScreen extends MyScreen {
         if (catchStage == null)
             return;
         super.render(delta);
+        if (isFirstNumber && !isLoading) {
+            Gdx.app.error("gdx", "CatchScreen render");
+            isFirstNumber = false;
+            setModelNumber(ZUO);
+        }
         // 更新舞台逻辑
         catchStage.act();
         // 绘制舞台
@@ -272,6 +289,9 @@ public class CatchScreen extends MyScreen {
     @Override
     public void resize(int width, int height) {
         setStopCamera(true);
+        setRay(false);
+        setTranslate(false);
+
         if (isInit) {
             Gdx.app.error("gdx", "CatchScreen resize");
             isInit = false;

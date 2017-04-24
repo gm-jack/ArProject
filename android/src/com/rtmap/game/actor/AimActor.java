@@ -33,7 +33,7 @@ public class AimActor extends Actor {
     private TextureRegion[] mKeyFrames = new TextureRegion[3];
 
     //绘制次数
-    private static int number = 1;
+    public static int number = 0;
     private int maxNumber = 12;
     private int width;
     private int height;

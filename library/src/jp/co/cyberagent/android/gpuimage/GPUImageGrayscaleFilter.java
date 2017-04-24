@@ -33,7 +33,9 @@ public class GPUImageGrayscaleFilter extends GPUImageFilter {
             "{\n" +
             "  lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
             "  float luminance = dot(textureColor.rgb, W);\n" +
-            "\n" +
+//            "  if(textureColor.a < 0.5){\n" +
+//            "       discard;\n" +
+//            "   }\n" +
             "  gl_FragColor = vec4(vec3(luminance), textureColor.a);\n" +
             "}";
 

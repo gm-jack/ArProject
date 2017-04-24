@@ -77,8 +77,8 @@ public class AimScreen extends MyScreen {
                     }
                     setModelNumber(nums);
 //                    Gdx.app.error("gdx", "退出");
-                    if (mGame != null && nums ==2)
-                    mGame.showCatchScreen();
+                    if (mGame != null && nums == 2)
+                        mGame.showCatchScreen();
                 }
             });
             beedActor.setListener(new BeedOnClickListener() {
@@ -93,6 +93,9 @@ public class AimScreen extends MyScreen {
             aimActor.setAimListener(new AimListener() {
                 @Override
                 public void aimSuccess() {
+                    setRay(false);
+                    setTranslate(false);
+                    setModelNumber(ZUO);
                     if (mGame != null)
                         mGame.showCatchScreen();
                 }
