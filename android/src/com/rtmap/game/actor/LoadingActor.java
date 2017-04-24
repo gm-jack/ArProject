@@ -51,6 +51,8 @@ public class LoadingActor extends Actor {
     private boolean isEndAnimation = false;
     private boolean isLodingShow = true;
     private boolean isAnimationFirst = true;
+    private int mChangeOut;
+    private int mChangeIn;
 
     public LoadingActor(AssetManager assetManager, AndroidDeviceCameraController cameraController, MyGame game) {
         super();
@@ -90,17 +92,15 @@ public class LoadingActor extends Actor {
         if (isLodingShow) {
             if (isEndAnimation) {
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));
-                if (startX - changeOutRadiu >= -startX / 4) {
+                if (changeOutRadiu <= width * 2) {
+                    Gdx.app.error("load", "changeOutRadiu  " + changeOutRadiu + "  (startX / 2 + startX / 4)   " + (startX + startX / 2));
                     batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
-                    changeOutRadiu += texReArray.get(3).getRegionHeight() / 8;
+                    changeOutRadiu += mChangeOut;
                 }
-                if (startX - changeOutRadiu >= -startX / 4) {
+                if (changeInRadiu <= width * 2) {
+                    Gdx.app.error("load", "changeInRadiu  " + changeInRadiu + "  (startX / 2 + startX / 4)  " + (startX + startX / 2));
                     batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
-                    changeInRadiu += texReArray.get(2).getRegionHeight() / 8;
-                }
-                batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
-                if (changeCenterRadiu > 0) {
-                    changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
+                    changeInRadiu += mChangeIn;
                 } else {
                     if (isAnimationFirst) {
                         Gdx.app.error("camera", "render()");
@@ -121,37 +121,11 @@ public class LoadingActor extends Actor {
                                 });
                             }
                         });
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-
-
-//                                cameraController.animationCenter(new Animation.AnimationListener() {
-//                                    @Override
-//                                    public void onAnimationStart(Animation animation) {
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void onAnimationEnd(Animation animation) {
-//                                        cameraController.endAnimation();
-//                                        Gdx.app.postRunnable(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                if (mGame != null)
-//                                                    mGame.showAimScreen(false);
-//                                            }
-//                                        });
-//                                    }
-//
-//                                    @Override
-//                                    public void onAnimationRepeat(Animation animation) {
-//
-//                                    }
-//                                });
-                            }
-                        });
                     }
+                }
+                batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
+                if (changeCenterRadiu > 0) {
+                    changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
                 }
 
             } else if (isAnimation) {
@@ -212,6 +186,8 @@ public class LoadingActor extends Actor {
 
         changeOutRadiu = texReArray.get(3).getRegionHeight() * 2;
         changeInRadiu = texReArray.get(2).getRegionHeight() * 2;
+        mChangeOut = texReArray.get(3).getRegionHeight() / 15;
+        mChangeIn = texReArray.get(2).getRegionHeight() / 15;
     }
 
     public void setIsEndAnimation(boolean isEndAnimation) {
