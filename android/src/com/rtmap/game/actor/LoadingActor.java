@@ -107,11 +107,10 @@ public class LoadingActor extends Actor {
                         isLodingShow = false;
                         isEndAnimation = false;
                         isAnimationFirst = false;
-
                         cameraController.setCat(true, new AnimEndListener() {
                             @Override
                             public void animEnd() {
-                                cameraController.setFilter();
+
                                 Gdx.app.postRunnable(new Runnable() {
                                     @Override
                                     public void run() {

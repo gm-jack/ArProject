@@ -24,6 +24,7 @@ public class GPUImageGrayscaleFilter extends GPUImageFilter {
             "precision highp float;\n" +
             "\n" +
             "varying vec2 textureCoordinate;\n" +
+            "varying float matrix;\n" +
             "\n" +
             "uniform sampler2D inputImageTexture;\n" +
             "\n" +
@@ -31,12 +32,16 @@ public class GPUImageGrayscaleFilter extends GPUImageFilter {
             "\n" +
             "void main()\n" +
             "{\n" +
+//            "textureCoordinate.y = textureCoordinate.y*0.56;\n" +
+            "vec2 coord = textureCoordinate - vec2(0.5, 0.5);\n" +
+            "float radius = length(coord);\n" +
+            "float factor = 1.0-step(matrix, radius);\n" +
             "  lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
             "  float luminance = dot(textureColor.rgb, W);\n" +
 //            "  if(textureColor.a < 0.5){\n" +
 //            "       discard;\n" +
 //            "   }\n" +
-            "  gl_FragColor = vec4(vec3(luminance), textureColor.a);\n" +
+            "  gl_FragColor = factor*vec4(vec3(luminance), textureColor.a);\n" +
             "}";
 
     public GPUImageGrayscaleFilter() {

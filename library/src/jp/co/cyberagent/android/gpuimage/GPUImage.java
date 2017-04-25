@@ -148,16 +148,7 @@ public class GPUImage {
     public void setUpCamera(final Camera camera, final int degrees, final boolean flipHorizontal,
                             final boolean flipVertical, int flag) {
         mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        if (flag == 1) {
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-                setUpCameraGingerbread(camera);
-//            } else {
-//                camera.setPreviewCallback(mRenderer);
-//                camera.startPreview();
-//            }
-        } else {
-            camera.setPreviewCallback(mRenderer);
-        }
+        camera.setPreviewCallback(mRenderer);
         Rotation rotation = Rotation.NORMAL;
         switch (degrees) {
             case 90:

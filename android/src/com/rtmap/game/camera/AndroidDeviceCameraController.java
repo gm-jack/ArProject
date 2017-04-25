@@ -12,8 +12,6 @@ import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.interfaces.DeviceCameraControl;
 import com.rtmap.game.util.CameraHelper;
 
-import java.util.List;
-
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageGrayscaleFilter;
 import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
@@ -29,6 +27,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     private GLSurfaceView mGlSurfaceView;
     private FrameLayout mLayout;
     private CameraSurface mCameraSurface;
+    private FrameLayout.LayoutParams mGlParams;
 
     public AndroidDeviceCameraController(AndroidLauncher androidLauncher) {
         this.androidLauncher = androidLauncher;
@@ -59,6 +58,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
         mGPUImage = new GPUImage(androidLauncher);
         mGPUImage.setGLSurfaceView(mGlSurfaceView);
+        setFilter();
     }
 
     @Override
@@ -72,6 +72,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         }
         if (mCamera != null)
             mCamera.onResume();
+        mGlSurfaceView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -88,25 +89,6 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             }
             androidLauncher.restoreFixedSize();
         }
-    }
-
-    public void setCameraParametersForPicture(Camera camera) {
-        // Before we take the picture - we make sure all camera parameters are
-        // as we like them
-        // Use max resolution and auto focus
-        Camera.Parameters p = camera.getParameters();
-        List<Camera.Size> supportedSizes = p.getSupportedPictureSizes();
-        int maxSupportedWidth = -1;
-        int maxSupportedHeight = -1;
-        for (Camera.Size size : supportedSizes) {
-            if (size.width > maxSupportedWidth) {
-                maxSupportedWidth = size.width;
-                maxSupportedHeight = size.height;
-            }
-        }
-        p.setPictureSize(maxSupportedWidth, maxSupportedHeight);
-        p.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        camera.setParameters(p);
     }
 
     @Override
@@ -172,7 +154,6 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             }
         });
         mGPUImage.setCat(b, listener);
-
     }
 
     private class CameraLoader {
