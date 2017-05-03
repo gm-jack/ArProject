@@ -16,18 +16,20 @@ package com.rtmap.game.interfaces;
 
 public interface DeviceCameraControl {
 
-	// Synchronous interface
-	void prepareCamera();
+    // Synchronous interface
+    void prepareCamera();
 
-	void startPreview();
+    void startPreview();
 
-	void stopPreview();
+    void stopPreview();
 
-	void startPreviewAsync();
+    void startPreviewAsync();
 
-	void stopPreviewAsync();
+    void stopPreviewAsync();
 
-	boolean isReady();
+    void stoPreviewAsync();
 
-	void prepareCameraAsync();
+    boolean isReady();
+
+    void prepareCameraAsync(boolean show);
 }

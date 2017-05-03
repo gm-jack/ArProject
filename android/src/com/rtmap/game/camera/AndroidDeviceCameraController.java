@@ -28,6 +28,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     private FrameLayout mLayout;
     private CameraSurface mCameraSurface;
     private FrameLayout.LayoutParams mGlParams;
+    private boolean show = false;
 
     public AndroidDeviceCameraController(AndroidLauncher androidLauncher) {
         this.androidLauncher = androidLauncher;
@@ -46,11 +47,10 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         mLayout = new FrameLayout(androidLauncher);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mLayout.setLayoutParams(params);
-        if (mCameraSurface == null) {
-            mCameraSurface = new CameraSurface(androidLauncher);
-        }
 
+        mCameraSurface = new CameraSurface(androidLauncher);
         mGlSurfaceView = new GLSurfaceView(androidLauncher);
+
         mLayout.addView(mGlSurfaceView);
         mLayout.addView(mCameraSurface);
 
@@ -58,7 +58,6 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
         mGPUImage = new GPUImage(androidLauncher);
         mGPUImage.setGLSurfaceView(mGlSurfaceView);
-        setFilter();
     }
 
     @Override
@@ -72,7 +71,12 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         }
         if (mCamera != null)
             mCamera.onResume();
-        mGlSurfaceView.setVisibility(View.INVISIBLE);
+
+//        setFilter();
+
+//        if (show) {
+//            mCameraSurface.setVisibility(View.INVISIBLE);
+//        }
     }
 
     @Override
@@ -84,9 +88,10 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
                 viewGroup.removeView(mGlSurfaceView);
                 viewGroup.removeView(mCameraSurface);
             }
-            if (mCameraSurface != null) {
+            if (mCameraSurface.getCamera() != null) {
                 mCameraSurface.getCamera().stopPreview();
             }
+            mGPUImage = null;
             androidLauncher.restoreFixedSize();
         }
     }
@@ -104,7 +109,8 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     }
 
     @Override
-    public void prepareCameraAsync() {
+    public void prepareCameraAsync(final boolean show) {
+        this.show = show;
         Runnable r = new Runnable() {
             public void run() {
                 prepareCamera();
@@ -154,6 +160,13 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             }
         });
         mGPUImage.setCat(b, listener);
+    }
+
+    @Override
+    public synchronized void stoPreviewAsync() {
+        if (mCameraSurface != null && mCameraSurface.getCamera() != null) {
+            mCameraSurface.getCamera().stopPreview();
+        }
     }
 
     private class CameraLoader {

@@ -110,7 +110,6 @@ public class LoadingActor extends Actor {
                         cameraController.setCat(true, new AnimEndListener() {
                             @Override
                             public void animEnd() {
-
                                 Gdx.app.postRunnable(new Runnable() {
                                     @Override
                                     public void run() {
@@ -185,8 +184,8 @@ public class LoadingActor extends Actor {
 
         changeOutRadiu = texReArray.get(3).getRegionHeight() * 2;
         changeInRadiu = texReArray.get(2).getRegionHeight() * 2;
-        mChangeOut = texReArray.get(3).getRegionHeight() / 15;
-        mChangeIn = texReArray.get(2).getRegionHeight() / 15;
+        mChangeOut = texReArray.get(3).getRegionHeight() / 10;
+        mChangeIn = texReArray.get(2).getRegionHeight() / 10;
     }
 
     public void setIsEndAnimation(boolean isEndAnimation) {

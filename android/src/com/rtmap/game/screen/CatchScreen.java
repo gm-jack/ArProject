@@ -86,6 +86,7 @@ public class CatchScreen extends MyScreen {
         //添加关闭按钮actor
         closeActor = new CloseActor(mGame.asset);
         group3.addActor(closeActor);
+
         //添加再来一次按钮actor
         againActor = new AgainActor(mGame.asset);
         group3.addActor(againActor);
@@ -174,7 +175,7 @@ public class CatchScreen extends MyScreen {
                                     }
                                 });
                             }
-                        },500);
+                        }, 500);
                     } else if (num == 1) {
                         catchActor.setIsCatchTip(false);
                         catchActor.setIsStop(false);
@@ -219,6 +220,7 @@ public class CatchScreen extends MyScreen {
             closeActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
+                    setRay(false);
                     if (mGame != null)
                         mGame.showAimScreen(false);
                 }
@@ -227,7 +229,9 @@ public class CatchScreen extends MyScreen {
             againActor.setListener(new AgainActor.AgainOnClickListener() {
                 @Override
                 public void againClick() {
-                    mGame.showAimScreen(false);
+                    setRay(false);
+                    if (mGame != null)
+                        mGame.showAimScreen(false);
                 }
             });
     }

@@ -1,9 +1,7 @@
 package com.rtmap.game.util;
 
-import android.content.Context;
 import android.util.TypedValue;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.rtmap.game.AndroidLauncher;
 

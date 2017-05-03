@@ -153,12 +153,14 @@ public class AimScreen extends MyScreen {
 
     @Override
     public void addNumber() {
+        super.addNumber();
         if (aimActor != null)
             aimActor.addNumber();
     }
 
     @Override
     public void subNumber() {
+        super.subNumber();
         if (aimActor != null)
             aimActor.subNumber();
     }

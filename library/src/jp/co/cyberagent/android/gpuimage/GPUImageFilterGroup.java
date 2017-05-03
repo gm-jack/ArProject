@@ -18,13 +18,14 @@ package jp.co.cyberagent.android.gpuimage;
 
 import android.annotation.SuppressLint;
 import android.opengl.GLES20;
-import jp.co.cyberagent.android.gpuimage.util.TextureRotationUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.co.cyberagent.android.gpuimage.util.TextureRotationUtil;
 
 import static jp.co.cyberagent.android.gpuimage.GPUImageRenderer.CUBE;
 import static jp.co.cyberagent.android.gpuimage.util.TextureRotationUtil.TEXTURE_NO_ROTATION;

@@ -103,6 +103,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("tiger/laohu-zhuaqu.g3dj", Model.class);
         mGame.asset.load("tiger/laohu-huanhu.g3dj", Model.class);
         mGame.asset.load("tiger/laohu-pao.g3dj", Model.class);
+        mGame.asset.load("tiger/knight.g3dj", Model.class);
     }
 
     @Override
@@ -214,5 +215,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("tiger/laohu-zhuaqu.g3dj");
         mGame.asset.unload("tiger/laohu-huanhu.g3dj");
         mGame.asset.unload("tiger/laohu-pao.g3dj");
+        mGame.asset.unload("tiger/knight.g3dj");
     }
 }

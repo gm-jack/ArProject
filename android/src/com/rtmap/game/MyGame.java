@@ -33,15 +33,16 @@ public class MyGame extends Game {
     /**
      * 设置相机模式
      */
-    private int normal_Mode = 0;
-    private int prepare_Mode = 1;
-    private int preview_Mode = 2;
+    public int normal_Mode = 0;
+    public int prepare_Mode = 1;
+    public int preview_Mode = 2;
 
     private int mode = normal_Mode;
     public AssetManager asset;
     private MainScreen mainScreen;
     private AimScreen aimScreen;
     private ScreenViewport mViewport;
+    private boolean cameraShow = false;
 
     public MyGame(AndroidLauncher androidLauncher, AndroidDeviceCameraController androidDeviceCameraController, AssetManager asset) {
         this.androidLauncher = androidLauncher;
@@ -53,8 +54,8 @@ public class MyGame extends Game {
     @Override
     public void create() {
         mViewport = new ScreenViewport();
-        mainScreen = new MainScreen(this, androidLauncher,mViewport);
-        loadingScreen = new LoadingScreen(this,mViewport,androidDeviceCameraController);
+        mainScreen = new MainScreen(this, androidLauncher, mViewport);
+        loadingScreen = new LoadingScreen(this, mViewport, androidDeviceCameraController);
 
         setScreen(mainScreen);
     }
@@ -69,7 +70,7 @@ public class MyGame extends Game {
             if (mode == normal_Mode) {
                 Gdx.app.error("gdx", "normal_Mode");
                 if (androidDeviceCameraController != null) {
-                    androidDeviceCameraController.prepareCameraAsync();
+                    androidDeviceCameraController.prepareCameraAsync(cameraShow);
                     mode = prepare_Mode;
                 }
             } else if (mode == prepare_Mode) {
@@ -87,13 +88,14 @@ public class MyGame extends Game {
     @Override
     public void pause() {
         super.pause();
-        stopCamera();
+        stopCamera(cameraShow);
     }
 
-    public void stopCamera() {
+    public void stopCamera(boolean cameraShow) {
+        this.cameraShow = cameraShow;
         if (androidDeviceCameraController != null) {
-            androidDeviceCameraController.stopPreviewAsync();
-            mode = normal_Mode;
+            androidDeviceCameraController.stoPreviewAsync();
+            mode = prepare_Mode;
         }
     }
 
@@ -109,7 +111,7 @@ public class MyGame extends Game {
     }
 
     public void showCatchScreen() {
-        catchScreen = new CatchScreen(this, androidLauncher,mViewport);
+        catchScreen = new CatchScreen(this, androidLauncher, mViewport);
         setScreen(catchScreen);
     }
 
@@ -124,17 +126,17 @@ public class MyGame extends Game {
 
     public void showBeedScreen(Screen oldScreen) {
         this.oldScreen = oldScreen;
-        setScreen(new BeedScreen(this, androidLauncher,mViewport));
+        setScreen(new BeedScreen(this, androidLauncher, mViewport));
     }
 
     public void showLoadingScreen() {
+        mode = normal_Mode;
         setScreen(loadingScreen);
     }
 
 
-
     public void showAimScreen(boolean fail) {
-        aimScreen = new AimScreen(this, androidLauncher,mViewport);
+        aimScreen = new AimScreen(this, androidLauncher, mViewport);
         setScreen(aimScreen);
         aimScreen.setIsFail(fail);
     }

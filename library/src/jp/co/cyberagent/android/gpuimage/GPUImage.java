@@ -71,8 +71,9 @@ public class GPUImage {
         }
 
         mContext = context;
-        mFilter = new GPUImageFilter();
+        mFilter = new GPUImageGrayscaleFilter();
         mRenderer = new GPUImageRenderer(mFilter);
+        mRenderer.setContext(context);
     }
 
     /**

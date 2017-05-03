@@ -17,6 +17,7 @@
 package jp.co.cyberagent.android.gpuimage;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
@@ -51,6 +52,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
             -1.0f, 1.0f,
             1.0f, 1.0f,
     };
+    private Context context;
 
     private GPUImageFilter mFilter;
 
@@ -95,6 +97,10 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         setRotation(Rotation.NORMAL, false, false);
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
         GLES20.glClearColor(mBackgroundRed, mBackgroundGreen, mBackgroundBlue, 1);
@@ -110,6 +116,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
 //        Matrix.perspectiveM(mProjectionMatrix, 0, 45, (float) width / height, 2, 15);
 //        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 12, 0, 0, 0, 0, 1, 0);
         GLES20.glUseProgram(mFilter.getProgram());
+        mFilter.setContext(context);
         mFilter.onOutputSizeChanged(width, height);
         adjustImageScaling();
         synchronized (mSurfaceChangedWaiter) {
@@ -216,6 +223,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
                 }
                 mFilter.init();
                 GLES20.glUseProgram(mFilter.getProgram());
+                mFilter.setContext(context);
                 mFilter.onOutputSizeChanged(mOutputWidth, mOutputHeight);
             }
         });

@@ -20,6 +20,11 @@ public class CloseActor extends Actor {
     private InputListener listener;
     private TextureRegion normal;
     private boolean isShow = false;
+    private TextureRegion catchBg;
+    private float mScale;
+    private float mCloseWidth;
+    private float mCloseHeight;
+    private boolean isTouch = true;
 
     public CloseActor(AssetManager assetManager) {
         super();
@@ -31,9 +36,12 @@ public class CloseActor extends Actor {
 
     private void initResources() {
         normal = new TextureRegion((Texture) assetManager.get("open_close.png"));
-
-        setPosition(width * 0.93f - normal.getRegionWidth(), height * 0.9f - normal.getRegionHeight());
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+        catchBg = new TextureRegion((Texture) assetManager.get("catch_bg.png"));
+        mScale = (float) width / (float) catchBg.getRegionWidth();
+        mCloseWidth = mScale * normal.getRegionWidth();
+        mCloseHeight = mScale * normal.getRegionHeight();
+        setPosition(width * 0.93f - mCloseWidth, height * 0.9f - mCloseHeight);
+        setSize(mCloseWidth, mCloseHeight);
     }
 
 
@@ -50,9 +58,9 @@ public class CloseActor extends Actor {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (backOnClickListener != null) {
+                if (backOnClickListener != null && isTouch) {
+                    isTouch = false;
                     backOnClickListener.onClick();
-//                    Gdx.app.exit();
                 }
             }
         };
@@ -69,7 +77,7 @@ public class CloseActor extends Actor {
             initResources();
         }
         if (isShow && normal != null)
-            batch.draw(normal, width * 0.93f - normal.getRegionWidth(), height * 0.9f - normal.getRegionHeight(), normal.getRegionWidth(), normal.getRegionHeight());
+            batch.draw(normal, width * 0.93f - mCloseWidth, height * 0.9f - mCloseHeight, mCloseWidth, mCloseHeight);
 
     }
 
@@ -83,5 +91,7 @@ public class CloseActor extends Actor {
         super.clear();
         if (normal != null)
             normal.getTexture().dispose();
+        if (catchBg != null)
+            catchBg.getTexture().dispose();
     }
 }

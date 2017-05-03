@@ -106,6 +106,7 @@ public class BeedScreen extends MyScreen {
         assetManager.load("open_line.png", Texture.class);
         assetManager.load("open_close.png", Texture.class);
         assetManager.load("cover.png", Texture.class);
+        assetManager.load("catch_bg.png", Texture.class);
         assetManager.finishLoading();
     }
 
@@ -181,7 +182,7 @@ public class BeedScreen extends MyScreen {
     @Override
     public void show() {
         if (mGame != null)
-            mGame.stopCamera();
+            mGame.stopCamera(true);
     }
 
     private void initListener() {
@@ -215,7 +216,6 @@ public class BeedScreen extends MyScreen {
 
     @Override
     public void resize(int width, int height) {
-//        screenViewport.update(width, height);
         Gdx.app.error("list", "resize");
         getData();
         initListener();
@@ -244,10 +244,6 @@ public class BeedScreen extends MyScreen {
                 ToastUtil.toast("加载取消");
             }
         });
-//        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
-//        Net.HttpRequest httpRequest = requestBuilder.newRequest().header("Content-Type",
-//                "application/json;charset=UTF-8").method(Net.HttpMethods.GET).url("http://182.92.31.114/rest/act/card/17888/15210420307").build();
-//        Gdx.net.sendHttpRequest(httpRequest, );
     }
 
     @Override
@@ -266,16 +262,6 @@ public class BeedScreen extends MyScreen {
 
     @Override
     public void dispose() {
-//        assetManager.unload("beed_bg.png");
-//        assetManager.unload("beed_title.png");
-//        assetManager.unload("beed_back.png");
-//        assetManager.unload("beed_item_bg.png");
-//        assetManager.unload("beed_item_nouse.png");
-//        assetManager.unload("beed_item_use.png");
-//        assetManager.unload("beed_item_line.png");
-//        assetManager.unload("beed_open_bg.png");
-//        assetManager.unload("open_line.png");
-//        assetManager.unload("open_close.png");
         // 场景被销毁时释放资源
         if (beedStage != null) {
             beedStage.dispose();

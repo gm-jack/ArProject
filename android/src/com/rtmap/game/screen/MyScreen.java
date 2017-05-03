@@ -19,11 +19,9 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.rtmap.game.MyGame;
-import com.rtmap.game.actor.AimActor;
 import com.rtmap.game.camera.MagicCamera;
 import com.rtmap.game.interfaces.AnimationListener;
 import com.rtmap.game.text.LazyBitmapFont;
@@ -93,7 +91,7 @@ public abstract class MyScreen implements Screen {
     private boolean isStart = true;
     private Vector3 now;
 
-    private int modelNumber = PAO;
+    private int modelNumber = 3;
     //世界坐标转换成的屏幕坐标
     private Vector3 mProject;
     private float delTime = 0;
@@ -107,13 +105,14 @@ public abstract class MyScreen implements Screen {
     private boolean isRay = true;
     private float addDetal = 0;
     private float mTextWidthRadiu;
+    private Vector3 translate = new Vector3();
+    private AnimationController animationController4;
 
     public MyScreen() {
 
     }
 
     public MyScreen(MyGame game) {
-//        DefaultShader.defaultCullFace = 0;
         this.game = game;
         if (spriteBatch == null)
             spriteBatch = new SpriteBatch();
@@ -123,23 +122,25 @@ public abstract class MyScreen implements Screen {
 
         radius = height * 3 / 8;
 
-        if (modelBatch == null)
-            modelBatch = new ModelBatch();
+//        if (modelBatch == null) {
+//            DefaultShader.Config config = new DefaultShader.Config();
+//            config.defaultCullFace = 0;
+//            modelBatch = new ModelBatch(null, new DefaultShaderProvider(config), null);
+//        }
+        modelBatch = new ModelBatch();
         if (environment == null)
             environment = new Environment();
 
-        environment.set(new ColorAttribute(ColorAttribute.Diffuse, 1f, 1f, 1f, 1f));
+        environment.set(new ColorAttribute(ColorAttribute.Diffuse, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
 
 //        shader = new TestShader();
 //        shader.init();
-        if (camera == null) {
-            camera = new MagicCamera(67f, width, height);
-            camera.translate(0, 0, 0);
-            camera.lookAt(7, 0, 7);
-            camera.far = 500.0f;
-            camera.near = 1f;
-        }
+        camera = new MagicCamera(67f, width, height);
+        camera.translate(0, 0, 0);
+        camera.lookAt(7, 0, 7);
+        camera.far = 500.0f;
+        camera.near = 1f;
 
 
         originalMaterial = new Material();
@@ -147,36 +148,6 @@ public abstract class MyScreen implements Screen {
         originalMaterial.set(TextureAttribute.createDiffuse(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createAmbient(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createEmissive(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))));
 //        camController = new CameraInputController(camera);
     }
-
-//    public MyScreen(MyGame game, Viewport viewPort) {
-//        DefaultShader.defaultCullFace = 0;
-//        this.game = game;
-//        this.viewPort = viewPort;
-//        spriteBatch = new SpriteBatch();
-//
-//        width = Gdx.graphics.getWidth();
-//        height = Gdx.graphics.getHeight();
-//
-//        radius = height * 3 / 8;
-//
-//        if (modelBatch == null)
-//            modelBatch = new ModelBatch();
-//        if (environment == null)
-//            environment = new Environment();
-//
-//        environment.set(new ColorAttribute(ColorAttribute.Emissive, 0.4f, 0.4f, 0.4f, 0f));
-//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-//
-//
-//        if (camera == null) {
-//            camera = new MagicCamera(67f, width, height);
-//            camera.translate(7, 7, 7);
-//            camera.lookAt(0, 0, 0);
-//            camera.far = 100.0f;
-//            camera.near = 1f;
-//        }
-////        camController = new CameraInputController(camera);
-//    }
 
     @Override
     public void show() {
@@ -196,7 +167,8 @@ public abstract class MyScreen implements Screen {
         GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/laohu-huanhu.g3dj", Model.class));
         GameObject shipInstancePao = new GameObject(game.asset.get("tiger/laohu-pao.g3dj", Model.class));
         GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/laohu-zhuaqu.g3dj", Model.class));
-        shipInstancePao.transform.setToTranslation(-7, 0, 7);
+        GameObject shipInstanceKnight = new GameObject(game.asset.get("tiger/knight.g3dj", Model.class));
+        shipInstanceKnight.transform.setToTranslation(-7, 0, 7);
 
         animationController2 = new AnimationController(shipInstanceHuanHu);
         animationController2.setAnimation("Take 001", -1);
@@ -204,13 +176,13 @@ public abstract class MyScreen implements Screen {
         animationController1.setAnimation("Take 001", -1);
         animationController3 = new AnimationController(shipInstanceZhuaQu);
         animationController3.setAnimation("Take 001", -1);
+        animationController4 = new AnimationController(shipInstanceKnight);
+        animationController4.setAnimation("Attack", -1);
 //        Take 001
         instances.add(shipInstancePao);
         instances.add(shipInstanceHuanHu);
         instances.add(shipInstanceZhuaQu);
-
-//        instances.get(1).materials.clear();
-//        instances.get(1).materials.get(0).set(new BlendingAttribute(Gdx.gl20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+        instances.add(shipInstanceKnight);
 
         getModelAngle();
 
@@ -289,22 +261,41 @@ public abstract class MyScreen implements Screen {
         Quaternion quaternion = new Quaternion();
         instances.get(modelNumber).transform.getRotation(quaternion);
 
-        if (v > 0) {
-            //顺时针
-            instances.get(modelNumber).transform.rotate(0, 1, 0, degrees);
-        } else if (v < 0) {
-            //逆时针
-            instances.get(modelNumber).transform.rotate(0, 1, 0, -degrees);
-        } else {
-            //一条直线
-            if ((now.x > 0 && old.x > 0) || (now.x < 0 && old.x < 0)) {
-                //同一象限
-                instances.get(modelNumber).transform.rotate(0, 1, 0, 0);
+        Gdx.app.error("Quaternion", quaternion.getAngle() + "");
+        if (degrees != Double.NaN) {
+            if (v > 0) {
+                //顺时针
+                instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() - degrees);
+            } else if (v < 0) {
+                //逆时针
+                instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + degrees);
             } else {
-                //不同象限
-                instances.get(modelNumber).transform.rotate(0, 1, 0, 180);
+                //一条直线
+                if ((now.x > 0 && old.x > 0) || (now.x < 0 && old.x < 0)) {
+                    //同一象限
+                    instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + 0);
+                } else {
+                    //不同象限
+                    instances.get(modelNumber).transform.rotate(0, 1, 0, quaternion.getAngle() + 180);
+                }
             }
         }
+//        if (v > 0) {
+//            //顺时针
+//            instances.get(modelNumber).transform.rotate(0, 1, 0, degrees);
+//        } else if (v < 0) {
+//            //逆时针
+//            instances.get(modelNumber).transform.rotate(0, 1, 0, -degrees);
+//        } else {
+//            //一条直线
+//            if ((now.x > 0 && old.x > 0) || (now.x < 0 && old.x < 0)) {
+//                //同一象限
+//                instances.get(modelNumber).transform.rotate(0, 1, 0, 0);
+//            } else {
+//                //不同象限
+//                instances.get(modelNumber).transform.rotate(0, 1, 0, 180);
+//            }
+//        }
     }
 
     private void getModelInstanceAngle() {
@@ -376,28 +367,6 @@ public abstract class MyScreen implements Screen {
         }
     }
 
-//    /**
-//     * 计算移动旋转角度
-//     */
-//    public void getModelInstanceAngle() {
-//        float relativeX = now.x - old.x;
-//        float relativeY = now.z - old.z;
-//        if (relativeX > 0 && relativeY >= 0) {
-//            //一象限
-//            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeY / relativeX)));
-//        } else if (relativeX >= 0 && relativeY < 0) {
-//            //四象限
-//            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeX / relativeY))) - 90;
-//        } else if (relativeX < 0 && relativeY <= 0) {
-//            //三象限
-//            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeY / relativeX))) - 180;
-//        } else if (relativeX <= 0 && relativeY > 0) {
-//            //二象限
-//            mRelative = Math.toDegrees(Math.atan(Math.abs(relativeX / relativeY))) - 270;
-//        }
-//        instances.get(modelNumber).transform.rotate(new Vector3(0, 1, 0), -(float) mRelative - 360);
-//    }
-
     @Override
     public void render(float delta) {
         if (spriteBatch == null) return;
@@ -406,22 +375,24 @@ public abstract class MyScreen implements Screen {
         }
         if (!stopCamera && camera != null) {
             camera.update();
-//            instances.get(0).transform.rotate()
-//            Vector3 vec3 = camera.getVec3();
-//            instances.get(modelNumber).transform.setFromEulerAngles(-vec3.x, -vec3.y, -vec3.z);
+
             isPositive();
+
             if (texture.size() > 0) {
                 spriteBatch.begin();
+
                 mProject = camera.project(position);
-//                distance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
                 rayDistance = (int) (Math.abs(Math.sqrt((mProject.x - width / 2) * (mProject.x - width / 2) + (mProject.y - height / 2) * (mProject.y - height / 2))));
                 distance = rayDistance / 120;
+
                 if (animationListener != null && oldIsLineShow != isLineShow) {
                     animationListener.startAnim(distance >= 9);
                     oldIsLineShow = isLineShow;
                 }
+
                 if (delTime <= Gdx.graphics.getDeltaTime() * 30)
                     delTime += Gdx.graphics.getDeltaTime();
+
                 if (delTime > Gdx.graphics.getDeltaTime() * 30)
                     if (distance < 9 && !isPositive)
                         isLineShow = false;
@@ -465,12 +436,14 @@ public abstract class MyScreen implements Screen {
                         x = (float) (nowAngle * Math.sin(v));
                         y = (float) (nowAngle * Math.cos(v));
                     }
+
                     float fontX = width / 2 + texture.get(0).getRegionWidth() / 2 + x;
                     if (fontX < 0) {
                         fontX = width * 0.01f;
                     } else if (fontX + width * 0.09f > width) {
                         fontX = width * 0.91f;
                     }
+
                     //绘制指示器
                     spriteBatch.draw(texture.get(0), width / 2 - texture.get(0).getRegionWidth() / 2, height / 2, texture.get(0).getRegionWidth() / 2, 0, texture.get(0).getRegionWidth(), Math.abs(nowAngle), 1, 1, (float) (-angle));
 
@@ -483,8 +456,10 @@ public abstract class MyScreen implements Screen {
                     } else {
                         message = "距离\n" + distance;
                     }
+
                     lazyBitmapFont.draw(spriteBatch, message, fontX, height / 2 + y, width * 0.09f, Align.left, true);
                 }
+
                 if (isLineShow && isAnim) {
                     if (delNum <= drawNum) {
                         spriteBatch.draw(texture.get(1), width / 2 + x * 0.75f / drawNum * delNum + x * 0.186f - texture.get(1).getRegionWidth() / 2, height / 2 + y * 0.75f / drawNum * delNum + y * 0.186f, texture.get(1).getRegionWidth() / 2, 0, texture.get(1).getRegionWidth(), texture.get(1).getRegionHeight(), 2, 2, (float) (-angle));
@@ -496,9 +471,11 @@ public abstract class MyScreen implements Screen {
                         delNum = 0;
                     }
                 }
+
                 spriteBatch.end();
             }
         }
+
         if (instances.size > 0 && !stopRerder) {
             GameObject object = instances.get(modelNumber);
             modelBatch.begin(camera);
@@ -506,7 +483,6 @@ public abstract class MyScreen implements Screen {
                 modelBatch.render(object, environment);
             }
             modelBatch.end();
-
             //线性移动
             if (isTranslate && modelNumber != ZUO) {
                 setDurations(2);
@@ -515,43 +491,41 @@ public abstract class MyScreen implements Screen {
 
             switchAnimationModel();
 
-
-//            if (rayDistance < mTextWidthRadiu && !isPositive) {
-//                addNumber();
-//            } else {
-//                subNumber();
-//            }
             /**
              * 添加射线
              */
-            if (isRay && AimActor.number <= 11) {
-                Ray ray = camera.getPickRay(width / 2, height / 2);
-                final GameObject instance = object;
-                instance.transform.getTranslation(position);
-                position.add(instance.center);
-                final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
-                float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
-                if (dist2 <= instance.radius * instance.radius && !isPositive) {
-                    addDetal += Gdx.graphics.getDeltaTime();
-                    if (addDetal > 1f) {
-                        mTao = new Random().nextInt(10);
-                        addDetal = 0;
-                    }
-                    if (mTao < 4) {
-                        setTranslate(true);
-                        setModelNumber(PAO);
-                    } else {
-                        setTranslate(false);
-                        setModelNumber(HUANHU);
-                    }
-                    if (modelNumber == HUANHU)
-                        addNumber();
-                } else {
-                    subNumber();
-                    setTranslate(true);
-                    setModelNumber(PAO);
-                }
-            }
+//            if (isRay && number <= 11) {
+//                Ray ray = camera.getPickRay(width / 2, height / 2);
+//                final GameObject instance = object;
+//                instance.transform.getTranslation(position);
+//                position.add(instance.center);
+//                final float len = ray.direction.dot(position.x - ray.origin.x, position.y - ray.origin.y, position.z - ray.origin.z);
+//                float dist2 = position.dst2(ray.origin.x + ray.direction.x * len, ray.origin.y + ray.direction.y * len, ray.origin.z + ray.direction.z * len);
+//
+//                if (dist2 <= instance.radius * instance.radius && !isPositive) {
+//                    addDetal += Gdx.graphics.getDeltaTime();
+//                    if (addDetal > 1f) {
+//                        mTao = new Random().nextInt(10);
+//                        addDetal = 0;
+//                    }
+//                    if (mTao < 3) {
+//                        setTranslate(true);
+//                        setModelNumber(PAO);
+//                    } else {
+//                        setTranslate(false);
+//                        setModelNumber(HUANHU);
+//                    }
+//                    if (modelNumber == HUANHU) {
+//                        addNumber();
+//                    } else {
+//                        subNumber();
+//                    }
+//                } else {
+//                    subNumber();
+//                    setTranslate(true);
+//                    setModelNumber(PAO);
+//                }
+//            }
         }
     }
 
@@ -561,22 +535,14 @@ public abstract class MyScreen implements Screen {
             return;
         }
 
-        Vector3 vector3 = new Vector3();
+        translate = new Vector3();
         if (instances.size > 0) {
-            instances.get(modelNumber).transform.getTranslation(vector3);
+            instances.get(modelNumber).transform.getTranslation(translate);
         }
         this.modelNumber = number;
         if (instances.size > 0) {
-//            if (number != ZUO)
-            instances.get(number).transform.setToTranslation(vector3.x, vector3.y, vector3.z);
-//            else {
-//                Vector3 unproject = camera.unproject(new Vector3(width / 2, height / 2, 2));
-//                instances.get(number).transform.setToTranslation(unproject.x, unproject.y, unproject.z);
-//            }
+            instances.get(number).transform.setToTranslation(translate.x, translate.y, translate.z);
 
-            //修改透明
-//            instances.get(number).materials.get(0).set(new BlendingAttribute(Gdx.gl20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-//            getV();
             getModelAngle();
         }
     }
@@ -591,6 +557,9 @@ public abstract class MyScreen implements Screen {
                 break;
             case ZUO:
                 animationController3.update(Gdx.graphics.getDeltaTime());
+                break;
+            case 3:
+                animationController4.update(Gdx.graphics.getDeltaTime());
                 break;
         }
     }
@@ -697,7 +666,6 @@ public abstract class MyScreen implements Screen {
 
     //子类实现
     public void addNumber() {
-
     }
 
     //子类实现

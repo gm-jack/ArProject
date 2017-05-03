@@ -21,7 +21,6 @@ import android.content.res.AssetManager;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -30,6 +29,7 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
 import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
+import jp.co.cyberagent.android.gpuimage.util.HuaweiUtil;
 
 public class GPUImageFilter {
     public static final String NO_FILTER_VERTEX_SHADER = "" +
@@ -79,11 +79,12 @@ public class GPUImageFilter {
     //    private float[] mvpMatrix = new float[16];
     private int mCircleProgram;
     private float[] projectionMatrix = new float[16];
-    private float[] projectionMatrixs = new float[]{1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1};
+    private float[] projectionMatrixs = new float[]{1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1};
     private int mMatrixHandle;
+    private Context mContext;
 
     public GPUImageFilter() {
         this(NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
@@ -93,6 +94,10 @@ public class GPUImageFilter {
         mRunOnDraw = new LinkedList<Runnable>();
         mVertexShader = vertexShader;
         mFragmentShader = fragmentShader;
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
     }
 
     public final void init() {
@@ -158,16 +163,15 @@ public class GPUImageFilter {
 
     //根据屏幕的width 和 height 创建投影矩阵
     public void onOutputSizeChanged(final int width, final int height) {
-        final float aspectRatio = (float) width / (float) height;
-        if (width > height) {
-            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
-        } else {
-            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
-            Log.e("output", "-1f + aspectRatio    " + (aspectRatio) + "  1f - aspectRatio " + (aspectRatio));
+        float aspectRatios = (float) height / (float) width;
+
+        if (HuaweiUtil.isHUAWEI() && mContext != null) {
+            aspectRatios = (float) HuaweiUtil.getDpi(mContext) / (float) width;
         }
+        Matrix.orthoM(projectionMatrix, 0, -aspectRatios + 1f, aspectRatios - 1f, -1f, 1f, -1f, 1f);
         mOutputWidth = width;
         mOutputHeight = height;
-        mMScaleW = mOutputWidth / 150f;
+        mMScaleW = mOutputWidth / 100f;
         mMScaleH = mOutputHeight / 150f;
     }
 
@@ -178,23 +182,7 @@ public class GPUImageFilter {
             return;
         }
 
-//        GLES20.glEnable(GLES20.GL_STENCIL_TEST);
         GLES20.glClear(GLES20.GL_STENCIL_BUFFER_BIT);
-//        GLES20.glStencilFunc(GLES20.GL_ALWAYS, 1, 0xff); // 总是通过
-//        GLES20.glStencilOp(GLES20.GL_KEEP, GLES20.GL_KEEP, GLES20.GL_REPLACE);
-
-//        GLES20.glUseProgram(mCircleProgram);
-//        GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 3 * 4, verticalsBuffer);
-//        GLES20.glEnableVertexAttribArray(mGLAttribPosition);
-//
-//        // 绘制图元
-//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 120 * 3);
-//
-//        GLES20.glEnable(GLES20.GL_BLEND);
-//        GLES20.glBlendFunc(GLES20.GL_SRC_COLOR, GLES20.GL_ONE_MINUS_SRC_COLOR);
-
-//        GLES20.glStencilFunc(GLES20.GL_EQUAL, 1, 0xff); // 只有模板缓冲区中的模板值为1的地方才被绘制
-//        GLES20.glStencilOp(GLES20.GL_KEEP, GLES20.GL_KEEP, GLES20.GL_KEEP);
 
         GLES20.glUseProgram(mGLProgId);
 //        if (isCat) {
@@ -211,14 +199,19 @@ public class GPUImageFilter {
 //                mChangeH = mOutputHeight / 2;
 //            }
 //        }
-        if (mChangeW < 1) {
-            GLES20.glUniform1f(mMatrixHandle, mChangeW);
-            mChangeW += 0.01;
-            GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
-        }else{
-            GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrixs, 0);
-        }
-//        GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
+        if (isCat)
+            if (mChangeW < 1) {
+                GLES20.glUniform1f(mMatrixHandle, mChangeW);
+                mChangeW += 0.02;
+                GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
+            } else {
+                if (listener != null) {
+                    listener.animEnd();
+                }
+                mChangeW = 0;
+                isCat = false;
+                GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrixs, 0);
+            }
         cubeBuffer.position(0);
         GLES20.glVertexAttribPointer(mGLAttribPosition, 2, GLES20.GL_FLOAT, false, 0, cubeBuffer);
         GLES20.glEnableVertexAttribArray(mGLAttribPosition);
@@ -246,13 +239,9 @@ public class GPUImageFilter {
 //                mChangeH = 0;
 //            }
 //        }
-//        GLES20.glDisable(GLES20.GL_BLEND);
         GLES20.glDisableVertexAttribArray(mGLAttribPosition);
         GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-
-//        GLES20.glDisable(GLES20.GL_STENCIL_TEST);
-
     }
 
     protected void onDrawArraysPre() {
@@ -405,32 +394,17 @@ public class GPUImageFilter {
         return s.hasNext() ? s.next() : "";
     }
 
-    private int loaderShader(int type, String shaderCode) {
-        int shader = GLES20.glCreateShader(type);
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        return shader;
-    }
-
     private String circleFragmentShaderCode = "precision mediump float;"
             + "void main(){"
             + "gl_FragColor = vec4(1,0,0,1);"
             + "}";
 
     public void setCat(boolean cat, AnimEndListener listener) {
-        this.isCat = false;
+        this.isCat = cat;
         this.listener = listener;
         if (cat) {
-//            destroy();
-//            mFragmentShader = GRAYSCALE_FRAGMENT_SHADER;
-//            init();
             mChangeH = 0;
             mChangeW = 0;
         }
-//        else {
-//            destroy();
-//            mFragmentShader = NO_FILTER_FRAGMENT_SHADER;
-//            init();
-//        }
     }
 }
