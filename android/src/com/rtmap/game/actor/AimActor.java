@@ -144,8 +144,8 @@ public class AimActor extends Actor {
                 bottomAnim += bottomHeight / nums;
             }
             batch.draw(findReArray.get(0), changeX - findRadiu, changeY - findRadiu, findRadiu * 2, findRadiu * 2);
-            if (findRadiu <= centerWidth * 3 / 4 && isBig) {
-                if (findRadiu >= centerWidth * 5 / 8) {
+            if (findRadiu <= centerWidth && isBig) {
+                if (findRadiu >= centerWidth * 7 / 8) {
                     isBig = false;
                 }
                 findRadiu += centerWidth / 2 / findNum;

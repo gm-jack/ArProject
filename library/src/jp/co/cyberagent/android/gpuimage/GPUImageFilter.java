@@ -202,7 +202,7 @@ public class GPUImageFilter {
         if (isCat)
             if (mChangeW < 1) {
                 GLES20.glUniform1f(mMatrixHandle, mChangeW);
-                mChangeW += 0.02;
+                mChangeW += 0.03;
                 GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
             } else {
                 if (listener != null) {

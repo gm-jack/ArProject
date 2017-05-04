@@ -22,7 +22,8 @@ android {
         applicationId "com.rtmap.game"
         minSdkVersion 14
         targetSdkVersion 25
-
+        versionCode 2
+        versionName "2.0"
     }
     lintOptions {
         abortOnError false

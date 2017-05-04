@@ -112,7 +112,6 @@ public class CatchScreen extends MyScreen {
                     Gdx.app.error("gdx", "onFirst");
                     SPUtil.put("first_catch", false);
                     coverActor.setIsFirst(true);
-                    setlistener();
                 }
 
                 @Override
