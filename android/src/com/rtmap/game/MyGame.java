@@ -25,10 +25,8 @@ public class MyGame extends Game {
     private AndroidLauncher androidLauncher;
     private List<Screen> screenList;
     private LoadingScreen loadingScreen;
-    //    private FindScreen findScreen;
     private Screen oldScreen;
     private CatchScreen catchScreen;
-//    private AimScreen aimScreen;
 
     /**
      * 设置相机模式

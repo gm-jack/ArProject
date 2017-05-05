@@ -66,6 +66,10 @@ public class HuaweiUtil {
      * 是否是华为
      */
     public static boolean isHUAWEI() {
-        return android.os.Build.MANUFACTURER.equals("HUAWEI")||android.os.Build.MANUFACTURER.equals("LG");
+        return android.os.Build.MANUFACTURER.equals("HUAWEI");
+    }
+
+    public static String getName() {
+        return android.os.Build.MANUFACTURER;
     }
 }

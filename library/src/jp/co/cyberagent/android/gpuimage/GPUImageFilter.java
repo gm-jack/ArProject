@@ -68,10 +68,7 @@ public class GPUImageFilter {
     protected int mOutputHeight;
     private boolean mIsInitialized;
     private FloatBuffer verticalsBuffer;
-    private float mMScaleW;
-    private float mMScaleH;
-    private float mChangeW;
-    private float mChangeH;
+    private float mChangeW = 0;
     private boolean isCat = false;
     private AnimEndListener listener;
     private boolean isFirst = true;
@@ -147,10 +144,6 @@ public class GPUImageFilter {
         verticalsBuffer.position(0);
     }
 
-    public void setMvpMatrix(float[] mvpMatrix) {
-//        this.mvpMatrix = mvpMatrix;
-    }
-
     public final void destroy() {
         mIsInitialized = false;
 //        GLES20.glDeleteProgram(mCircleProgram);
@@ -163,16 +156,13 @@ public class GPUImageFilter {
 
     //根据屏幕的width 和 height 创建投影矩阵
     public void onOutputSizeChanged(final int width, final int height) {
-        float aspectRatios = (float) height / (float) width;
-
+        float aspectRatio = (float) width / (float) height;
         if (HuaweiUtil.isHUAWEI() && mContext != null) {
-            aspectRatios = (float) HuaweiUtil.getDpi(mContext) / (float) width;
+            aspectRatio = (float) width / (float) (HuaweiUtil.getDpi(mContext));
         }
-        Matrix.orthoM(projectionMatrix, 0, -aspectRatios + 1f, aspectRatios - 1f, -1f, 1f, -1f, 1f);
+        Matrix.orthoM(projectionMatrix, 0, -1f * aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
         mOutputWidth = width;
         mOutputHeight = height;
-        mMScaleW = mOutputWidth / 100f;
-        mMScaleH = mOutputHeight / 150f;
     }
 
     public void onDraw(final int textureId, final FloatBuffer cubeBuffer,
@@ -403,7 +393,6 @@ public class GPUImageFilter {
         this.isCat = cat;
         this.listener = listener;
         if (cat) {
-            mChangeH = 0;
             mChangeW = 0;
         }
     }

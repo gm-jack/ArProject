@@ -1,19 +1,19 @@
 The target system is: Android - 14 - armv5te
 The host system is: Windows - 10.0.14393 - AMD64
 Determining if the C compiler works passed with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_e417e"
-[1/2] Building C object CMakeFiles/cmTC_e417e.dir/testCCompiler.c.o
-[2/2] Linking C executable cmTC_e417e
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_991ff"
+[1/2] Building C object CMakeFiles/cmTC_991ff.dir/testCCompiler.c.o
+[2/2] Linking C executable cmTC_991ff
 
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_22d63"
-[1/2] Building C object CMakeFiles/cmTC_22d63.dir/CMakeCCompilerABI.c.o
-[2/2] Linking C executable cmTC_22d63
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_3a019"
+[1/2] Building C object CMakeFiles/cmTC_3a019.dir/CMakeCCompilerABI.c.o
+[2/2] Linking C executable cmTC_3a019
 Android clang version 3.8.275480  (based on LLVM 3.8.275480)
 Target: armv5te-none-linux-android
 Thread model: posix
@@ -25,16 +25,16 @@ Candidate multilib: armv7-a;@armv7
 Candidate multilib: armv7-a/thumb;@armv7@thumb
 Candidate multilib: .;
 Selected multilib: thumb;@thumb
- "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_22d63 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_22d63.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"
+ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_3a019 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_3a019.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(arm-linux-androideabi-ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_22d63"]
-  ignore line: [[1/2] Building C object CMakeFiles/cmTC_22d63.dir/CMakeCCompilerABI.c.o]
-  ignore line: [[2/2] Linking C executable cmTC_22d63]
+  ignore line: [Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_3a019"]
+  ignore line: [[1/2] Building C object CMakeFiles/cmTC_3a019.dir/CMakeCCompilerABI.c.o]
+  ignore line: [[2/2] Linking C executable cmTC_3a019]
   ignore line: [Android clang version 3.8.275480  (based on LLVM 3.8.275480)]
   ignore line: [Target: armv5te-none-linux-android]
   ignore line: [Thread model: posix]
@@ -51,7 +51,7 @@ Parsed C implicit link information from above output:
   ignore line: []
   ignore line: [Selected multilib: thumb]
   ignore line: [@thumb]
-  link line: [ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_22d63 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_22d63.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"]
+  link line: [ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_3a019 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_3a019.dir/CMakeCCompilerABI.c.o -lgcc -ldl -lc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"]
     arg [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\ld] ==> ignore
     arg [--sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm] ==> ignore
     arg [-X] ==> ignore
@@ -61,7 +61,7 @@ Parsed C implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_22d63] ==> ignore
+    arg [cmTC_3a019] ==> ignore
     arg [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\crtbegin_dynamic.o] ==> ignore
     arg [-LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb] ==> dir [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb]
     arg [-LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb] ==> dir [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb]
@@ -87,7 +87,7 @@ Parsed C implicit link information from above output:
     arg [-znow] ==> ignore
     arg [--gc-sections] ==> ignore
     arg [-znocopyreloc] ==> ignore
-    arg [CMakeFiles/cmTC_22d63.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_3a019.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [-ldl] ==> lib [dl]
     arg [-lc] ==> lib [c]
@@ -110,11 +110,11 @@ Parsed C implicit link information from above output:
 
 
 Detecting C [-std=c11] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_dd9f0"
-[1/2] Building C object CMakeFiles/cmTC_dd9f0.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_dd9f0
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_266fc"
+[1/2] Building C object CMakeFiles/cmTC_266fc.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_266fc
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -124,11 +124,11 @@ Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sd
 
 
 Detecting C [-std=c99] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_cda54"
-[1/2] Building C object CMakeFiles/cmTC_cda54.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_cda54
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_c6c2d"
+[1/2] Building C object CMakeFiles/cmTC_c6c2d.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_c6c2d
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -138,11 +138,11 @@ Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sd
 
 
 Detecting C [-std=c90] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_357ef"
-[1/2] Building C object CMakeFiles/cmTC_357ef.dir/feature_tests.c.o
-[2/2] Linking C executable cmTC_357ef
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_048c0"
+[1/2] Building C object CMakeFiles/cmTC_048c0.dir/feature_tests.c.o
+[2/2] Linking C executable cmTC_048c0
 
 
     Feature record: C_FEATURE:1c_function_prototypes
@@ -150,19 +150,19 @@ Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sd
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
 Determining if the CXX compiler works passed with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_bc4b5"
-[1/2] Building CXX object CMakeFiles/cmTC_bc4b5.dir/testCXXCompiler.cxx.o
-[2/2] Linking CXX executable cmTC_bc4b5
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_88e82"
+[1/2] Building CXX object CMakeFiles/cmTC_88e82.dir/testCXXCompiler.cxx.o
+[2/2] Linking CXX executable cmTC_88e82
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_fa13b"
-[1/2] Building CXX object CMakeFiles/cmTC_fa13b.dir/CMakeCXXCompilerABI.cpp.o
-[2/2] Linking CXX executable cmTC_fa13b
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_35871"
+[1/2] Building CXX object CMakeFiles/cmTC_35871.dir/CMakeCXXCompilerABI.cpp.o
+[2/2] Linking CXX executable cmTC_35871
 Android clang version 3.8.275480  (based on LLVM 3.8.275480)
 Target: armv5te-none-linux-android
 Thread model: posix
@@ -174,16 +174,16 @@ Candidate multilib: armv7-a;@armv7
 Candidate multilib: armv7-a/thumb;@armv7@thumb
 Candidate multilib: .;
 Selected multilib: thumb;@thumb
- "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_fa13b "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_fa13b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"
+ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_35871 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_35871.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(arm-linux-androideabi-ld\.exe|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_fa13b"]
-  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_fa13b.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [[2/2] Linking CXX executable cmTC_fa13b]
+  ignore line: [Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_35871"]
+  ignore line: [[1/2] Building CXX object CMakeFiles/cmTC_35871.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [[2/2] Linking CXX executable cmTC_35871]
   ignore line: [Android clang version 3.8.275480  (based on LLVM 3.8.275480)]
   ignore line: [Target: armv5te-none-linux-android]
   ignore line: [Thread model: posix]
@@ -200,7 +200,7 @@ Parsed CXX implicit link information from above output:
   ignore line: []
   ignore line: [Selected multilib: thumb]
   ignore line: [@thumb]
-  link line: [ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_fa13b "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_fa13b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"]
+  link line: [ "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\\ld" --sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm -X --eh-frame-hdr -m armelf_linux_eabi -dynamic-linker /system/bin/linker -o cmTC_35871 "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtbegin_dynamic.o" -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/arm-linux-androideabi/../../lib -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/thumb -LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc --build-id --warn-shared-textrel --fatal-warnings --no-undefined -z noexecstack -z relro -z now --gc-sections -z nocopyreloc CMakeFiles/cmTC_35871.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc -lgcc -ldl -lc -lgcc -lgcc -ldl "C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\\crtend_android.o"]
     arg [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/bin\ld] ==> ignore
     arg [--sysroot=C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm] ==> ignore
     arg [-X] ==> ignore
@@ -210,7 +210,7 @@ Parsed CXX implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_fa13b] ==> ignore
+    arg [cmTC_35871] ==> ignore
     arg [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/platforms/android-14/arch-arm/usr/lib/../lib\crtbegin_dynamic.o] ==> ignore
     arg [-LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb] ==> dir [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/thumb]
     arg [-LC:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb] ==> dir [C:/Users/yxy/Downloads/android-sdk_r24.4.1-windows/android-sdk-windows/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9.x/../../../../arm-linux-androideabi/lib/../lib/thumb]
@@ -236,7 +236,7 @@ Parsed CXX implicit link information from above output:
     arg [-znow] ==> ignore
     arg [--gc-sections] ==> ignore
     arg [-znocopyreloc] ==> ignore
-    arg [CMakeFiles/cmTC_fa13b.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_35871.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc] ==> lib [gcc]
@@ -265,11 +265,11 @@ Parsed CXX implicit link information from above output:
 
 
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_4cf8e"
-[1/2] Building CXX object CMakeFiles/cmTC_4cf8e.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_4cf8e
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_008bb"
+[1/2] Building CXX object CMakeFiles/cmTC_008bb.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_008bb
 
 
     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
@@ -332,11 +332,11 @@ Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sd
 
 
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_4cb4a"
-[1/2] Building CXX object CMakeFiles/cmTC_4cb4a.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_4cb4a
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_1341a"
+[1/2] Building CXX object CMakeFiles/cmTC_1341a.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_1341a
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
@@ -399,11 +399,11 @@ Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sd
 
 
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
-Change Dir: C:/Users/yxy/Desktop/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
+Change Dir: C:/Users/yxy/Desktop/AR/ArProject/library/.externalNativeBuild/cmake/release/armeabi/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_6068b"
-[1/2] Building CXX object CMakeFiles/cmTC_6068b.dir/feature_tests.cxx.o
-[2/2] Linking CXX executable cmTC_6068b
+Run Build Command:"C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\ninja.exe" "cmTC_cf894"
+[1/2] Building CXX object CMakeFiles/cmTC_cf894.dir/feature_tests.cxx.o
+[2/2] Linking CXX executable cmTC_cf894
 
 
     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers

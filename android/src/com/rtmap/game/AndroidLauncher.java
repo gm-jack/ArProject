@@ -29,9 +29,7 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activitymain);
-//        flMain = (FrameLayout) findViewById(R.id.fl_main);
-//        mainTexture = (TextureView) findViewById(R.id.texture_main);
+
         context = this;
         contexts = new SoftReference<Context>(context);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -42,9 +40,10 @@ public class AndroidLauncher extends AndroidApplication {
         androidDeviceCameraController = new AndroidDeviceCameraController(this);
         asset = new AssetManager();
         initialize(new MyGame(this, androidDeviceCameraController, asset), config);
-//        initialize(new ParticleGame(), config);
-//        mainTexture.setSurfaceTextureListener(MySurfaceTextureListener);
-//        flMain.addView(view);
+
+        //设置日志等级
+//        Gdx.app.setLogLevel(LOG_NONE);
+
         if (graphics.getView() instanceof SurfaceView) {
             SurfaceView glView = (SurfaceView) graphics.getView();
             // force alpha channel - I'm not sure we need this as the GL surface is already using alpha channel
@@ -80,15 +79,12 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onResume() {
         super.onResume();
-//        if (androidDeviceCameraController != null)
-//            androidDeviceCameraController.resumeCircleCamera();
     }
 
     @Override
     protected void onPause() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
-//            androidDeviceCameraController.pauseCircleCamera();
         }
         super.onPause();
 
@@ -98,7 +94,6 @@ public class AndroidLauncher extends AndroidApplication {
     protected void onDestroy() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
-//            androidDeviceCameraController.pauseCircleCamera();
         }
         super.onDestroy();
     }

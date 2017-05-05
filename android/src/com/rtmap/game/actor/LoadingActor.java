@@ -96,17 +96,12 @@ public class LoadingActor extends Actor {
                     Gdx.app.error("load", "changeOutRadiu  " + changeOutRadiu + "  (startX / 2 + startX / 4)   " + (startX + startX / 2));
                     batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                     changeOutRadiu += mChangeOut;
-                }
-                if (changeInRadiu <= width * 2) {
-                    Gdx.app.error("load", "changeInRadiu  " + changeInRadiu + "  (startX / 2 + startX / 4)  " + (startX + startX / 2));
-                    batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
-                    changeInRadiu += mChangeIn;
-                } else {
+                }else{
                     if (isAnimationFirst) {
-                        Gdx.app.error("camera", "render()");
                         isLodingShow = false;
                         isEndAnimation = false;
                         isAnimationFirst = false;
+                        Gdx.app.error("camera", "render()");
                         cameraController.setCat(true, new AnimEndListener() {
                             @Override
                             public void animEnd() {
@@ -121,11 +116,15 @@ public class LoadingActor extends Actor {
                         });
                     }
                 }
+                if (changeInRadiu <= width * 2) {
+                    Gdx.app.error("load", "changeInRadiu  " + changeInRadiu + "  (startX / 2 + startX / 4)  " + (startX + startX / 2));
+                    batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
+                    changeInRadiu += mChangeIn;
+                }
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
                 if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
                 }
-
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));

@@ -31,7 +31,6 @@ import com.rtmap.game.scrollpane.BeedScrollPane;
 import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
-import com.rtmap.game.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +54,12 @@ public class BeedScreen extends MyScreen {
     private EventListener beedBackClickListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            Gdx.app.error("gdx", "back");
             mGame.showOldScreen();
             BeedScreen.this.dispose();
             super.clicked(event, x, y);
         }
     };
+//    private ToastActor mActor;
 
     public BeedScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         this.mGame = game;
@@ -226,6 +225,7 @@ public class BeedScreen extends MyScreen {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String resultAsString = httpResponse.getResultAsString();
+//                showToast(resultAsString);
                 Gdx.app.error("http", resultAsString);
                 java.util.List<Result> lists = new Gson()
                         .fromJson(resultAsString, new TypeToken<java.util.List<Result>>() {
@@ -235,16 +235,23 @@ public class BeedScreen extends MyScreen {
 
             @Override
             public void failed(Throwable t) {
-                ToastUtil.toast("加载失败");
+//                showToast("加载失败");
                 Gdx.app.error("http", t.getMessage());
             }
 
             @Override
             public void cancelled() {
-                ToastUtil.toast("加载取消");
             }
         });
     }
+
+//    private void showToast(String message) {
+//        Gdx.app.error("toast", "show");
+//        if (mActor == null)
+//            mActor = new ToastActor();
+//        group.addActor(mActor);
+//        mActor.setIsShow(true, message);
+//    }
 
     @Override
     public void pause() {

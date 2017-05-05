@@ -34,7 +34,7 @@ include rules.ninja
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\yxy\Desktop\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\cmake.exe -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D C:\Users\yxy\Desktop\AR\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\cmake.exe -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -46,7 +46,7 @@ build CMakeFiles/gpuimage-library.dir/jni/yuv-decoder.c.o: C_COMPILER__gpuimage-
   DEP_FILE = CMakeFiles\gpuimage-library.dir\jni\yuv-decoder.c.o.d
   FLAGS = -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -O2 -DNDEBUG -O2 -DNDEBUG  -fPIC
   INCLUDES = -I../../../../jni
-  IN_ABS = C:\Users\yxy\Desktop\ArProject\library\jni\yuv-decoder.c
+  IN_ABS = C:\Users\yxy\Desktop\AR\ArProject\library\jni\yuv-decoder.c
   OBJECT_DIR = CMakeFiles\gpuimage-library.dir
   OBJECT_FILE_DIR = CMakeFiles\gpuimage-library.dir\jni
 
@@ -73,7 +73,7 @@ build ../../../../libs/arm64-v8a/libgpuimage-library.so: C_SHARED_LIBRARY_LINKER
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\yxy\Desktop\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\cmake.exe -HC:\Users\yxy\Desktop\ArProject\library -BC:\Users\yxy\Desktop\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a"
+  COMMAND = cmd.exe /C "cd /D C:\Users\yxy\Desktop\AR\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\yxy\Downloads\android-sdk_r24.4.1-windows\android-sdk-windows\cmake\3.6.3155560\bin\cmake.exe -HC:\Users\yxy\Desktop\AR\ArProject\library -BC:\Users\yxy\Desktop\AR\ArProject\library\.externalNativeBuild\cmake\release\arm64-v8a"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
