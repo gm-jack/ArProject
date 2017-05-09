@@ -19,6 +19,9 @@ public class AgainActor extends Actor {
     private InputListener listener;
     private TextureRegion normal;
     private boolean isShow = false;
+    private TextureRegion mRegion;
+    private float normalWidth;
+    private float normalHeight;
 
     public AgainActor(AssetManager assetManager) {
         super();
@@ -28,10 +31,13 @@ public class AgainActor extends Actor {
     }
 
     private void initResources() {
+        mRegion = new TextureRegion((Texture) assetManager.get("catch_bg.png"));
         normal = new TextureRegion((Texture) assetManager.get("open_again.png"));
-
-        setPosition(width / 2 - normal.getRegionWidth() / 2, height * 0.33f);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+        float scale = (float) width / mRegion.getRegionWidth();
+        normalWidth = normal.getRegionWidth() * scale;
+        normalHeight = normal.getRegionHeight() * scale;
+        setPosition(width / 2 - normalWidth / 2, height * 0.33f);
+        setSize(normalWidth, normalHeight);
     }
 
     public void setIsShow(boolean isShow) {
@@ -66,7 +72,7 @@ public class AgainActor extends Actor {
             initResources();
         }
         if (isShow && normal != null)
-            batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.33f, normal.getRegionWidth(), normal.getRegionHeight());
+            batch.draw(normal, width / 2 - normalWidth / 2, height * 0.33f, normalWidth, normalHeight);
     }
 
     @Override

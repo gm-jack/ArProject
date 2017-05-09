@@ -22,7 +22,7 @@ public class LoadingActor extends Actor {
     private final int num = 100;
     private final int nums = 5;
     private final int numbers = 10;
-    private final int number = 20;
+    private final int number = 10;
     private final int radius;
     private final AndroidDeviceCameraController cameraController;
     private final MyGame mGame;
@@ -53,6 +53,10 @@ public class LoadingActor extends Actor {
     private boolean isAnimationFirst = true;
     private int mChangeOut;
     private int mChangeIn;
+    private boolean isBig = true;
+    private int mCenterChange;
+    private float mTipWidth;
+    private float mTipHeight;
 
     public LoadingActor(AssetManager assetManager, AndroidDeviceCameraController cameraController, MyGame game) {
         super();
@@ -92,38 +96,44 @@ public class LoadingActor extends Actor {
         if (isLodingShow) {
             if (isEndAnimation) {
                 //            Gdx.app.error("loading", "changeOutRadiu >= texReArray.get(3).getRegionHeight()  " + (changeOutRadiu >= texReArray.get(3).getRegionHeight()));
-                if (changeOutRadiu <= width * 2) {
+                if (changeOutRadiu < width * 2) {
                     Gdx.app.error("load", "changeOutRadiu  " + changeOutRadiu + "  (startX / 2 + startX / 4)   " + (startX + startX / 2));
                     batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
                     changeOutRadiu += mChangeOut;
-                }else{
-                    if (isAnimationFirst) {
-                        isLodingShow = false;
-                        isEndAnimation = false;
-                        isAnimationFirst = false;
-                        Gdx.app.error("camera", "render()");
-                        cameraController.setCat(true, new AnimEndListener() {
-                            @Override
-                            public void animEnd() {
-                                Gdx.app.postRunnable(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (mGame != null)
-                                            mGame.showAimScreen(false);
-                                    }
-                                });
-                            }
-                        });
-                    }
                 }
-                if (changeInRadiu <= width * 2) {
+                if (changeInRadiu < width * 2) {
                     Gdx.app.error("load", "changeInRadiu  " + changeInRadiu + "  (startX / 2 + startX / 4)  " + (startX + startX / 2));
                     batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
                     changeInRadiu += mChangeIn;
                 }
+
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
-                if (changeCenterRadiu > 0) {
-                    changeCenterRadiu -= texReArray.get(1).getRegionHeight() / 2 / number;
+                if (changeCenterRadiu <= texReArray.get(1).getRegionHeight() * 3 / 2 && isBig) {
+                    if (changeCenterRadiu >= texReArray.get(1).getRegionHeight() * 5 / 4) {
+                        isBig = false;
+                    }
+                    changeCenterRadiu += mCenterChange;
+                } else if (changeCenterRadiu > 0) {
+                    changeCenterRadiu -= mCenterChange;
+                } else {
+                    isLodingShow = false;
+                    isEndAnimation = false;
+                }
+                if (isAnimationFirst) {
+                    isAnimationFirst = false;
+                    Gdx.app.error("camera", "render()");
+                    cameraController.setCat(true, new AnimEndListener() {
+                        @Override
+                        public void animEnd() {
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mGame != null)
+                                        mGame.showAimScreen(false);
+                                }
+                            });
+                        }
+                    });
                 }
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
@@ -165,7 +175,7 @@ public class LoadingActor extends Actor {
                 batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth() / 2, texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight(), getScaleX(), getScaleY(), angles);
                 angles -= 2;
                 batch.draw(texReArray.get(1), width / 2 - texReArray.get(1).getRegionWidth() / 2, height / 2 - texReArray.get(1).getRegionHeight() / 2, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
-                batch.draw(texReArray.get(5), width / 2 - texReArray.get(5).getRegionWidth() / 2, height / 2 + texReArray.get(6).getRegionHeight() / 2, texReArray.get(5).getRegionWidth(), texReArray.get(5).getRegionHeight());
+                batch.draw(texReArray.get(5), width / 2 - mTipWidth / 2, height / 2 + texReArray.get(6).getRegionHeight() / 2, mTipWidth, mTipHeight);
             }
         }
 
@@ -181,10 +191,14 @@ public class LoadingActor extends Actor {
         texReArray.add(new TextureRegion((Texture) asset.get("loading_tip.png")));
         texReArray.add(new TextureRegion((Texture) asset.get("loading_wait.png")));
 
+        float scale = (float) width / texReArray.get(0).getRegionWidth();
+        mTipWidth = texReArray.get(5).getRegionWidth() * scale;
+        mTipHeight = texReArray.get(5).getRegionHeight() * scale;
+        mCenterChange = texReArray.get(1).getRegionHeight() / 2 / number;
         changeOutRadiu = texReArray.get(3).getRegionHeight() * 2;
         changeInRadiu = texReArray.get(2).getRegionHeight() * 2;
-        mChangeOut = texReArray.get(3).getRegionHeight() / 10;
-        mChangeIn = texReArray.get(2).getRegionHeight() / 10;
+        mChangeOut = texReArray.get(3).getRegionHeight() / 20;
+        mChangeIn = texReArray.get(2).getRegionHeight() / 20;
     }
 
     public void setIsEndAnimation(boolean isEndAnimation) {

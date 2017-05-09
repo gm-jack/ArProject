@@ -53,7 +53,6 @@ public class MyGame extends Game {
     public void create() {
         mViewport = new ScreenViewport();
         mainScreen = new MainScreen(this, androidLauncher, mViewport);
-        loadingScreen = new LoadingScreen(this, mViewport, androidDeviceCameraController);
 
         setScreen(mainScreen);
     }
@@ -96,6 +95,12 @@ public class MyGame extends Game {
             mode = prepare_Mode;
         }
     }
+    public void stopCamera() {
+        if (androidDeviceCameraController != null) {
+            androidDeviceCameraController.stopPreviewAsync();
+            mode = normal_Mode;
+        }
+    }
 
     @Override
     public void dispose() {
@@ -111,6 +116,9 @@ public class MyGame extends Game {
     public void showCatchScreen() {
         catchScreen = new CatchScreen(this, androidLauncher, mViewport);
         setScreen(catchScreen);
+    }
+    public void showMainScreen() {
+        setScreen(mainScreen);
     }
 
     public void showOldScreen() {
@@ -129,6 +137,7 @@ public class MyGame extends Game {
 
     public void showLoadingScreen() {
         mode = normal_Mode;
+        loadingScreen = new LoadingScreen(this, mViewport, androidDeviceCameraController);
         setScreen(loadingScreen);
     }
 

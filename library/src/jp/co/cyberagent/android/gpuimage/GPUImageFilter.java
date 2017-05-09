@@ -68,7 +68,7 @@ public class GPUImageFilter {
     protected int mOutputHeight;
     private boolean mIsInitialized;
     private FloatBuffer verticalsBuffer;
-    private float mChangeW = 0;
+    private float mChangeW = 0.1f;
     private boolean isCat = false;
     private AnimEndListener listener;
     private boolean isFirst = true;
@@ -157,9 +157,11 @@ public class GPUImageFilter {
     //根据屏幕的width 和 height 创建投影矩阵
     public void onOutputSizeChanged(final int width, final int height) {
         float aspectRatio = (float) width / (float) height;
+//        float aspectRatio = (float) height / (float) width;
         if (HuaweiUtil.isHUAWEI() && mContext != null) {
             aspectRatio = (float) width / (float) (HuaweiUtil.getDpi(mContext));
         }
+//        Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
         Matrix.orthoM(projectionMatrix, 0, -1f * aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
         mOutputWidth = width;
         mOutputHeight = height;
@@ -190,9 +192,9 @@ public class GPUImageFilter {
 //            }
 //        }
         if (isCat)
-            if (mChangeW < 1) {
+            if (mChangeW < 0.85) {
                 GLES20.glUniform1f(mMatrixHandle, mChangeW);
-                mChangeW += 0.03;
+                mChangeW += 0.02;
                 GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
             } else {
                 if (listener != null) {

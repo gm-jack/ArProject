@@ -91,6 +91,13 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
     @Override
+    protected void onStop() {
+        if (asset != null)
+            asset.clear();
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();

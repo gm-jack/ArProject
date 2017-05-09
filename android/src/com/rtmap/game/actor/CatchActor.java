@@ -82,6 +82,13 @@ public class CatchActor extends Actor {
     private float mX;
     private float mFloat;
     private boolean isCatchFirst = true;
+    private float mScale;
+    private float catchCenterWidth;
+    private float catchCenterHeight;
+    private float centerWidth;
+    private float centerHeight;
+    private float titleWidth;
+    private float titleHeight;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -124,13 +131,12 @@ public class CatchActor extends Actor {
             return;
         batch.draw(texReArray.get(0), 0, 0, width, height);
         if (!fail) {
-            int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
-            int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
-            batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
+            float aimWidth = width / 2 - catchCenterWidth / 2;
+            float aimHeight = height / 2 - catchCenterHeight / 2;
+            batch.draw(texReArray.get(1), aimWidth, aimHeight, catchCenterWidth, catchCenterHeight);
 
-            int regionHeight = texReArray.get(1).getRegionHeight();
-            int minRadius = regionHeight * 3 / 10;
-            int maxRadius = regionHeight * 12 / 25;
+            float minRadius = catchCenterHeight * 3 / 10;
+            float maxRadius = catchCenterHeight * 12 / 25;
             //测试
 //            int minRadius = 0;
 //            int maxRadius = 1000;
@@ -144,9 +150,9 @@ public class CatchActor extends Actor {
                         }
                     } else {
                         if (changeRadiu < maxRadius) {
-                            num = 100;
+                            num = 80;
                         } else {
-                            num = 150;
+                            num = 120;
                         }
                         radius = height * 2 / 5 / num;
                         changeRadiu += radius;
@@ -186,9 +192,9 @@ public class CatchActor extends Actor {
                 }
                 if (!isStop) {
                     if (changeRadiu < maxRadius) {
-                        num = 100;
+                        num = 80;
                     } else {
-                        num = 150;
+                        num = 120;
                     }
                     radius = height * 2 / 5 / num;
                     changeRadiu -= radius;
@@ -210,7 +216,6 @@ public class CatchActor extends Actor {
                     }
                 }
             }
-
         } else {
             //绘制遮罩
             batch.draw(successTexRe.get(2), 0, 0, width, height);
@@ -318,8 +323,8 @@ public class CatchActor extends Actor {
                     }
 
                 } else {
-                    batch.draw(successTexRe.get(0), 0, height * 4 / 5, successTexRe.get(0).getRegionWidth(), successTexRe.get(0).getRegionHeight());
-                    batch.draw(successTexRe.get(1), width / 2 - successTexRe.get(1).getRegionWidth() / 2, height / 2 - successTexRe.get(1).getRegionHeight() / 2, successTexRe.get(1).getRegionWidth(), successTexRe.get(1).getRegionHeight());
+                    batch.draw(successTexRe.get(0), 0, height * 0.756f, titleWidth, titleHeight);
+                    batch.draw(successTexRe.get(1), width / 2 - centerWidth / 2, height / 2 - centerHeight / 2, centerWidth, centerHeight);
                 }
             } else {
 //                batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
@@ -419,10 +424,19 @@ public class CatchActor extends Actor {
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_good.png")));
         texReArray.add(new TextureRegion((Texture) assetManager.get("catch_miss.png")));
 
+        mScale = (float) width / (float) texReArray.get(0).getRegionWidth();
+        catchCenterWidth = width * 0.4f;
+        catchCenterHeight = width * 0.4f;
+
         successTexRe = new ArrayList<>();
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_center.png")));
         successTexRe.add(new TextureRegion((Texture) assetManager.get("cover.png")));
+
+        titleWidth = width * 0.839f;
+        titleHeight = height * 0.117f;
+        centerWidth = successTexRe.get(1).getRegionWidth() * mScale;
+        centerHeight = successTexRe.get(1).getRegionHeight() * mScale;
 
         openTexRe = new ArrayList();
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_bg.png")));

@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Quaternion;
@@ -139,14 +138,14 @@ public abstract class MyScreen implements Screen {
 
         camera = new MagicCamera(67f, width, height);
         camera.translate(0, 0, 0);
-        camera.lookAt(7, 0, 7);
+        camera.lookAt(12, 0, 12);
         camera.far = 500.0f;
         camera.near = 1f;
 
 
         originalMaterial = new Material();
 //        originalMaterial.set(new ColorAttribute(ColorAttribute.createDiffuse(Color.YELLOW)));
-        originalMaterial.set(TextureAttribute.createDiffuse(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createAmbient(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createEmissive(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))));
+//        originalMaterial.set(TextureAttribute.createDiffuse(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createAmbient(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))), TextureAttribute.createEmissive(new TextureRegion(new Texture(Gdx.files.internal("tiger/laohu.png")))));
 //        camController = new CameraInputController(camera);
     }
 
@@ -165,13 +164,22 @@ public abstract class MyScreen implements Screen {
         texture.add(new TextureRegion(game.asset.get("aim_success.png", Texture.class)));
         mTextWidthRadiu = texture.get(2).getRegionWidth() * 0.495f / 2;
 
+//        Model model = game.asset.get("tiger/laohu-pao.g3dj", Model.class);
+//        NodePart part1 = model.nodes.get(0).parts.get(0);
+//        NodePart part2 = new NodePart(part1.meshPart, new Material());
+//        model.nodes.get(0).parts.add(part2);
+//        part1.material.set(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("tiger/laohu.tga"))));
+//        part2.material.set(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("tiger/laohu.tga"))));
         GameObject shipInstanceHuanHu = new GameObject(game.asset.get("tiger/laohu-huanhu.g3dj", Model.class));
         GameObject shipInstancePao = new GameObject(game.asset.get("tiger/laohu-pao.g3dj", Model.class));
         GameObject shipInstanceZhuaQu = new GameObject(game.asset.get("tiger/laohu-zhuaqu.g3dj", Model.class));
 //        GameObject shipInstanceKnight = new GameObject(game.asset.get("tiger/knight.g3dj", Model.class));
-        shipInstancePao.transform.setToTranslation(-7, 0, 7);
+        shipInstancePao.transform.setToTranslation(-12, 0, 12);
 //        shipInstanceKnight.transform.setToTranslation(-8, 0, 8);
-
+        shipInstancePao.materials.get(0).clear();
+        shipInstancePao.materials.get(0).set(ColorAttribute.createDiffuse(Color.RED));
+        shipInstanceHuanHu.materials.get(0).clear();
+        shipInstanceHuanHu.materials.get(0).set(ColorAttribute.createDiffuse(Color.RED));
         //        Take 001
         animationController2 = new AnimationController(shipInstanceHuanHu);
         animationController2.setAnimation("Take 001", -1);
@@ -234,7 +242,8 @@ public abstract class MyScreen implements Screen {
     /**
      * 平移渐变动画
      */
-    public void translateAnimation() {
+    public void
+    translateAnimation() {
         if (time < durations) {
             float renderTime = Gdx.graphics.getDeltaTime();
             float scollY = (now.y - old.y) * renderTime / durations;
@@ -326,8 +335,8 @@ public abstract class MyScreen implements Screen {
     public void setDurations(int time) {
         if (isStart) {
             Random random = new Random();
-            int i = random.nextInt(6) - 3;
-            int j = random.nextInt(6) - 3;
+            int i = random.nextInt(10) - 5;
+            int j = random.nextInt(10) - 5;
             float offsetX = position.x + i;
             float offsetY = position.y;
             float offsetZ = position.z + j;
@@ -471,7 +480,7 @@ public abstract class MyScreen implements Screen {
             modelBatch.end();
             //线性移动
             if (isTranslate && modelNumber != ZUO) {
-                setDurations(2);
+                setDurations(4);
                 translateAnimation();
             }
 
@@ -480,7 +489,7 @@ public abstract class MyScreen implements Screen {
             /**
              * 添加射线
              */
-            if (isRay && number <= 11) {
+            if (isRay && number <= 12) {
                 Ray ray = camera.getPickRay(width / 2, height / 2);
                 final GameObject instance = object;
                 instance.transform.getTranslation(position);
@@ -494,7 +503,7 @@ public abstract class MyScreen implements Screen {
                         mTao = new Random().nextInt(10);
                         addDetal = 0;
                     }
-                    if (mTao < 3) {
+                    if (mTao < 1) {
                         setTranslate(true);
                         setModelNumber(PAO);
                     } else {
@@ -530,7 +539,7 @@ public abstract class MyScreen implements Screen {
             if (number == ZUO) {
                 Vector3 zuoVector3 = camera.unproject(new Vector3(width / 2, height / 2, 0));
                 Gdx.app.error("zuo", "zuoVector3.x  " + zuoVector3.x + "   zuoVector3.y  " + zuoVector3.y + "  zuoVector3.z " + zuoVector3.z);
-                instances.get(number).transform.setToTranslation(zuoVector3.x * 10, zuoVector3.y, zuoVector3.z * 10);
+                instances.get(number).transform.setToTranslation(zuoVector3.x * 15, zuoVector3.y, zuoVector3.z * 15);
             } else
                 instances.get(number).transform.setToTranslation(translate.x, translate.y, translate.z);
             getModelAngle();

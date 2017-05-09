@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.rtmap.game.interfaces.BeedOnClickListener;
 import com.rtmap.game.interfaces.CatchOnClickListener;
 
 /**
@@ -31,6 +30,10 @@ public class CatActor extends Actor {
     //控制点击次数
     private boolean isCatchFirst = true;
     private boolean isOpenFirst = false;
+    private TextureRegion mRegionBg;
+    private float mScale;
+    private float mRealWidth;
+    private float mRealHeight;
 
     public CatActor(AssetManager assetManager) {
         super();
@@ -40,14 +43,16 @@ public class CatActor extends Actor {
     }
 
     private void initResources() {
-
+        mRegionBg = new TextureRegion((Texture) assetManager.get("catch_bg.png"));
         normal = new TextureRegion((Texture) assetManager.get("catch_button_normal.png"));
         press = new TextureRegion((Texture) assetManager.get("catch_button_press.png"));
         openNormal = new TextureRegion((Texture) assetManager.get("success_open_normal.png"));
         openPress = new TextureRegion((Texture) assetManager.get("success_open_press.png"));
-
-        setPosition(width / 2 - normal.getRegionWidth() / 2, height * 0.12f);
-        setSize(normal.getRegionWidth(), normal.getRegionHeight());
+//        mScale = (float) width / mRegionBg.getRegionWidth();
+        mRealWidth = width * 0.36f;
+        mRealHeight = width * 0.247f;
+        setPosition(width / 2 - mRealWidth / 2, height * 0.12f);
+        setSize(mRealWidth, mRealHeight);
     }
 
     /**
@@ -79,12 +84,6 @@ public class CatActor extends Actor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                isDown = false;
                 if (catchOnClickListener != null) {
                     if (isCatch && isCatchFirst) {
                         isCatchFirst = false;
@@ -94,6 +93,13 @@ public class CatActor extends Actor {
                         catchOnClickListener.onSuccessClick();
                     }
                 }
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isDown = false;
+
             }
         };
         addListener(listener);
@@ -115,14 +121,14 @@ public class CatActor extends Actor {
         if (isShow) {
             if (!isDown) {
                 if (isCatch && press != null)
-                    batch.draw(press, width / 2 - press.getRegionWidth() / 2, height * 0.12f, press.getRegionWidth(), press.getRegionHeight());
+                    batch.draw(press, width / 2 - mRealWidth / 2, height * 0.12f, mRealWidth, mRealHeight);
                 else if (openNormal != null)
-                    batch.draw(openNormal, width / 2 - press.getRegionWidth() / 2, height * 0.12f, press.getRegionWidth(), press.getRegionHeight());
+                    batch.draw(openNormal, width / 2 - mRealWidth / 2, height * 0.12f, mRealWidth, mRealHeight);
             } else {
                 if (isCatch && normal != null)
-                    batch.draw(normal, width / 2 - normal.getRegionWidth() / 2, height * 0.12f, normal.getRegionWidth(), normal.getRegionHeight());
+                    batch.draw(normal, width / 2 - mRealWidth / 2, height * 0.12f, mRealWidth, mRealHeight);
                 else if (openPress != null)
-                    batch.draw(openPress, width / 2 - normal.getRegionWidth() / 2, height * 0.12f, normal.getRegionWidth(), normal.getRegionHeight());
+                    batch.draw(openPress, width / 2 - mRealWidth / 2, height * 0.12f, mRealWidth, mRealHeight);
             }
         }
     }
@@ -143,5 +149,8 @@ public class CatActor extends Actor {
             openNormal.getTexture().dispose();
         if (openPress != null)
             openPress.getTexture().dispose();
+        if (mRegionBg != null) {
+            mRegionBg.getTexture().dispose();
+        }
     }
 }

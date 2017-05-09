@@ -71,14 +71,19 @@ public class AimScreen extends MyScreen {
             backActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
-                    nums++;
-                    if (nums > 2) {
-                        nums = 0;
+                    if (mGame != null) {
+                        mGame.asset.clear();
+                        mGame.stopCamera();
+                        mGame.showMainScreen();
                     }
-                    setModelNumber(nums);
-//                    Gdx.app.error("gdx", "退出");
-                    if (mGame != null && nums == 2)
-                        mGame.showCatchScreen();
+//                    nums++;
+//                    if (nums > 2) {
+//                        nums = 0;
+//                    }
+//                    setModelNumber(nums);
+////                    Gdx.app.error("gdx", "退出");
+//                    if (mGame != null && nums == 2)
+//                        mGame.showCatchScreen();
                 }
             });
             beedActor.setListener(new BeedOnClickListener() {

@@ -65,18 +65,12 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         // ...and start previewing. From now on, the camera keeps pushing
         // preview
         // images to the surface.
-
         if (mCameraSurface != null) {
             mCameraSurface.getCamera().startPreview();
         }
         if (mCamera != null)
             mCamera.onResume();
 
-//        setFilter();
-
-//        if (show) {
-//            mCameraSurface.setVisibility(View.INVISIBLE);
-//        }
     }
 
     @Override
@@ -165,7 +159,15 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     @Override
     public synchronized void stoPreviewAsync() {
         if (mCameraSurface != null && mCameraSurface.getCamera() != null) {
+            mCameraSurface.getCamera().setPreviewCallback(null);
             mCameraSurface.getCamera().stopPreview();
+            if(mGPUImage!=null){
+//                try {
+//                    mGPUImage.setImage(BitmapFactory.decodeResource(androidLauncher.getAssets().open("beed_bg.png"),0));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
         }
     }
 

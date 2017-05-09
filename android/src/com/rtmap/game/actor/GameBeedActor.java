@@ -1,24 +1,14 @@
 package com.rtmap.game.actor;
 
+import android.opengl.GLES20;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.utils.Align;
-import com.rtmap.game.interfaces.BeedOnClickListener;
-import com.rtmap.game.model.Result;
-import com.rtmap.game.text.LazyBitmapFont;
-import com.rtmap.game.util.NetUtil;
-import com.rtmap.game.util.ScreenUtil;
-import com.rtmap.game.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +24,12 @@ public class GameBeedActor extends Actor {
     private float scale = 1;
 
 
-
     public GameBeedActor(AssetManager assetManager) {
         super();
         this.assetManager = assetManager;
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         initResources();
-
-
     }
 
     private void initResources() {
@@ -64,7 +51,7 @@ public class GameBeedActor extends Actor {
         if (!isVisible()) {
             return;
         }
-
+        GLES20.glClearColor(0, 0, 0, 1f);
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         if (beedList.size() <= 0) return;

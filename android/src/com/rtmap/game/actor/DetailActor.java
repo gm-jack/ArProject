@@ -45,6 +45,7 @@ public class DetailActor extends Actor {
     private float bgH;
     private float bgW;
     private float headWidth = 0;
+    private boolean isShow = false;
 
     public DetailActor(AssetManager assetManager) {
         super();
@@ -78,15 +79,19 @@ public class DetailActor extends Actor {
         addListener(listener);
     }
 
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        if (!isVisible()) {
+        if (!isVisible() && isShow) {
             return;
         }
+        Gdx.gl20.glClearColor(0, 0, 0, 1f);
         Color color = getColor();
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        Gdx.gl20.glClearColor(0, 0, 0, 0.5f);
+        batch.setColor(color.r, color.g, color.b, 1f);
         if (beedList.size() < 0)
             return;
         if (isOpen) {
@@ -201,7 +206,7 @@ public class DetailActor extends Actor {
                                     // 把字节数组加载为 Pixmap
                                     Pixmap pixmap = new Pixmap(result, 0, result.length);
                                     // 把 pixmap 加载为纹理
-                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, (int)(headWidth / 2), (int) headWidth, (int) headWidth));
+                                    texture = new Texture(PixmapUtil.createRoundedPixmap(pixmap, (int) (headWidth / 2), (int) headWidth, (int) headWidth));
                                     // pixmap 不再需要使用到, 释放内存占用
                                     pixmap.dispose();
                                 }

@@ -112,6 +112,7 @@ public class CatchScreen extends MyScreen {
                     Gdx.app.error("gdx", "onFirst");
                     SPUtil.put("first_catch", false);
                     coverActor.setIsFirst(true);
+                    setlistener();
                 }
 
                 @Override
@@ -188,7 +189,8 @@ public class CatchScreen extends MyScreen {
             backActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
-
+                    if (mGame != null)
+                        mGame.showAimScreen(true);
                 }
             });
         if (beedActor != null)

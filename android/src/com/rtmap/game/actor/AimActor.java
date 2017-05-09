@@ -55,7 +55,7 @@ public class AimActor extends Actor {
     //蓝圈半径变化值
     private float changeRadiu = 0;
     private float findRadiu = 0;
-    private int centerWidth;
+    private float centerWidth;
     //是否开启篮圈变化
     private boolean isStartAnimation = false;
 
@@ -79,6 +79,8 @@ public class AimActor extends Actor {
     private float findAnim = 0;
     private boolean isBig = true;
     private int findNum = 10;
+    private float aimWidth;
+    private float progreeWidth;
 
     public AimActor(AssetManager assetManager) {
         super();
@@ -152,7 +154,7 @@ public class AimActor extends Actor {
             } else if (findRadiu > centerWidth / 2) {
                 findRadiu -= centerWidth / 2 / findNum;
             } else {
-                batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
+                batch.draw(findReArray.get(0), width / 2 - centerWidth / 2, height / 2 - centerWidth / 2, centerWidth, centerWidth);
             }
         } else {
             batch.draw(texReArray.get(2), 0, height - topHeight, width, topHeight);
@@ -160,8 +162,8 @@ public class AimActor extends Actor {
             batch.draw(texReArray.get(4), width - rightWidth, height / 2 - rightHeight / 2, rightWidth, rightHeight);
             batch.draw(texReArray.get(5), width / 2 - bottomWidth / 2, 0, bottomWidth, bottomHeight);
             if (isFind) {
-                int aimWidth = width / 2 - texReArray.get(1).getRegionWidth() / 2;
-                int aimHeight = height / 2 - texReArray.get(1).getRegionHeight() / 2;
+                float aimWidths = width / 2 - aimWidth / 2;
+                float aimHeights = height / 2 - aimWidth / 2;
 
                 if (STATE == STATE_SUCCESS) {
                     if (number == maxNumber) {
@@ -169,28 +171,28 @@ public class AimActor extends Actor {
                             aimListener.aimSuccess();
                         }
                     }
-                    batch.draw(texReArray.get(0), aimWidth, aimHeight, texReArray.get(0).getRegionWidth(), texReArray.get(0).getRegionHeight());
+                    batch.draw(texReArray.get(0), aimWidths, aimHeights, aimWidth, aimWidth);
                     for (int i = 0; i < number; i++) {
 //                    if (delta < 0.5f && (number - 1) == i) {
 //                        batch.draw(mKeyFrames[2], aimWidth, aimHeight, mKeyFrames[2].getRegionWidth() / 2, mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
 //                    } else {
-                        batch.draw(mKeyFrames[0], aimWidth, aimHeight, mKeyFrames[0].getRegionWidth() / 2, mKeyFrames[0].getRegionHeight() / 2, mKeyFrames[0].getRegionWidth(), mKeyFrames[0].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[0], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
 //                    }
                     }
                     if (delta > 0.5f) {
                         delta = 0;
                     }
                 } else if (STATE == STATE_FAIL) {
-                    batch.draw(texReArray.get(1), aimWidth, aimHeight, texReArray.get(1).getRegionWidth(), texReArray.get(1).getRegionHeight());
+                    batch.draw(texReArray.get(1), aimWidths, aimHeights, aimWidth, aimWidth);
                     for (int i = 0; i < number; i++) {
-                        batch.draw(mKeyFrames[1], aimWidth, aimHeight, mKeyFrames[1].getRegionWidth() / 2, mKeyFrames[1].getRegionHeight() / 2, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight(), getScaleX(), getScaleY(), degree - angle * i);
+                        batch.draw(mKeyFrames[1], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
                     }
                     if (delta > 0.5f) {
                         delta = 0;
                     }
                 }
             } else {
-                batch.draw(findReArray.get(0), width / 2 - findReArray.get(0).getRegionWidth() / 2, height / 2 - findReArray.get(0).getRegionHeight() / 2, findReArray.get(0).getRegionWidth(), findReArray.get(0).getRegionHeight());
+                batch.draw(findReArray.get(0), width / 2 - centerWidth / 2, height / 2 - centerWidth / 2, centerWidth, centerWidth);
 
                 if (isStartAnimation) {
                     batch.draw(findReArray.get(4), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
@@ -278,6 +280,7 @@ public class AimActor extends Actor {
         texReArray.add(new TextureRegion((Texture) assetManager.get("anim_bg_bottom.png")));
 
         scale = (float) width / texReArray.get(2).getRegionWidth();
+        aimWidth = texReArray.get(0).getRegionHeight() * scale;
         topHeight = texReArray.get(2).getRegionHeight() * scale;
         leftWidth = texReArray.get(3).getRegionWidth() * scale;
         leftHeight = texReArray.get(3).getRegionHeight() * scale;
@@ -286,17 +289,19 @@ public class AimActor extends Actor {
         bottomWidth = texReArray.get(5).getRegionWidth() * scale;
         bottomHeight = texReArray.get(5).getRegionHeight() * scale;
 
+
         findReArray = new ArrayList<>();
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_center.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_tip.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_text.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("cover.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_circle.png")));
-
-        centerWidth = findReArray.get(0).getRegionWidth();
+        centerWidth = findReArray.get(0).getRegionWidth() * scale;
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("aim_blue.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("aim_red.png"));
+
+        progreeWidth = mKeyFrames[0].getRegionWidth() * scale;
     }
 
     @Override
