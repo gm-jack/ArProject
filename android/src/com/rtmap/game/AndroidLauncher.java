@@ -25,13 +25,19 @@ public class AndroidLauncher extends AndroidApplication {
     private static AndroidLauncher context;
     private static SoftReference<Context> contexts;
     private AssetManager asset;
+    private String mPhone = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         context = this;
         contexts = new SoftReference<Context>(context);
+
+//        mPhone = getIntent().getStringExtra("phone");
+//        if (mPhone == null)
+//            mPhone = "";
+//        SPUtil.put(this, Contacts.PHONE, mPhone);
+
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.a = 8;
         config.r = 8;
@@ -83,22 +89,22 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     protected void onPause() {
-        if (androidDeviceCameraController != null) {
-            androidDeviceCameraController.stopPreviewAsync();
-        }
+//        if (androidDeviceCameraController != null) {
+//            androidDeviceCameraController.stopPreviewAsync();
+//        }
         super.onPause();
 
     }
 
     @Override
     protected void onStop() {
-        if (asset != null)
-            asset.clear();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        if (asset != null)
+            asset.clear();
         if (androidDeviceCameraController != null) {
             androidDeviceCameraController.stopPreviewAsync();
         }

@@ -21,6 +21,7 @@ import android.content.res.AssetManager;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -76,12 +77,16 @@ public class GPUImageFilter {
     //    private float[] mvpMatrix = new float[16];
     private int mCircleProgram;
     private float[] projectionMatrix = new float[16];
-    private float[] projectionMatrixs = new float[]{1, 0, 0, 0,
+    private float[] projectionMatrixs = new float[]{
+            1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1};
     private int mMatrixHandle;
     private Context mContext;
+    private int mChangeH;
+    private float mMScaleW;
+    private float mMScaleH;
 
     public GPUImageFilter() {
         this(NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
@@ -161,10 +166,13 @@ public class GPUImageFilter {
         if (HuaweiUtil.isHUAWEI() && mContext != null) {
             aspectRatio = (float) width / (float) (HuaweiUtil.getDpi(mContext));
         }
+        Log.e("matirx", "aspectRatio  = " + aspectRatio);
 //        Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
         Matrix.orthoM(projectionMatrix, 0, -1f * aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
         mOutputWidth = width;
         mOutputHeight = height;
+        mMScaleW = mOutputWidth / 50;
+        mMScaleH = mOutputHeight / 50;
     }
 
     public void onDraw(final int textureId, final FloatBuffer cubeBuffer,
@@ -177,9 +185,9 @@ public class GPUImageFilter {
         GLES20.glClear(GLES20.GL_STENCIL_BUFFER_BIT);
 
         GLES20.glUseProgram(mGLProgId);
+//        //启用剪裁测试
+//        GLES20.glEnable(GL10.GL_SCISSOR_TEST);
 //        if (isCat) {
-//            //启用剪裁测试
-//            GLES20.glEnable(GL10.GL_SCISSOR_TEST);
 //            if (mChangeW < mOutputWidth / 2 && mChangeH < mOutputHeight / 2) {
 //                //设置区域
 //                GLES20.glScissor((int) (mOutputWidth / 2 - mChangeW), (int) (mOutputHeight / 2 - mChangeH), (int) mChangeW * 2, (int) mChangeH * 2);
@@ -192,7 +200,7 @@ public class GPUImageFilter {
 //            }
 //        }
         if (isCat)
-            if (mChangeW < 0.85) {
+            if (mChangeW < 0.9) {
                 GLES20.glUniform1f(mMatrixHandle, mChangeW);
                 mChangeW += 0.02;
                 GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, projectionMatrix, 0);
@@ -396,6 +404,7 @@ public class GPUImageFilter {
         this.listener = listener;
         if (cat) {
             mChangeW = 0;
+            mChangeH = 0;
         }
     }
 }

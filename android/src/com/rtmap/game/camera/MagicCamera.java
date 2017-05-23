@@ -27,7 +27,7 @@ public class MagicCamera extends PerspectiveCamera {
     Vector3 oldVector3 = new Vector3();
     Vector3 directionVector3 = new Vector3();
 
-    private void updateCamera() {
+    public void updateCamera() {
 
         Matrix4 mat4 = new Matrix4();
         Gdx.input.getRotationMatrix(mat4.val);
@@ -39,11 +39,11 @@ public class MagicCamera extends PerspectiveCamera {
         if (directionVector3 == null) directionVector3 = new Vector3();
         directionVector3.lerp(dVector3, 5 * Math.min(0.05f, Gdx.graphics.getDeltaTime()));
         direction.set(directionVector3);
+        update();
     }
 
     @Override
     public void update() {
-        updateCamera();
         super.update();
     }
 

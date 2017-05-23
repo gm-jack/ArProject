@@ -43,3 +43,6 @@
    boolean reportFixture(long);
    float   reportRayFixture(long, float, float, float, float, float);
 }
+
+#  native-font
+-keep class net.mwplay.nativefont.** { *; }

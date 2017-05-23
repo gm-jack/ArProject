@@ -13,15 +13,13 @@ import com.rtmap.game.camera.AndroidDeviceCameraController;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
-
 /**
  * Created by yxy on 2017/2/20.
  */
 public class LoadingActor extends Actor {
     private final int num = 100;
     private final int nums = 5;
-    private final int numbers = 10;
+    private final int numbers = 6;
     private final int number = 10;
     private final int radius;
     private final AndroidDeviceCameraController cameraController;
@@ -105,6 +103,27 @@ public class LoadingActor extends Actor {
                     Gdx.app.error("load", "changeInRadiu  " + changeInRadiu + "  (startX / 2 + startX / 4)  " + (startX + startX / 2));
                     batch.draw(texReArray.get(2), startX - changeInRadiu, startY - changeInRadiu, changeInRadiu * 2, changeInRadiu * 2);
                     changeInRadiu += mChangeIn;
+                }else {
+                    isLodingShow = false;
+                    isEndAnimation = false;
+                    if (isAnimationFirst) {
+                        isAnimationFirst = false;
+                        Gdx.app.error("camera", "render()");
+                        cameraController.setFilter();
+//                    cameraController.setCat(true, new AnimEndListener() {
+//                        @Override
+//                        public void animEnd() {
+//
+//                        }
+//                    });
+                    }
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mGame != null)
+                                mGame.showAimScreen(true);
+                        }
+                    });
                 }
 
                 batch.draw(texReArray.get(1), startX - changeCenterRadiu, startY - changeCenterRadiu, changeCenterRadiu * 2, changeCenterRadiu * 2);
@@ -115,25 +134,6 @@ public class LoadingActor extends Actor {
                     changeCenterRadiu += mCenterChange;
                 } else if (changeCenterRadiu > 0) {
                     changeCenterRadiu -= mCenterChange;
-                } else {
-                    isLodingShow = false;
-                    isEndAnimation = false;
-                }
-                if (isAnimationFirst) {
-                    isAnimationFirst = false;
-                    Gdx.app.error("camera", "render()");
-                    cameraController.setCat(true, new AnimEndListener() {
-                        @Override
-                        public void animEnd() {
-                            Gdx.app.postRunnable(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mGame != null)
-                                        mGame.showAimScreen(false);
-                                }
-                            });
-                        }
-                    });
                 }
             } else if (isAnimation) {
                 batch.draw(texReArray.get(3), startX - changeOutRadiu, startY - changeOutRadiu, changeOutRadiu * 2, changeOutRadiu * 2);
@@ -197,8 +197,8 @@ public class LoadingActor extends Actor {
         mCenterChange = texReArray.get(1).getRegionHeight() / 2 / number;
         changeOutRadiu = texReArray.get(3).getRegionHeight() * 2;
         changeInRadiu = texReArray.get(2).getRegionHeight() * 2;
-        mChangeOut = texReArray.get(3).getRegionHeight() / 20;
-        mChangeIn = texReArray.get(2).getRegionHeight() / 20;
+        mChangeOut = texReArray.get(3).getRegionHeight() / 10;
+        mChangeIn = texReArray.get(2).getRegionHeight() / 10;
     }
 
     public void setIsEndAnimation(boolean isEndAnimation) {

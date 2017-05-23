@@ -3572,21 +3572,27 @@
 	], 
 	"materials": [
 		{
-			"id": "Material #0",
-			"ambient": [ 0.000000,  0.000000,  0.000000],
-			"diffuse": [ 0.588000,  0.588000,  0.588000],
+			"id": "Material #0", 
+			"ambient": [ 0.588000,  0.588000,  0.588000], 
+			"diffuse": [ 0.588000,  0.588000,  0.588000], 
 			"emissive": [ 0.588000,  0.588000,  0.588000],
-			"opacity":  0.500000,
-			"shininess":  2.000000,
+			"opacity":  0.800000,
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"shininess":  2.000000, 
 			"textures": [
 				{
-					"id": "Map #5",
-					"filename": "laohu.tga",
+					"id": "Map #5", 
+					"filename": "laohu.tga", 
 					"type": "DIFFUSE"
-				}
+				},
+				{
+                    "id": "Map #5",
+                    "filename": "laohu.tga",
+                    "type": "EMISSIVE"
+                }
 			]
 		}
-	],
+	], 
 	"nodes": [
 		{
 			"id": "Object002", 

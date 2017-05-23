@@ -22,7 +22,9 @@ import com.rtmap.game.actor.MainActor;
 import com.rtmap.game.actor.StartActor;
 import com.rtmap.game.interfaces.StartOnClickListener;
 import com.rtmap.game.stage.MainStage;
-import com.rtmap.game.text.LazyBitmapFont;
+import com.rtmap.game.text.NativeFont;
+import com.rtmap.game.text.NativeFontPaint;
+import com.rtmap.game.text.NativeTextField;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.SPUtil;
 import com.rtmap.game.util.ScreenUtil;
@@ -32,9 +34,8 @@ import com.rtmap.game.util.ScreenUtil;
  */
 public class MainScreen extends MyScreen {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private Texture bgTexture;
     private Texture cursorTexture;
-    private LazyBitmapFont bitmapFont;
+    private Texture bgTexture;
     private StartActor startActor;
     private MyGame mGame;
     private AndroidLauncher androidLauncher;
@@ -42,7 +43,8 @@ public class MainScreen extends MyScreen {
     private Group group;
     private MainActor mainActor;
     private AssetManager assetManager;
-    private final TextField mTextField;
+    private NativeFont mFont;
+    private final NativeTextField mNativeLabel1;
 
     public MainScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         this.mGame = game;
@@ -62,13 +64,14 @@ public class MainScreen extends MyScreen {
         startActor = new StartActor(assetManager);
         group.addActor(startActor);
 
+        mainStage.addActor(group);
+
         bgTexture = createBackgroundTexture();
         cursorTexture = createCursorTexture();
-        // 为了方便演示, 这里直接使用 gdx.jar 中自带的字体文件创建位图字体（只要在 BitmapFont 中包含有的字符才能够被输入）
-        bitmapFont = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
+        mFont = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12)));
 
         /*
-         * 第 2 步: 创建 TextFieldStyle
+         * 创建 TextFieldStyle
          */
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
 
@@ -79,16 +82,14 @@ public class MainScreen extends MyScreen {
         style.cursor = new TextureRegionDrawable(new TextureRegion(cursorTexture));
 
         // 设置文本框显示文本的字体来源
-        style.font = bitmapFont;
+        style.font = mFont;
 
         // 设置文本框字体颜色为白色
         style.fontColor = new Color(1, 1, 1, 1);
-        mTextField = new TextField((String) SPUtil.get(Contacts.PHONE, "输入手机号"), style);
-        mTextField.setSize(400, 100);
-        mTextField.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f);
-        mTextField.setAlignment(Align.center);
-
-        mainStage.addActor(group);
+        mNativeLabel1 = new NativeTextField("输入手机号", style);
+        mNativeLabel1.setSize(400, 100);
+        mNativeLabel1.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() * 0.9f);
+        mNativeLabel1.setAlignment(Align.center);
     }
 
     /**
@@ -128,14 +129,14 @@ public class MainScreen extends MyScreen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(mainStage);
-        group.addActor(mTextField);
+        group.addActor(mNativeLabel1);
         startActor.setListener(new StartOnClickListener() {
             @Override
             public void onClick() {
-                if (TextUtils.isEmpty(mTextField.getText())) {
+                if (TextUtils.isEmpty(mNativeLabel1.getText())) {
                     return;
                 } else {
-                    String trim = mTextField.getText().trim();
+                    String trim = mNativeLabel1.getText().trim();
                     SPUtil.put(Contacts.PHONE, trim);
                     Contacts.LIST_NET += trim;
                     Contacts.WIN_NET += trim;
@@ -187,16 +188,8 @@ public class MainScreen extends MyScreen {
         assetManager.unload("m_bg.png");
         assetManager.unload("m_rule.png");
         assetManager.unload("m_start.png");
-        // 场景被销毁时释放资源
-        if (bgTexture != null) {
-            bgTexture.dispose();
-        }
-        if (cursorTexture != null) {
-            cursorTexture.dispose();
-        }
-        if (bitmapFont != null) {
-            bitmapFont.dispose();
-        }
+        if (mFont != null)
+            mFont.dispose();
         if (mainStage != null) {
             mainStage.dispose();
         }

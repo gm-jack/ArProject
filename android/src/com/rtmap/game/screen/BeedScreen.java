@@ -1,6 +1,8 @@
 package com.rtmap.game.screen;
 
 
+import android.text.TextUtils;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
@@ -31,6 +33,7 @@ import com.rtmap.game.scrollpane.BeedScrollPane;
 import com.rtmap.game.stage.BeedStage;
 import com.rtmap.game.util.Contacts;
 import com.rtmap.game.util.NetUtil;
+import com.rtmap.game.util.SPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -221,7 +224,11 @@ public class BeedScreen extends MyScreen {
     }
 
     private void getData() {
-        NetUtil.getInstance().get(Contacts.LIST_NET, new Net.HttpResponseListener() {
+        String phoneNumber = (String) SPUtil.get(Contacts.PHONE, "");
+        if (TextUtils.isEmpty(phoneNumber)) {
+            return;
+        }
+        NetUtil.getInstance().get(Contacts.LIST_NET + phoneNumber, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String resultAsString = httpResponse.getResultAsString();
@@ -241,6 +248,7 @@ public class BeedScreen extends MyScreen {
 
             @Override
             public void cancelled() {
+                Gdx.app.error("http", "cancelled()");
             }
         });
     }

@@ -58,6 +58,7 @@ public class LoadingScreen extends MyScreen {
     }
 
     public void initAssets() {
+        mGame.asset.load("beed_open_bg.png", Texture.class);
         mGame.asset.load("find_bg.png", Texture.class);
         mGame.asset.load("aim_fail.png", Texture.class);
         mGame.asset.load("aim_success.png", Texture.class);
@@ -82,7 +83,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("catch_circle.png", Texture.class);
         mGame.asset.load("catch_good.png", Texture.class);
         mGame.asset.load("catch_miss.png", Texture.class);
-        mGame.asset.load("catch_fail.png", Texture.class);
         mGame.asset.load("catch_tip.png", Texture.class);
         mGame.asset.load("catch_tip_text.png", Texture.class);
         mGame.asset.load("success_title.png", Texture.class);
@@ -103,6 +103,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.load("tiger/laohu-zhuaqu.g3dj", Model.class);
         mGame.asset.load("tiger/laohu-huanhu.g3dj", Model.class);
         mGame.asset.load("tiger/laohu-pao.g3dj", Model.class);
+//        mGame.asset.load("feng/fengguang.g3dj", Model.class);
 //        mGame.asset.load("tiger/tiger.g3dj", Model.class);
 //        mGame.asset.load("tiger/knight.g3dj", Model.class);
     }
@@ -171,6 +172,7 @@ public class LoadingScreen extends MyScreen {
         assetManager.unload("loading_rotate.png");
         assetManager.unload("loading_tip.png");
         assetManager.unload("loading_wait.png");
+        mGame.asset.unload("beed_open_bg.png");
         mGame.asset.unload("find_bg.png");
         mGame.asset.unload("aim_fail.png");
         mGame.asset.unload("aim_success.png");
@@ -195,7 +197,6 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("catch_circle.png");
         mGame.asset.unload("catch_good.png");
         mGame.asset.unload("catch_miss.png");
-        mGame.asset.unload("catch_fail.png");
         mGame.asset.unload("catch_tip.png");
         mGame.asset.unload("catch_tip_text.png");
         mGame.asset.unload("success_title.png");
@@ -216,6 +217,7 @@ public class LoadingScreen extends MyScreen {
         mGame.asset.unload("tiger/laohu-zhuaqu.g3dj");
         mGame.asset.unload("tiger/laohu-huanhu.g3dj");
         mGame.asset.unload("tiger/laohu-pao.g3dj");
+//        mGame.asset.unload("feng/fengguang.g3dj");
 //        mGame.asset.unload("tiger/knight.g3dj");
 //        mGame.asset.unload("tiger/tiger.g3dj");
     }

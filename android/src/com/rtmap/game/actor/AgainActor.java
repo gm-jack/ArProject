@@ -22,6 +22,7 @@ public class AgainActor extends Actor {
     private TextureRegion mRegion;
     private float normalWidth;
     private float normalHeight;
+    private boolean isFirst = true;
 
     public AgainActor(AssetManager assetManager) {
         super();
@@ -53,7 +54,8 @@ public class AgainActor extends Actor {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (againOnClickListener != null) {
+                if (againOnClickListener != null && isFirst) {
+                    isFirst = false;
                     againOnClickListener.againClick();
 //                    Gdx.app.exit();
                 }

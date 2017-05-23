@@ -69,9 +69,8 @@ public class BackActor extends Actor {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isDown = false;
-                if (backOnClickListener != null) {
+                if (backOnClickListener != null && isVisible()) {
                     backOnClickListener.onClick();
-//                    Gdx.app.exit();
                 }
             }
 

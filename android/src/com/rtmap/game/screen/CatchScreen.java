@@ -1,6 +1,7 @@
 package com.rtmap.game.screen;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -60,7 +61,7 @@ public class CatchScreen extends MyScreen {
 
     public CatchScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
-
+        setUpdate(false);
         this.mGame = game;
         this.context = androidLauncher;
         //捕捉怪兽舞台
@@ -112,6 +113,7 @@ public class CatchScreen extends MyScreen {
                     Gdx.app.error("gdx", "onFirst");
                     SPUtil.put("first_catch", false);
                     coverActor.setIsFirst(true);
+                    catchActor.setIsStop(false);
                     setlistener();
                 }
 
@@ -122,6 +124,7 @@ public class CatchScreen extends MyScreen {
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
+
                             if (firstCatch) {
                                 SPUtil.put("first_catch", false);
                                 coverActor.setIsFirst(false);
@@ -163,6 +166,7 @@ public class CatchScreen extends MyScreen {
 
                 @Override
                 public void onTouched(int num) {
+                    Gdx.app.error("num", "num" + num);
                     if (num == 0) {
                         timer.schedule(new TimerTask() {
                             @Override
@@ -214,6 +218,8 @@ public class CatchScreen extends MyScreen {
                 @Override
                 public void onSuccessClick() {
                     Gdx.app.error("gdx", "onSuccessClick()");
+                    group3.removeActor(backActor);
+                    group3.removeActor(beedActor);
                     setResult();
                 }
             });
@@ -221,18 +227,16 @@ public class CatchScreen extends MyScreen {
             closeActor.setListener(new BackOnClickListener() {
                 @Override
                 public void onClick() {
-                    setRay(false);
                     if (mGame != null)
-                        mGame.showAimScreen(false);
+                        mGame.showAimScreen(true);
                 }
             });
         if (againActor != null)
             againActor.setListener(new AgainActor.AgainOnClickListener() {
                 @Override
                 public void againClick() {
-                    setRay(false);
                     if (mGame != null)
-                        mGame.showAimScreen(false);
+                        mGame.showAimScreen(true);
                 }
             });
     }
@@ -240,7 +244,12 @@ public class CatchScreen extends MyScreen {
     private void setResult() {
         catActor.removeListener();
         catActor.setIsShow(false);
-        NetUtil.getInstance().getConnection(Contacts.WIN_NET, new NetUtil.HttpResponse() {
+        String phoneNumber = (String) SPUtil.get(Contacts.PHONE, "");
+        if (TextUtils.isEmpty(phoneNumber)) {
+            fail();
+            return;
+        }
+        NetUtil.getInstance().getConnection(Contacts.WIN_NET + phoneNumber, new NetUtil.HttpResponse() {
             @Override
             public void responseString(String response) {
                 Gdx.app.error("http", "responseString  ==  " + response);
@@ -266,13 +275,17 @@ public class CatchScreen extends MyScreen {
 
             @Override
             public void responseFail() {
-                isWin = false;
-                catchActor.setIsWin(isWin);
-                catchActor.setIsOpen(true);
-                againActor.setIsShow(!isWin);
-                closeActor.setIsShow(true);
+                fail();
             }
         });
+    }
+
+    private void fail() {
+        isWin = false;
+        catchActor.setIsWin(isWin);
+        catchActor.setIsOpen(true);
+        againActor.setIsShow(!isWin);
+        closeActor.setIsShow(true);
     }
 
     @Override
@@ -289,6 +302,11 @@ public class CatchScreen extends MyScreen {
         catchStage.act();
         // 绘制舞台
         catchStage.draw();
+    }
+
+    @Override
+    public MyScreen getScreen() {
+        return this;
     }
 
     @Override
@@ -316,7 +334,7 @@ public class CatchScreen extends MyScreen {
                     group3.addActor(catActor);
                     initListener();
                 }
-            }, 1000);
+            }, 500);
         } else {
             initListener();
         }

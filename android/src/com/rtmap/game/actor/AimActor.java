@@ -81,6 +81,10 @@ public class AimActor extends Actor {
     private int findNum = 10;
     private float aimWidth;
     private float progreeWidth;
+    private float tipWidth;
+    private float tipHeight;
+    private float textWidth;
+    private float textHeight;
 
     public AimActor(AssetManager assetManager) {
         super();
@@ -161,12 +165,12 @@ public class AimActor extends Actor {
             batch.draw(texReArray.get(3), 0, height / 2 - leftHeight / 2, leftWidth, leftHeight);
             batch.draw(texReArray.get(4), width - rightWidth, height / 2 - rightHeight / 2, rightWidth, rightHeight);
             batch.draw(texReArray.get(5), width / 2 - bottomWidth / 2, 0, bottomWidth, bottomHeight);
+
             if (isFind) {
                 float aimWidths = width / 2 - aimWidth / 2;
                 float aimHeights = height / 2 - aimWidth / 2;
-
                 if (STATE == STATE_SUCCESS) {
-                    if (number == maxNumber) {
+                    if (number >= maxNumber) {
                         if (aimListener != null) {
                             aimListener.aimSuccess();
                         }
@@ -179,7 +183,7 @@ public class AimActor extends Actor {
                         batch.draw(mKeyFrames[0], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
 //                    }
                     }
-                    if (delta > 0.5f) {
+                    if (delta >= 0.5f) {
                         delta = 0;
                     }
                 } else if (STATE == STATE_FAIL) {
@@ -187,7 +191,7 @@ public class AimActor extends Actor {
                     for (int i = 0; i < number; i++) {
                         batch.draw(mKeyFrames[1], aimWidths, aimHeights, progreeWidth / 2, progreeWidth / 2, progreeWidth, progreeWidth, getScaleX(), getScaleY(), degree - angle * i);
                     }
-                    if (delta > 0.5f) {
+                    if (delta >= 0.5f) {
                         delta = 0;
                     }
                 }
@@ -208,8 +212,8 @@ public class AimActor extends Actor {
                 if (isTip) {
                     //绘制遮罩
                     batch.draw(findReArray.get(3), 0, 0, width, height);
-                    batch.draw(findReArray.get(1), width / 2 - findReArray.get(1).getRegionWidth() / 2, height / 2 - findReArray.get(1).getRegionHeight() / 2, findReArray.get(1).getRegionWidth(), findReArray.get(1).getRegionHeight());
-                    batch.draw(findReArray.get(2), width / 2 - findReArray.get(2).getRegionWidth() / 2, height / 2 - findReArray.get(2).getRegionHeight() / 2 + findReArray.get(2).getRegionHeight() / 5, findReArray.get(2).getRegionWidth(), findReArray.get(2).getRegionHeight());
+                    batch.draw(findReArray.get(1), width / 2 - tipWidth / 2, height / 2 - tipHeight / 2, tipWidth, tipHeight);
+                    batch.draw(findReArray.get(2), width / 2 - textWidth / 2, height / 2 - tipHeight / 2 + tipHeight / 5, textWidth, textHeight);
                 }
             }
         }
@@ -238,11 +242,15 @@ public class AimActor extends Actor {
 
     public void setIsFail(boolean isFail) {
         this.isFail = isFail;
-        if (isFail) {
+
+//        if (!isFail) {
+//            setIsFind(!isFail);
+//            number = maxNumber - 1;
+//            STATE = STATE_FAIL;
+//        } else {
             number = 0;
             STATE = STATE_NORMAL;
-            setIsFind(true);
-        }
+//        }
     }
 
     public void addNumber() {
@@ -258,13 +266,14 @@ public class AimActor extends Actor {
     }
 
     public void subNumber() {
+        STATE = STATE_FAIL;
         if (number == 0) {
             if (aimListener != null) {
                 aimListener.aimFail();
             }
             return;
         }
-        STATE = STATE_FAIL;
+
         delta += Gdx.graphics.getDeltaTime();
         if (number > 0 && delta > 0.5f)
             number--;
@@ -296,7 +305,12 @@ public class AimActor extends Actor {
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_text.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("cover.png")));
         findReArray.add(new TextureRegion((Texture) assetManager.get("find_circle.png")));
+
         centerWidth = findReArray.get(0).getRegionWidth() * scale;
+        tipWidth = findReArray.get(1).getRegionWidth() * scale;
+        tipHeight = findReArray.get(1).getRegionHeight() * scale;
+        textWidth = findReArray.get(2).getRegionWidth() * scale;
+        textHeight = findReArray.get(2).getRegionHeight() * scale;
 
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("aim_blue.png"));
         mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("aim_red.png"));

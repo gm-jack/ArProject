@@ -2,19 +2,18 @@ package com.rtmap.game.camera;
 
 import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
-import com.badlogic.gdx.Gdx;
 import com.rtmap.game.AndroidLauncher;
 import com.rtmap.game.interfaces.DeviceCameraControl;
 import com.rtmap.game.util.CameraHelper;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageGrayscaleFilter;
-import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
+
+//import jp.co.cyberagent.android.gpuimage.util.AnimEndListener;
 
 
 public class AndroidDeviceCameraController implements DeviceCameraControl,
@@ -26,7 +25,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     private GPUImage mGPUImage;
     private GLSurfaceView mGlSurfaceView;
     private FrameLayout mLayout;
-    private CameraSurface mCameraSurface;
+    //    private CameraSurface mCameraSurface;
     private FrameLayout.LayoutParams mGlParams;
     private boolean show = false;
 
@@ -48,11 +47,11 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mLayout.setLayoutParams(params);
 
-        mCameraSurface = new CameraSurface(androidLauncher);
+//        mCameraSurface = new CameraSurface(androidLauncher);
         mGlSurfaceView = new GLSurfaceView(androidLauncher);
 
         mLayout.addView(mGlSurfaceView);
-        mLayout.addView(mCameraSurface);
+//        mLayout.addView(mCameraSurface);
 
         androidLauncher.addContentView(mLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -65,12 +64,11 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         // ...and start previewing. From now on, the camera keeps pushing
         // preview
         // images to the surface.
-        if (mCameraSurface != null) {
-            mCameraSurface.getCamera().startPreview();
-        }
+//        if (mCameraSurface != null) {
+//            mCameraSurface.getCamera().startPreview();
+//        }
         if (mCamera != null)
             mCamera.onResume();
-
     }
 
     @Override
@@ -80,12 +78,12 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
             if (parentView instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) parentView;
                 viewGroup.removeView(mGlSurfaceView);
-                viewGroup.removeView(mCameraSurface);
+//                viewGroup.removeView(mCameraSurface);
             }
-            if (mCameraSurface.getCamera() != null) {
-                mCameraSurface.getCamera().stopPreview();
-            }
-            mGPUImage = null;
+//            if (mCameraSurface.getCamera() != null) {
+//                mCameraSurface.getCamera().stopPreview();
+//            }
+            mCamera.onPause();
             androidLauncher.restoreFixedSize();
         }
     }
@@ -135,7 +133,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
 
     @Override
     public boolean isReady() {
-        if (mCameraSurface != null && mCameraSurface.getCamera() != null) {
+        if (mGlSurfaceView != null) {
             return true;
         }
         return false;
@@ -145,29 +143,24 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
     public void onPictureTaken(byte[] data, Camera camera) {
     }
 
-    public void setCat(final boolean b, final AnimEndListener listener) {
-        androidLauncher.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mGlSurfaceView.setVisibility(View.VISIBLE);
-                Gdx.app.error("camera", "visible");
-            }
-        });
-        mGPUImage.setCat(b, listener);
-    }
+//    public void setCat(final boolean b, final AnimEndListener listener) {
+//        androidLauncher.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+////                mGlSurfaceView.setVisibility(View.VISIBLE);
+//                Gdx.app.error("camera", "visible");
+//            }
+//        });
+//        if (mGPUImage != null)
+//            mGPUImage.setCat(b, listener);
+//    }
 
     @Override
     public synchronized void stoPreviewAsync() {
-        if (mCameraSurface != null && mCameraSurface.getCamera() != null) {
-            mCameraSurface.getCamera().setPreviewCallback(null);
-            mCameraSurface.getCamera().stopPreview();
-            if(mGPUImage!=null){
-//                try {
-//                    mGPUImage.setImage(BitmapFactory.decodeResource(androidLauncher.getAssets().open("beed_bg.png"),0));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            }
+        if (mCamera != null ) {
+            mCamera.releaseCamera();
+//            mCameraSurface.getCamera().setPreviewCallback(null);
+//            mCameraSurface.getCamera().stopPreview();
         }
     }
 
@@ -191,22 +184,39 @@ public class AndroidDeviceCameraController implements DeviceCameraControl,
         }
 
         private void setUpCamera(final int id) {
-            mCameraInstance = mCameraSurface.getCamera();
+//            mCameraInstance = getCameraInstance(mCurrentCameraId);
+//            int orientation = mCameraHelper.getCameraDisplayOrientation(
+//                    androidLauncher, mCurrentCameraId);
+//            CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
+//            mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
+//            boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
+//            mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false);
+            mCameraInstance = getCameraInstance(id);
+            Camera.Parameters parameters = mCameraInstance.getParameters();
+            // TODO adjust by getting supportedPreviewSizes and then choosing
+            // the best one for screen size (best fill screen)
+            if (parameters.getSupportedFocusModes().contains(
+                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            }
+            mCameraInstance.setParameters(parameters);
+
             int orientation = mCameraHelper.getCameraDisplayOrientation(
                     androidLauncher, mCurrentCameraId);
             CameraHelper.CameraInfo2 cameraInfo = new CameraHelper.CameraInfo2();
             mCameraHelper.getCameraInfo(mCurrentCameraId, cameraInfo);
             boolean flipHorizontal = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT;
-            mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false, -1);
+            mGPUImage.setUpCamera(mCameraInstance, orientation, flipHorizontal, false);
         }
 
         /**
          * A safe way to get an instance of the Camera object.
+         * @param currentCameraId
          */
-        private Camera getCameraInstance(final int id) {
+        private Camera getCameraInstance(int currentCameraId) {
             Camera c = null;
             try {
-                c = mCameraHelper.openCamera(id);
+                c = mCameraHelper.openCamera(currentCameraId);
             } catch (Exception e) {
                 e.printStackTrace();
             }

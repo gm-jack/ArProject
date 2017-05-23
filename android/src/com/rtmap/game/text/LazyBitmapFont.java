@@ -18,7 +18,8 @@ import java.lang.reflect.Field;
  */
 public class LazyBitmapFont extends BitmapFont {
 
-    private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/SourceHanSansCN-Normal.otf"));
+
+    private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(""));
     private FreeTypeFontGenerator.FreeTypeBitmapFontData data;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private Array<LazyBitmapFont> fontArray = new Array<>();

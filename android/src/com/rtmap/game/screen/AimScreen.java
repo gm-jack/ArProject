@@ -22,6 +22,7 @@ import java.util.TimerTask;
  * Created by yxy on 2017/2/20.
  */
 public class AimScreen extends MyScreen {
+    private ScreenViewport mViewPort;
     private AndroidLauncher androidLauncher;
     private MyGame mGame;
 
@@ -39,8 +40,10 @@ public class AimScreen extends MyScreen {
 
     public AimScreen(MyGame game, AndroidLauncher androidLauncher, ScreenViewport viewport) {
         super(game);
+        setUpdate(true);
         this.mGame = game;
         this.androidLauncher = androidLauncher;
+        this.mViewPort = viewport;
         //瞄准怪兽舞台
         aimStage = new AimStage(viewport);
 
@@ -65,7 +68,21 @@ public class AimScreen extends MyScreen {
 
     private void initListener() {
         Gdx.input.setInputProcessor(aimStage);
+        aimActor.setAimListener(new AimListener() {
+            @Override
+            public void aimSuccess() {
+                setRay(false);
+                setTranslate(false);
+                setModelNumber(ZUO);
+                if (mGame != null)
+                    mGame.showCatchScreen();
+            }
 
+            @Override
+            public void aimFail() {
+                aimActor.setIsFind(false);
+            }
+        });
         if (isFirst) {
             isFirst = false;
             backActor.setListener(new BackOnClickListener() {
@@ -93,21 +110,6 @@ public class AimScreen extends MyScreen {
                     Gdx.app.error("gdx", "打开背包");
                     if (mGame != null)
                         mGame.showBeedScreen(AimScreen.this);
-                }
-            });
-            aimActor.setAimListener(new AimListener() {
-                @Override
-                public void aimSuccess() {
-                    setRay(false);
-                    setTranslate(false);
-                    setModelNumber(ZUO);
-                    if (mGame != null)
-                        mGame.showCatchScreen();
-                }
-
-                @Override
-                public void aimFail() {
-                    aimActor.setIsFind(false);
                 }
             });
             aimActor.setAnimationListener(new AnimationListener() {
@@ -159,6 +161,7 @@ public class AimScreen extends MyScreen {
     @Override
     public void addNumber() {
         super.addNumber();
+        Gdx.app.error("add", "addNumber()");
         if (aimActor != null)
             aimActor.addNumber();
     }
@@ -166,6 +169,7 @@ public class AimScreen extends MyScreen {
     @Override
     public void subNumber() {
         super.subNumber();
+        Gdx.app.error("add", "subNumber()");
         if (aimActor != null)
             aimActor.subNumber();
     }
@@ -181,6 +185,11 @@ public class AimScreen extends MyScreen {
         aimStage.draw();
     }
 
+    @Override
+    public MyScreen getScreen() {
+        return this;
+    }
+
     public void setIsFail(boolean fail) {
         this.fail = fail;
         if (aimActor != null)
@@ -192,9 +201,17 @@ public class AimScreen extends MyScreen {
         setIsLineShow(false);
         setStopCamera(false);
         setStopRerder(false);
+        setRay(false);
         initListener();
 //        isAnimation = (boolean) SPUtil.get(Contacts.ANIM_IS_ANIMATION, true);
         super.resize(width, height);
+    }
+
+    @Override
+    public boolean isAnimation() {
+        if (aimActor != null)
+            return aimActor.isAnimation();
+        return true;
     }
 
     @Override

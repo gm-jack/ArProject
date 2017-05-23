@@ -1,5 +1,3 @@
 # ninja log v5
-1	209	0	CMakeFiles/gpuimage-library.dir/jni/yuv-decoder.c.o	ee9f889c112f5f42
-210	370	0	../../../../libs/arm64-v8a/libgpuimage-library.so	c1448b219b6aa997
-2	167	0	CMakeFiles/gpuimage-library.dir/jni/yuv-decoder.c.o	ee9f889c112f5f42
-168	303	0	../../../../libs/arm64-v8a/libgpuimage-library.so	c1448b219b6aa997
+1	518	0	CMakeFiles/gpuimage-library.dir/jni/yuv-decoder.c.o	ee9f889c112f5f42
+519	1353	0	../../../../libs/arm64-v8a/libgpuimage-library.so	c1448b219b6aa997

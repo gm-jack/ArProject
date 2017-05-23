@@ -3,13 +3,10 @@ package com.rtmap.game.actor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Align;
-import com.rtmap.game.text.LazyBitmapFont;
 import com.rtmap.game.util.ScreenUtil;
 
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ public class MainActor extends Actor {
     private List<TextureRegion> texReArray = new ArrayList();
     private int width;
     private int height;
-    private LazyBitmapFont lazyBitmapFont1;
+//    private LazyBitmapFont lazyBitmapFont1;
     private float scale = 1;
 
 
@@ -55,9 +52,9 @@ public class MainActor extends Actor {
         batch.draw(texReArray.get(1), width * 0.103f, height * 0.09f, width * 0.802f, height * 0.587f);
 
         float fontWidth1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "星巴克5元优惠券");
-        if (lazyBitmapFont1 == null)
-            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), com.badlogic.gdx.graphics.Color.WHITE);
-        lazyBitmapFont1.draw(batch, "星巴克5元优惠券", width / 2 - fontWidth1 / 2, height * 0.552f, width * 0.7f, Align.left, true);
+//        if (lazyBitmapFont1 == null)
+//            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), com.badlogic.gdx.graphics.Color.WHITE);
+//        lazyBitmapFont1.draw(batch, "星巴克5元优惠券", width / 2 - fontWidth1 / 2, height * 0.552f, width * 0.7f, Align.left, true);
 
 //        float length2 = FontUtil.getLength(ScreenUtil.dp2px(12), "星巴克5元优惠券", 1);
 //        FontUtil.draw(batch, "星巴克5元优惠券", ScreenUtil.dp2px(12), Color.WHITE, width / 2 - length2 / 2, height * 0.552f, width * 0.7f);
@@ -77,8 +74,8 @@ public class MainActor extends Actor {
 
     @Override
     public void clear() {
-        if (lazyBitmapFont1 != null)
-            lazyBitmapFont1.dispose();
+//        if (lazyBitmapFont1 != null)
+//            lazyBitmapFont1.dispose();
         for (int i = 0; i < texReArray.size(); i++) {
             texReArray.get(i).getTexture().dispose();
         }

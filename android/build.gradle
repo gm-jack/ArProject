@@ -10,7 +10,7 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
-            jni.srcDirs = ['src/main/jni', 'src/main/jni/']
+            jni.srcDirs = ['src/main/jni']
         }
 
         instrumentTest.setRoot('tests')
@@ -22,12 +22,25 @@ android {
         applicationId "com.rtmap.game"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 22
-        versionName "2.2"
+        versionCode 26
+        versionName "2.6"
     }
     lintOptions {
         abortOnError false
     }
+
+//    repositories {
+//        flatDir {
+//            dirs 'libs'
+//        }
+//    }
+//    buildTypes {
+//        release {
+//            shrinkResources true
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt')
+//        }
+//    }
 
 }
 // called every time gradle gets executed, takes the native dependencies of
@@ -130,5 +143,6 @@ idea {
     }
 }
 dependencies {
-compile project(path: ':library')
+//    compile(name: 'library-release', ext: 'aar')
+//compile project(path: ':library')
 }

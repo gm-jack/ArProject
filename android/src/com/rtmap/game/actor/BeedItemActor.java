@@ -1,7 +1,5 @@
 package com.rtmap.game.actor;
 
-import android.graphics.Color;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.assets.AssetManager;
@@ -9,23 +7,20 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.rtmap.game.interfaces.BackOnClickListener;
 import com.rtmap.game.interfaces.BeedItemOnClickListener;
 import com.rtmap.game.model.Result;
-import com.rtmap.game.text.LazyBitmapFont;
-import com.rtmap.game.util.MD5Encoder;
+import com.rtmap.game.text.NativeFont;
+import com.rtmap.game.text.NativeFontPaint;
 import com.rtmap.game.util.NetUtil;
 import com.rtmap.game.util.PixmapUtil;
 import com.rtmap.game.util.ScreenUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +39,8 @@ public class BeedItemActor extends Actor {
     private float realHeight;
     private boolean isUse = false;
     private Texture texture;
-    private LazyBitmapFont lazyBitmapFont1;
-    private LazyBitmapFont lazyBitmapFont2;
+    private NativeFont lazyBitmapFont1;
+    private NativeFont lazyBitmapFont2;
     private float radius = 0;
     private Pixmap picture;
 
@@ -170,12 +165,13 @@ public class BeedItemActor extends Actor {
             batch.draw(texture, width * 0.13f, getY() + realHeight * 0.3f + width * 0.04f, radius, radius);
 
         if (lazyBitmapFont1 == null)
-            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(12), com.badlogic.gdx.graphics.Color.WHITE);
+            lazyBitmapFont1 = new NativeFont(new NativeFontPaint(ScreenUtil.dp2px(12)));
+//            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(12), com.badlogic.gdx.graphics.Color.WHITE);
         lazyBitmapFont1.draw(batch, "有效期限：" + result.getStartTime() + "-" + result.getEndTime(), width * 0.13f, getY() + realHeight * 0.3f / 2 + ScreenUtil.dp2px(12) / 2 + realHeight * 0.04f, width, Align.left, false);
         lazyBitmapFont1.draw(batch, "请到适用门店兑换", width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.3f + width * 0.04f + radius / 4, width, Align.left, false);
 
         if (lazyBitmapFont2 == null)
-            lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(15), com.badlogic.gdx.graphics.Color.WHITE);
+//            lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(15), com.badlogic.gdx.graphics.Color.WHITE);
         lazyBitmapFont2.draw(batch, result.getMain(), width * 0.13f + radius + width * 0.04f, getY() + realHeight * 0.3f + width * 0.04f + radius * 3 / 4, width, Align.left, false);
     }
 

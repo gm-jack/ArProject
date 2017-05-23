@@ -89,6 +89,14 @@ public class CatchActor extends Actor {
     private float centerHeight;
     private float titleWidth;
     private float titleHeight;
+    private float goodWidth;
+    private float goodHeight;
+    private float mKey2Width;
+    private float mKey2Height;
+    private float mKey3Width;
+    private float mKey3Height;
+    private float openFailWidth;
+    private float openFailHeight;
 
     public CatchActor(AssetManager assetManager) {
         super();
@@ -142,46 +150,8 @@ public class CatchActor extends Actor {
 //            int maxRadius = 1000;
             if (isBig) {
                 batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-                if (!isStop) {
-                    if (changeRadiu >= ((minRadius + maxRadius) / 2 - 3) && changeRadiu <= ((minRadius + maxRadius) / 2 + 3) && first) {
-                        batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                        if (catchListener != null && first) {
-                            catchListener.onFirst();
-                        }
-                    } else {
-                        if (changeRadiu < maxRadius) {
-                            num = 80;
-                        } else {
-                            num = 120;
-                        }
-                        radius = height * 2 / 5 / num;
-                        changeRadiu += radius;
-                    }
-                } else if (!isCatch) {
-                    //在开始捕捉界面之后运行
-                    if (!isCatchTip) {
-                        if (changeRadiu > minRadius && changeRadiu < maxRadius) {
-                            batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
-                            if (catchListener != null && isFirst) {
-                                isFirst = false;
-                                catchListener.onSuccess();
-                            }
-                        } else {
-                            batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
-                            if (catchListener != null && isFirst) {
-                                isFirst = false;
-                                catchListener.onFail();
-                            }
-                        }
-                    }
-                }
                 if (changeRadiu >= height * 2 / 5) {
                     isBig = false;
-                }
-            } else {
-                batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
-                if (changeRadiu <= 0) {
-                    isBig = true;
                     if (catchNumber == 5) {
                         if (catchListener != null && isFirst) {
                             isFirst = false;
@@ -197,17 +167,55 @@ public class CatchActor extends Actor {
                         num = 120;
                     }
                     radius = height * 2 / 5 / num;
-                    changeRadiu -= radius;
+                    changeRadiu += radius;
                 } else if (!isCatch) {
+                    //在开始捕捉界面之后运行
                     if (!isCatchTip) {
                         if (changeRadiu > minRadius && changeRadiu < maxRadius) {
-                            batch.draw(texReArray.get(3), width / 2 - texReArray.get(3).getRegionWidth() / 2, height / 2 - texReArray.get(3).getRegionHeight() / 2, texReArray.get(3).getRegionWidth(), texReArray.get(3).getRegionHeight());
+                            batch.draw(texReArray.get(3), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
                             if (catchListener != null && isFirst) {
                                 isFirst = false;
                                 catchListener.onSuccess();
                             }
                         } else {
-                            batch.draw(texReArray.get(4), width / 2 - texReArray.get(4).getRegionWidth() / 2, height / 2 - texReArray.get(4).getRegionHeight() / 2, texReArray.get(4).getRegionWidth(), texReArray.get(4).getRegionHeight());
+                            batch.draw(texReArray.get(4), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onFail();
+                            }
+                        }
+                    }
+                }
+            } else {
+                batch.draw(texReArray.get(2), changeX - changeRadiu, changeY - changeRadiu, changeRadiu * 2, changeRadiu * 2);
+                if (changeRadiu <= 0) {
+                    isBig = true;
+                }
+                if (!isStop) {
+                    if (changeRadiu >= ((minRadius + maxRadius) / 2 - 3) && changeRadiu <= ((minRadius + maxRadius) / 2 + 3) && first) {
+                        batch.draw(texReArray.get(3), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
+                        if (catchListener != null && first) {
+                            catchListener.onFirst();
+                        }
+                    } else {
+                        if (changeRadiu < maxRadius) {
+                            num = 80;
+                        } else {
+                            num = 120;
+                        }
+                        radius = height * 2 / 5 / num;
+                        changeRadiu -= radius;
+                    }
+                } else if (!isCatch) {
+                    if (!isCatchTip) {
+                        if (changeRadiu > minRadius && changeRadiu < maxRadius) {
+                            batch.draw(texReArray.get(3), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
+                            if (catchListener != null && isFirst) {
+                                isFirst = false;
+                                catchListener.onSuccess();
+                            }
+                        } else {
+                            batch.draw(texReArray.get(4), width / 2 - goodWidth / 2, height / 2 - goodHeight / 2, goodWidth, goodHeight);
                             if (catchListener != null && isFirst) {
                                 isFirst = false;
                                 catchListener.onFail();
@@ -304,14 +312,15 @@ public class CatchActor extends Actor {
                                 batch.draw(texture, mX, bottomHeight + pictureMeter / 4, pictureMeter, pictureMeter);
                         }
                     } else {
-                        float length1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点");
-                        if (lazyBitmapFont1 == null)
-                            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
-                        lazyBitmapFont1.draw(batch, "运气还差那么一点点", width / 2 - length1 / 2, height * 0.65f, width, Align.left, true);
+//                        float length1 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "运气还差那么一点点");
+//                        if (lazyBitmapFont1 == null)
+//                            lazyBitmapFont1 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
+//                        lazyBitmapFont1.draw(batch, "运气还差那么一点点", width / 2 - length1 / 2, height * 0.65f, width, Align.left, true);
+                        batch.draw(openTexRe.get(3), width / 2 - openFailWidth / 2, height * 0.65f, openFailWidth, openFailHeight);
 
-                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(22), "锦囊空空如也");
+                        float length2 = ScreenUtil.getLength(ScreenUtil.dp2px(18), "锦囊空空如也");
                         if (lazyBitmapFont5 == null)
-                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(22), Color.WHITE);
+                            lazyBitmapFont5 = new LazyBitmapFont(ScreenUtil.dp2px(18), Color.WHITE);
                         lazyBitmapFont5.draw(batch, "锦囊空空如也", width / 2 - length2 / 2, height * 0.55f, width, Align.left, true);
 
                         batch.draw(openTexRe.get(2), width / 2 - openTexRe.get(2).getRegionWidth() / 2, height * 0.55f - ScreenUtil.dp2px(22) - 15, openTexRe.get(2).getRegionWidth(), openTexRe.get(2).getRegionHeight());
@@ -319,7 +328,7 @@ public class CatchActor extends Actor {
                         float length3 = ScreenUtil.getLength(ScreenUtil.dp2px(14), "努力就有收获，再接再厉吧！");
                         if (lazyBitmapFont4 == null)
                             lazyBitmapFont4 = new LazyBitmapFont(ScreenUtil.dp2px(14), Color.WHITE);
-                        lazyBitmapFont4.draw(batch, "努力就有收获，再接再厉吧！", width / 2 - length3 / 2, height * 0.55f - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - 5, width, Align.left, true);
+                        lazyBitmapFont4.draw(batch, "努力就有收获，再接再厉吧！", width / 2 - length3 / 2, height * 0.55f - ScreenUtil.dp2px(22) - openTexRe.get(2).getRegionHeight() - ScreenUtil.dp2px(18), width, Align.left, true);
                     }
 
                 } else {
@@ -328,8 +337,6 @@ public class CatchActor extends Actor {
                 }
             } else {
 //                batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
-//                batch.draw(mKeyFrames[1], width / 2 - mKeyFrames[1].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[1].getRegionWidth(), mKeyFrames[1].getRegionHeight());
-//
 //                float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
 //                if (lazyBitmapFont2 == null)
 //                    lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
@@ -344,7 +351,7 @@ public class CatchActor extends Actor {
             }
         }
         if (isCatch) {
-            float i = width * 1f / mKeyFrames[0].getRegionWidth();
+            float i = (width * 1f) / (mKeyFrames[0].getRegionWidth() * 1f);
             float regionHeight = mKeyFrames[0].getRegionHeight() * i;
             //绘制遮罩
             batch.draw(successTexRe.get(2), 0, 0, width, height);
@@ -353,12 +360,12 @@ public class CatchActor extends Actor {
         if (isCatchTip) {
             //绘制遮罩
             batch.draw(successTexRe.get(2), 0, 0, width, height);
-            batch.draw(mKeyFrames[2], width / 2 - mKeyFrames[2].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2, mKeyFrames[2].getRegionWidth(), mKeyFrames[2].getRegionHeight());
-            batch.draw(mKeyFrames[3], width / 2 - mKeyFrames[3].getRegionWidth() / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 + mKeyFrames[2].getRegionHeight() / 5, mKeyFrames[3].getRegionWidth(), mKeyFrames[3].getRegionHeight());
+            batch.draw(mKeyFrames[1], width / 2 - mKey2Width / 2, height / 2 - mKey2Height / 2, mKey2Width, mKey2Height);
+            batch.draw(mKeyFrames[2], width / 2 - mKey3Width / 2, height / 2 - mKey2Height / 2 + mKey2Height / 5, mKey3Width, mKey3Height);
             float fontWidth3 = ScreenUtil.getLength(ScreenUtil.dp2px(12), "点击任意位置继续");
             if (lazyBitmapFont2 == null)
                 lazyBitmapFont2 = new LazyBitmapFont(ScreenUtil.dp2px(12), Color.WHITE);
-            lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKeyFrames[2].getRegionHeight() / 2 - 15, width, Align.left, true);
+            lazyBitmapFont2.draw(batch, "点击任意位置继续", width / 2 - fontWidth3 / 2, height / 2 - mKey2Height / 2 - 15, width, Align.left, true);
 
             if (Gdx.input.isTouched()) {
                 if (catchListener != null) {
@@ -427,6 +434,8 @@ public class CatchActor extends Actor {
         mScale = (float) width / (float) texReArray.get(0).getRegionWidth();
         catchCenterWidth = width * 0.4f;
         catchCenterHeight = width * 0.4f;
+        goodWidth = texReArray.get(3).getRegionWidth() * mScale;
+        goodHeight = texReArray.get(3).getRegionHeight() * mScale;
 
         successTexRe = new ArrayList<>();
         successTexRe.add(new TextureRegion((Texture) assetManager.get("success_title.png")));
@@ -439,15 +448,22 @@ public class CatchActor extends Actor {
         centerHeight = successTexRe.get(1).getRegionHeight() * mScale;
 
         openTexRe = new ArrayList();
-        openTexRe.add(new TextureRegion((Texture) assetManager.get("open_bg.png")));
+        openTexRe.add(new TextureRegion((Texture) assetManager.get("beed_open_bg.png")));
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_title.png")));
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_line.png")));
         openTexRe.add(new TextureRegion((Texture) assetManager.get("open_fail.png")));
 
+        openFailWidth = (float) openTexRe.get(3).getRegionWidth() * 2;
+        openFailHeight = (float) openTexRe.get(3).getRegionHeight() * 2;
+
         mKeyFrames[0] = new TextureRegion((Texture) assetManager.get("catch_tip.png"));
-        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("catch_fail.png"));
-        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("find_tip.png"));
-        mKeyFrames[3] = new TextureRegion((Texture) assetManager.get("catch_tip_text.png"));
+        mKeyFrames[1] = new TextureRegion((Texture) assetManager.get("find_tip.png"));
+        mKeyFrames[2] = new TextureRegion((Texture) assetManager.get("catch_tip_text.png"));
+
+        mKey2Width = mKeyFrames[1].getRegionWidth() * mScale;
+        mKey2Height = mKeyFrames[1].getRegionHeight() * mScale;
+        mKey3Width = mKeyFrames[2].getRegionWidth() * mScale;
+        mKey3Height = mKeyFrames[2].getRegionHeight() * mScale;
     }
 
     @Override

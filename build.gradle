@@ -20,7 +20,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.novoda:bintray-release:0.3.4'
-        classpath 'com.adison.gradleplugin:jar:1.0.1'
     }
 }
 
@@ -41,7 +40,7 @@ allprojects {
 
     repositories {
         jcenter()
-        mavenLocal()
+
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "http://maven.aliyun.com/nexus/content/repositories/snapshots/" }
         maven { url "http://maven.oschina.net/content/groups/public/" }
@@ -55,73 +54,48 @@ allprojects {
         maven { url "http://maven.springframework.org/release/" }
         maven { url "https://repository.jboss.org/nexus/content/groups/public-jboss/" }
 
-
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-
+        mavenLocal()
     }
 }
 
 project(":android") {
+//    apply plugin: 'com.android.library'
     apply plugin: "android"
-    apply plugin: 'jar-gradle-plugin'
-    BuildJar{
-        //输出目录
-        outputFileDir= project.buildDir.path+"/jar"
-        //输出原始jar包名
-        outputFileName="test.jar"
-        //输出混淆jar包名
-        outputProguardFileName="test_proguard.jar"
-        //混淆配置
-        proguardConfigFile="proguard-rules.pro"
-        //是否需要默认的混淆配置proguard-android.txt
-        needDefaultProguard=true
-        applyMappingFile="originMapping/mapping.txt"
-        //需要输出jar的包名列表,当此参数为空时，则默认全项目输出,支持多包,如 includePackage=['com/adison/testjarplugin/include','com/adison/testjarplugin/include1'...]
-        includePackage=[]
-        //不需要输出jar的jar包列表,如['baidu.jar','baidu1.jar'...]
-        excludeJar=[]
-        //不需要输出jar的类名列表,如['baidu.calss','baidu1.class'...]
-        excludeClass=[]
-        //不需要输出jar的包名列表,如 excludePackage=['com/adison/testjarplugin/exclude','com/adison/testjarplugin/exclude1'...]
-        excludePackage=[]
-    }
+
     configurations { natives }
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+//        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+//        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
 //        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
         compile 'com.google.code.gson:gson:2.2.4'
-
-//        compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+        compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     }
 }
 
